@@ -45,6 +45,13 @@ services:
       - "127.0.0.1:${SEAWEEDFS_S3_PORT:-8333}:8333"
     volumes:
       - seaweedfs-data:/data
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - wget -q --spider http://localhost:8333/ || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   postgres-data:
