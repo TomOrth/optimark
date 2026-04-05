@@ -4,9 +4,14 @@
   "private": true,
   "type": "module",
   "packageManager": "bun@1.3.6",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "dev": "echo 'Frontend app bootstrap lands in issue #4: Bootstrap React SPA with TanStack Router, TanStack Query, and app shell'",
-    "build": "echo 'Frontend build scaffold only. App build pipeline lands in a later issue.'",
-    "check": "echo 'Frontend checks will be added alongside the actual app scaffold.'"
+    "dev": "cd apps/apollo && bun run dev",
+    "build": "cd apps/apollo && bun run build",
+    "check": "cd apps/apollo && bun run check",
+    "preview": "cd apps/apollo && bun run preview"
   }
 }
