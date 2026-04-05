@@ -6,8 +6,8 @@ Use this document with AI UI generation tools such as Stitch to create candidate
 This brief is intentionally design-oriented. It should be used alongside the broader product and architecture spec, but it is optimized for screen generation rather than backend planning.
 
 Related docs:
-- [Overall AI spec](/Users/thomasorth/optimark/docs/optimark-ai-spec.md)
-- [ADR index](/Users/thomasorth/optimark/docs/adr/README.md)
+- [Overall AI spec](./optimark-ai-spec.md)
+- [ADR index](./adr/README.md)
 
 ## Product Summary
 Optimark is an instructor-first assessment platform for courses, starting with coding assignments. Instructors create assignments, students submit code, the system runs autograding asynchronously, and instructors or TAs review, override, and release grades.

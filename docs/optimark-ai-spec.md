@@ -7,11 +7,11 @@
 - Canonical for: v1 product framing, repo structure, domain boundaries, and coding-assignment architecture constraints
 
 ## Related ADRs
-- [ADR-0001: Core Product and Technology Stack](/Users/thomasorth/optimark/docs/adr/0001-core-product-and-technology-stack.md)
-- [ADR-0002: Modular Monolith Backend with Separate Worker](/Users/thomasorth/optimark/docs/adr/0002-modular-monolith-backend-with-worker.md)
-- [ADR-0003: Generic Assessment Domain with Coding as a Specialized Assignment Type](/Users/thomasorth/optimark/docs/adr/0003-generic-assessment-domain.md)
-- [ADR-0004: Contract-Driven Coding Submission Engine](/Users/thomasorth/optimark/docs/adr/0004-contract-driven-coding-engine.md)
-- [ADR-0005: Hosted SaaS First with Self-Hosting Seams](/Users/thomasorth/optimark/docs/adr/0005-hosted-saas-first.md)
+- [ADR-0001: Core Product and Technology Stack](./adr/0001-core-product-and-technology-stack.md)
+- [ADR-0002: Modular Monolith Backend with Separate Worker](./adr/0002-modular-monolith-backend-with-worker.md)
+- [ADR-0003: Generic Assessment Domain with Coding as a Specialized Assignment Type](./adr/0003-generic-assessment-domain.md)
+- [ADR-0004: Contract-Driven Coding Submission Engine](./adr/0004-contract-driven-coding-engine.md)
+- [ADR-0005: Hosted SaaS First with Self-Hosting Seams](./adr/0005-hosted-saas-first.md)
 
 ## 1. Product Summary
 Optimark is an instructor-first assessment platform that begins with coding assignments and autograding, while intentionally preserving a path to broader assessment workflows similar to Gradescope. The first release should serve CS instructors, TAs, and students, but the core domain model must remain generic enough to support non-coding assignments later.
