@@ -128,3 +128,14 @@ See [local development stack docs](docs/local-development-stack.md) for connecti
 - [ADR index](docs/adr/README.md)
 - [Local development stack](docs/local-development-stack.md)
 - [UI Mockups](docs/mockups)
+
+## Commit convention
+
+This repository uses Conventional Commits for both commit messages and PR titles so history stays clean and changelog-friendly.
+
+Examples:
+- `feat(frontend): add protected app shell`
+- `fix(api): handle missing submission id`
+- `docs(adr): document backend uv workspace topology`
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the supported types and workflow details.
