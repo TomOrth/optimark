@@ -13,6 +13,7 @@ This directory contains the formal Architecture Decision Records (ADRs) for Opti
 - [ADR-0003: Generic Assessment Domain with Coding as a Specialized Assignment Type](/Users/thomasorth/optimark/docs/adr/0003-generic-assessment-domain.md)
 - [ADR-0004: Contract-Driven Coding Submission Engine](/Users/thomasorth/optimark/docs/adr/0004-contract-driven-coding-engine.md)
 - [ADR-0005: Hosted SaaS First with Self-Hosting Seams](/Users/thomasorth/optimark/docs/adr/0005-hosted-saas-first.md)
+- [ADR-0006: Frontend Bun Workspace Package Topology](/Users/thomasorth/optimark/docs/adr/0006-frontend-bun-workspace-package-topology.md)
 
 ## Usage
 - Create a new ADR when making a meaningful architectural or product-platform decision.
