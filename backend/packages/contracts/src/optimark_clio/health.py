@@ -1,9 +1,5 @@
 from pydantic import BaseModel
 
-from optimark_metis.runtime import ServiceDescriptor
-from optimark_mnemosyne.runtime import PersistenceDescriptor
-
-
 class HealthResponse(BaseModel):
     status: str
     app_name: str
@@ -13,19 +9,23 @@ class HealthResponse(BaseModel):
     workspace_packages: list[str]
 
     @classmethod
-    def from_descriptors(
+    def from_values(
         cls,
         *,
-        service: ServiceDescriptor,
-        persistence: PersistenceDescriptor,
+        status: str,
+        app_name: str,
+        service_name: str,
+        layer: str,
+        persistence_provider: str,
+        workspace_packages: list[str],
     ) -> "HealthResponse":
         return cls(
-            status=service.status,
-            app_name=service.app_name,
-            service_name=service.service_name,
-            layer=service.layer,
-            persistence_provider=persistence.database_provider,
-            workspace_packages=["metis", "mnemosyne", "clio"],
+            status=status,
+            app_name=app_name,
+            service_name=service_name,
+            layer=layer,
+            persistence_provider=persistence_provider,
+            workspace_packages=workspace_packages,
         )
 
 
@@ -36,15 +36,17 @@ class WorkerBootstrapMessage(BaseModel):
     workspace_packages: list[str]
 
     @classmethod
-    def from_descriptors(
+    def from_values(
         cls,
         *,
-        service: ServiceDescriptor,
-        persistence: PersistenceDescriptor,
+        status: str,
+        worker_name: str,
+        persistence_provider: str,
+        workspace_packages: list[str],
     ) -> "WorkerBootstrapMessage":
         return cls(
-            status=service.status,
-            worker_name=service.service_name,
-            persistence_provider=persistence.database_provider,
-            workspace_packages=["metis", "mnemosyne", "clio"],
+            status=status,
+            worker_name=worker_name,
+            persistence_provider=persistence_provider,
+            workspace_packages=workspace_packages,
         )

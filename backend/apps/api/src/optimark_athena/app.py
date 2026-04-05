@@ -16,4 +16,11 @@ app = FastAPI(
 def healthcheck() -> HealthResponse:
     service = build_service_descriptor(service_name="athena", layer="api")
     persistence = default_persistence_descriptor()
-    return HealthResponse.from_descriptors(service=service, persistence=persistence)
+    return HealthResponse.from_values(
+        status=service.status,
+        app_name=service.app_name,
+        service_name=service.service_name,
+        layer=service.layer,
+        persistence_provider=persistence.database_provider,
+        workspace_packages=["metis", "mnemosyne", "clio"],
+    )

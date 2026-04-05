@@ -6,9 +6,11 @@ from optimark_mnemosyne.runtime import default_persistence_descriptor
 def main() -> None:
     service = build_service_descriptor(service_name="hermes", layer="worker")
     persistence = default_persistence_descriptor()
-    message = WorkerBootstrapMessage.from_descriptors(
-        service=service,
-        persistence=persistence,
+    message = WorkerBootstrapMessage.from_values(
+        status=service.status,
+        worker_name=service.service_name,
+        persistence_provider=persistence.database_provider,
+        workspace_packages=["metis", "mnemosyne", "clio"],
     )
     print(message.model_dump_json(indent=2))
 
