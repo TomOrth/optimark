@@ -1,6 +1,13 @@
 # Worker App
 
-Reserved for the background job worker that will process grading and submission workflows.
+This directory contains the background worker bootstrap for Optimark.
 
-This issue sets up the workspace boundary only.
+## Package name
+- uv package: `hermes`
+- import package: `optimark_hermes`
 
+## Current scope
+- worker entrypoint bootstrap
+- shared-package imports proving the modular monolith package boundaries
+
+No grading or queue-processing behavior is implemented here yet.

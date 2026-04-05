@@ -1,4 +1,7 @@
 # DB Package
 
-Reserved for persistence models, migrations, and repository code.
+This package contains persistence-layer bootstrap types for Optimark.
 
+## Package name
+- uv package: `mnemosyne`
+- import package: `optimark_mnemosyne`

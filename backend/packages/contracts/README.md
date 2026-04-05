@@ -1,4 +1,7 @@
 # Contracts Package
 
-Reserved for shared API payloads and worker-facing schemas.
+This package contains shared response models and worker-facing schemas.
 
+## Package name
+- uv package: `clio`
+- import package: `optimark_clio`

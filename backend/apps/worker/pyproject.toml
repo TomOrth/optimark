@@ -1,10 +1,20 @@
 [project]
-name = "optimark-worker"
+name = "hermes"
 version = "0.1.0"
 description = "Background worker package for Optimark"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+  "clio",
+  "metis",
+  "mnemosyne",
+]
+
+[project.scripts]
+hermes-worker = "optimark_hermes.__main__:main"
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/optimark_hermes"]

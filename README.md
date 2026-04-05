@@ -48,11 +48,19 @@ optimark/
 ### `backend/`
 
 - uv workspace for Python services and shared packages
-- `apps/api`: future FastAPI HTTP API
-- `apps/worker`: future background worker
+- `apps/api`: FastAPI HTTP API bootstrap
+- `apps/worker`: worker bootstrap
 - `packages/domain`: shared business logic and domain types
 - `packages/db`: persistence-layer models and repositories
 - `packages/contracts`: API and worker contract schemas
+
+The backend workspace keeps readable directory names while using themed uv package names:
+
+- `athena`: API app
+- `hermes`: worker app
+- `metis`: domain package
+- `mnemosyne`: persistence package
+- `clio`: contracts package
 
 ### `docs/`
 
@@ -80,9 +88,11 @@ make dev-services-up
 make frontend-install
 make frontend-dev
 make backend-sync
+make backend-api-dev
+make backend-worker-run
 ```
 
-The frontend and backend commands are still scaffold entrypoints rather than full application bootstraps, but the local infrastructure stack is now ready for upcoming backend and submission-workflow issues.
+The frontend commands are still scaffold entrypoints, but the backend workspace now includes a minimal FastAPI and worker bootstrap for upcoming product work.
 
 ## Local development services
 
