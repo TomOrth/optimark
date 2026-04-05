@@ -1,0 +1,12 @@
+{
+  "name": "optimark-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "bun@1.3.6",
+  "scripts": {
+    "dev": "echo 'Frontend app bootstrap lands in issue #4: Bootstrap React SPA with TanStack Router, TanStack Query, and app shell'",
+    "build": "echo 'Frontend build scaffold only. App build pipeline lands in a later issue.'",
+    "check": "echo 'Frontend checks will be added alongside the actual app scaffold.'"
+  }
+}
