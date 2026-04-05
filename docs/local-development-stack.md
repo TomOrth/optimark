@@ -35,6 +35,8 @@ This starts:
 - SeaweedFS filer UI on `localhost:8888`
 - SeaweedFS S3 endpoint on `localhost:8333`
 
+All published service ports are bound to `127.0.0.1` so the local development stack is not exposed on the broader network by default.
+
 ## Stop the stack
 ```sh
 make dev-services-down
@@ -62,6 +64,7 @@ make dev-services-logs
 
 ### Redis
 - URL: `redis://localhost:6379/0`
+- Redis is intentionally unauthenticated in local development and must remain bound to loopback only.
 
 ### SeaweedFS S3
 - Endpoint: `http://localhost:8333`
@@ -84,3 +87,4 @@ The root `.env.example` includes application-facing defaults for future backend 
 - This stack is for local development only.
 - No cloud provisioning or production deployment concerns are included here.
 - SeaweedFS is started in a single-node mode appropriate for development and testing.
+- The default credentials in this stack are intentionally weak and are only acceptable because the services are loopback-bound.
