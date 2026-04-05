@@ -1,4 +1,4 @@
-.PHONY: help frontend-install frontend-dev backend-sync backend-lock dev-services-up dev-services-down dev-services-reset dev-services-logs
+.PHONY: help frontend-install frontend-dev backend-sync backend-lock backend-api-dev backend-worker-run dev-services-up dev-services-down dev-services-reset dev-services-logs
 
 help:
 	@printf "%s\n" \
@@ -11,7 +11,9 @@ help:
 	"  make frontend-install  Install Bun dependencies for the frontend workspace" \
 	"  make frontend-dev      Run the frontend workspace dev script" \
 	"  make backend-sync      Sync the uv backend workspace" \
-	"  make backend-lock      Refresh the backend uv lockfile"
+	"  make backend-lock      Refresh the backend uv lockfile" \
+	"  make backend-api-dev   Run the FastAPI backend app with reload" \
+	"  make backend-worker-run Run the worker bootstrap command"
 
 dev-services-up:
 	docker compose up -d
@@ -36,3 +38,9 @@ backend-sync:
 
 backend-lock:
 	cd backend && uv lock
+
+backend-api-dev:
+	cd backend && uv run --package athena uvicorn optimark_athena.app:app --reload
+
+backend-worker-run:
+	cd backend && uv run --package hermes hermes-worker
