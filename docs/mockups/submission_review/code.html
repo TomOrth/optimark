@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Optimark | Submission Review</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary": "#545f74",
+                        "on-tertiary-fixed": "#374155",
+                        "error-dim": "#4e0309",
+                        "inverse-on-surface": "#9b9d9d",
+                        "secondary-dim": "#465468",
+                        "tertiary-container": "#dae6fe",
+                        "outline": "#747c7c",
+                        "outline-variant": "#abb4b3",
+                        "surface-container-high": "#e3e9e8",
+                        "on-error-container": "#752121",
+                        "on-primary": "#eefaff",
+                        "primary-fixed": "#b6ebfe",
+                        "inverse-primary": "#ade2f6",
+                        "error": "#9f403d",
+                        "tertiary-fixed-dim": "#ccd7ef",
+                        "secondary-fixed": "#d5e3fc",
+                        "primary": "#306576",
+                        "secondary-fixed-dim": "#c7d5ed",
+                        "on-error": "#fff7f6",
+                        "on-secondary-fixed-variant": "#4e5c71",
+                        "surface-bright": "#f9f9f8",
+                        "surface-container": "#eaefee",
+                        "on-tertiary-container": "#495468",
+                        "on-secondary": "#f8f8ff",
+                        "on-tertiary": "#f8f8ff",
+                        "tertiary-dim": "#485367",
+                        "surface-container-highest": "#dce4e3",
+                        "surface-dim": "#d2dcdb",
+                        "on-surface-variant": "#586160",
+                        "inverse-surface": "#0c0f0e",
+                        "primary-dim": "#215969",
+                        "on-tertiary-fixed-variant": "#535e72",
+                        "surface-tint": "#306576",
+                        "on-secondary-container": "#455367",
+                        "secondary-container": "#d5e3fc",
+                        "background": "#f9f9f8",
+                        "on-secondary-fixed": "#324053",
+                        "tertiary-fixed": "#dae6fe",
+                        "primary-fixed-dim": "#a8dcf0",
+                        "on-surface": "#2c3433",
+                        "primary-container": "#b6ebfe",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-low": "#f1f4f3",
+                        "on-primary-fixed": "#034655",
+                        "surface-variant": "#dce4e3",
+                        "on-primary-container": "#205869",
+                        "on-background": "#2c3433",
+                        "secondary": "#526074",
+                        "on-primary-fixed-variant": "#2c6273",
+                        "error-container": "#fe8983",
+                        "surface": "#f9f9f8"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+        .glass {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface flex min-h-screen">
+<!-- SideNavBar Component -->
+<aside class="h-screen w-64 fixed left-0 top-0 flex flex-col bg-[#eaefee] dark:bg-slate-900 py-6 z-50">
+<div class="px-6 mb-8">
+<h1 class="text-xl font-bold tracking-tight text-[#0F4C5C] dark:text-teal-400">Optimark</h1>
+<p class="text-[11px] font-medium tracking-wider uppercase text-slate-500 mt-1">CS101: Data Structures</p>
+</div>
+<nav class="flex-1 space-y-1 px-3">
+<a class="flex items-center px-3 py-2 text-slate-500 hover:bg-[#f1f4f3] transition-colors duration-200 group" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="dashboard">dashboard</span>
+<span class="text-[11px] font-medium tracking-wider uppercase">Dashboard</span>
+</a>
+<a class="flex items-center px-3 py-2 text-[#0F4C5C] font-semibold border-r-4 border-[#0F4C5C] bg-[#f1f4f3]/50 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="assignment">assignment</span>
+<span class="text-[11px] font-medium tracking-wider uppercase">Assignments</span>
+</a>
+<a class="flex items-center px-3 py-2 text-slate-500 hover:bg-[#f1f4f3] transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="list_alt">list_alt</span>
+<span class="text-[11px] font-medium tracking-wider uppercase">Submissions</span>
+</a>
+<a class="flex items-center px-3 py-2 text-slate-500 hover:bg-[#f1f4f3] transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="analytics">analytics</span>
+<span class="text-[11px] font-medium tracking-wider uppercase">Gradebook</span>
+</a>
+<a class="flex items-center px-3 py-2 text-slate-500 hover:bg-[#f1f4f3] transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="group">group</span>
+<span class="text-[11px] font-medium tracking-wider uppercase">Students</span>
+</a>
+</nav>
+<div class="mt-auto px-3 space-y-1 border-t border-slate-200 pt-4">
+<a class="flex items-center px-3 py-2 text-slate-500 hover:bg-[#f1f4f3] transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="help_outline">help_outline</span>
+<span class="text-[11px] font-medium tracking-wider uppercase">Help</span>
+</a>
+<a class="flex items-center px-3 py-2 text-slate-500 hover:bg-[#f1f4f3] transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="settings">settings</span>
+<span class="text-[11px] font-medium tracking-wider uppercase">Settings</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 flex-1 flex flex-col">
+<!-- TopAppBar Component -->
+<header class="flex justify-between items-center w-full px-8 h-16 sticky top-0 z-40 bg-[#f9f9f8]/80 backdrop-blur-md border-b border-slate-200/30">
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="person">person</span>
+</div>
+<div>
+<span class="text-[10px] font-bold tracking-widest uppercase text-on-surface-variant block leading-none">Student</span>
+<span class="font-bold text-on-surface">ac123</span>
+</div>
+</div>
+<div class="h-6 w-[1px] bg-outline-variant/30"></div>
+<div class="flex items-center gap-4 text-sm font-medium">
+<a class="text-slate-600 hover:text-[#0F4C5C]" href="#">Course Settings</a>
+<a class="text-slate-600 hover:text-[#0F4C5C]" href="#">Analytics</a>
+<a class="text-slate-600 hover:text-[#0F4C5C]" href="#">Audit Log</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-surface-container-high rounded transition-all">Regrade</button>
+<button class="px-5 py-2 text-sm font-bold bg-gradient-to-r from-primary to-primary-dim text-on-primary rounded shadow-sm hover:opacity-90 transition-all">Publish All</button>
+<div class="flex items-center gap-2 ml-2">
+<button class="p-2 text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined" data-icon="notifications">notifications</span></button>
+<button class="p-2 text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined" data-icon="history">history</span></button>
+</div>
+</div>
+</header>
+<!-- Assessment Review Workspace -->
+<div class="flex-1 flex overflow-hidden">
+<!-- Code & Log Section (Main) -->
+<section class="flex-1 overflow-y-auto p-8 space-y-8 max-w-5xl">
+<!-- File Header -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-dim" data-icon="code">code</span>
+<h2 class="text-2xl font-extrabold tracking-tight text-on-surface">linked_list.py</h2>
+<span class="px-2 py-0.5 bg-secondary-container text-on-secondary-container text-[10px] font-bold rounded-full uppercase tracking-tighter">Modified 2h ago</span>
+</div>
+<div class="flex gap-2">
+<button class="p-2 bg-surface-container-low rounded-lg hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined" data-icon="unfold_more">unfold_more</span>
+</button>
+<button class="p-2 bg-surface-container-low rounded-lg hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined" data-icon="download">download</span>
+</button>
+</div>
+</div>
+<!-- Code Viewer -->
+<div class="rounded-xl overflow-hidden bg-[#1e1e1e] text-slate-300 font-mono text-sm shadow-xl">
+<div class="bg-[#2d2d2d] px-4 py-2 flex items-center justify-between text-[11px] uppercase tracking-widest text-slate-500">
+<span>Python 3.10</span>
+<span>428 lines</span>
+</div>
+<div class="p-6 leading-relaxed">
+<div class="flex gap-6">
+<div class="text-slate-600 text-right select-none w-8">1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12</div>
+<div class="flex-1">
+<span class="text-blue-400">class</span> <span class="text-yellow-200">LinkedList</span>:<br/>
+                                    <span class="text-blue-400">def</span> <span class="text-yellow-200">__init__</span>(<span class="text-orange-300">self</span>):<br/>
+                                        <span class="text-orange-300">self</span>.head = <span class="text-purple-400">None</span><br/>
+                                        <span class="text-orange-300">self</span>.size = <span class="text-green-400">0</span><br/><br/>
+                                    <span class="text-blue-400">def</span> <span class="text-yellow-200">insert_at_head</span>(<span class="text-orange-300">self</span>, data):<br/>
+                                        new_node = Node(data)<br/>
+                                        new_node.next = <span class="text-orange-300">self</span>.head<br/>
+                                        <span class="text-orange-300">self</span>.head = new_node<br/>
+                                        <span class="text-orange-300">self</span>.size += <span class="text-green-400">1</span><br/>
+<span class="bg-primary/20 border-l-2 border-primary -ml-6 pl-6 block w-[calc(100%+24px)] text-slate-100"># Manual review needed for edge cases in removal logic below</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Autograder Logs -->
+<div class="space-y-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="terminal">terminal</span>
+<h3 class="text-[11px] font-bold uppercase tracking-[0.2em] text-on-surface-variant">Execution Logs &amp; Test Suites</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="bg-surface-container-low p-4 rounded-xl border-l-4 border-primary">
+<div class="flex justify-between items-start mb-2">
+<span class="text-xs font-bold text-primary">UNIT_TEST_01: Insertion</span>
+<span class="text-[10px] bg-primary-container text-on-primary-container px-2 py-0.5 rounded-full font-bold">PASSED</span>
+</div>
+<p class="text-xs text-on-surface-variant leading-relaxed">Successfully handled head, tail, and middle insertion on 10,000 nodes. Execution time: 42ms.</p>
+</div>
+<div class="bg-surface-container-low p-4 rounded-xl border-l-4 border-error">
+<div class="flex justify-between items-start mb-2">
+<span class="text-xs font-bold text-error">UNIT_TEST_04: Memory Leakage</span>
+<span class="text-[10px] bg-error-container text-on-error-container px-2 py-0.5 rounded-full font-bold">FAILED</span>
+</div>
+<p class="text-xs text-on-surface-variant leading-relaxed">Failed to deallocate nodes during mass removal. Potential circular reference detected.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Right-side Inspector: Rubric & Controls -->
+<aside class="w-96 bg-surface-container flex flex-col border-l border-outline-variant/10 shadow-[-4px_0_12px_rgba(44,52,51,0.02)]">
+<div class="p-6 space-y-8 overflow-y-auto flex-1">
+<!-- Grade Summary -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/10">
+<label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant block mb-2">Calculated Score</label>
+<div class="flex items-baseline gap-2">
+<span class="text-5xl font-extrabold tracking-tighter text-primary">84</span>
+<span class="text-xl font-bold text-outline-variant">/ 100</span>
+</div>
+<div class="mt-4 flex gap-2">
+<span class="text-[10px] font-semibold text-primary px-2 py-1 bg-primary-container rounded">Auto: 70</span>
+<span class="text-[10px] font-semibold text-secondary px-2 py-1 bg-secondary-container rounded">Manual: +14</span>
+</div>
+</div>
+<!-- Rubric Section -->
+<div class="space-y-6">
+<div class="flex items-center justify-between">
+<h3 class="text-sm font-bold text-on-surface">Assessment Rubric</h3>
+<button class="text-[10px] font-bold text-primary uppercase hover:underline">Reset Rubric</button>
+</div>
+<!-- Rubric Item -->
+<div class="space-y-3">
+<div class="flex justify-between items-end">
+<div>
+<h4 class="text-xs font-bold text-on-surface">Documentation</h4>
+<p class="text-[10px] text-on-surface-variant mt-1 leading-tight">Docstrings, variable naming, and complexity notes.</p>
+</div>
+<span class="text-xs font-bold text-primary">5/10</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary w-1/2 rounded-full"></div>
+</div>
+<div class="grid grid-cols-3 gap-1">
+<button class="py-1 text-[9px] font-bold bg-surface-container-highest text-on-surface rounded hover:bg-primary-container transition-colors">None (0)</button>
+<button class="py-1 text-[9px] font-bold bg-primary-container text-on-primary-container rounded">Partial (5)</button>
+<button class="py-1 text-[9px] font-bold bg-surface-container-highest text-on-surface rounded hover:bg-primary-container transition-colors">Full (10)</button>
+</div>
+</div>
+<!-- Rubric Item -->
+<div class="space-y-3">
+<div class="flex justify-between items-end">
+<div>
+<h4 class="text-xs font-bold text-on-surface">Edge Case Handling</h4>
+<p class="text-[10px] text-on-surface-variant mt-1 leading-tight">Empty lists, single-node scenarios, overflow.</p>
+</div>
+<span class="text-xs font-bold text-primary">15/15</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary w-full rounded-full"></div>
+</div>
+<div class="flex gap-1 overflow-x-auto pb-1">
+<button class="px-3 py-1 text-[9px] font-bold bg-primary-container text-on-primary-container rounded shrink-0">Flawless (15)</button>
+<button class="px-3 py-1 text-[9px] font-bold bg-surface-container-highest text-on-surface rounded shrink-0">Minor (10)</button>
+<button class="px-3 py-1 text-[9px] font-bold bg-surface-container-highest text-on-surface rounded shrink-0">Significant (5)</button>
+</div>
+</div>
+<!-- Rubric Item -->
+<div class="space-y-3">
+<div class="flex justify-between items-end">
+<div>
+<h4 class="text-xs font-bold text-on-surface">Memory Safety</h4>
+<p class="text-[10px] text-on-surface-variant mt-1 leading-tight">Garbage collection efficiency and link management.</p>
+</div>
+<span class="text-xs font-bold text-error">2/10</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-error w-[20%] rounded-full"></div>
+</div>
+<input class="w-full h-1 bg-surface-container-high rounded-lg appearance-none cursor-pointer accent-primary" max="10" min="0" type="range" value="2"/>
+</div>
+</div>
+<!-- Feedback Field -->
+<div class="space-y-3">
+<label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant block">Internal Instructor Feedback</label>
+<textarea class="w-full h-32 bg-surface-container-low border-none rounded-xl text-xs p-4 focus:ring-1 focus:ring-primary focus:bg-surface-container-lowest placeholder:text-outline-variant transition-all" placeholder="Enter private notes for other TAs or student feedback..."></textarea>
+</div>
+</div>
+<!-- Sticky Action Footer (Command Bar Style) -->
+<div class="p-6 bg-surface-container-lowest border-t border-outline-variant/10">
+<button class="w-full py-3 mb-3 bg-primary text-on-primary font-bold text-sm rounded-lg hover:bg-primary-dim shadow-sm transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-base" data-icon="check_circle">check_circle</span>
+                        Mark Review Complete
+                    </button>
+<button class="w-full py-2.5 bg-surface-container-highest text-on-surface font-bold text-xs rounded-lg hover:bg-outline-variant/20 transition-all">
+                        Release Grade to Student
+                    </button>
+</div>
+</aside>
+</div>
+</main>
+<!-- Contextual Command Bar (Floating) -->
+<div class="fixed bottom-8 left-1/2 -translate-x-1/2 glass border border-outline-variant/20 px-6 py-3 rounded-full shadow-2xl flex items-center gap-8 z-[100]">
+<div class="flex items-center gap-2 border-r border-outline-variant/30 pr-8">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined" data-icon="chevron_left">chevron_left</span></button>
+<span class="text-xs font-bold text-on-surface">Submission 12 of 45</span>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span></button>
+</div>
+<div class="flex gap-4">
+<button class="flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-widest text-on-surface-variant hover:text-primary">
+<span class="material-symbols-outlined text-sm" data-icon="keyboard">keyboard</span>
+                Shortcuts
+            </button>
+<button class="flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-widest text-on-surface-variant hover:text-primary">
+<span class="material-symbols-outlined text-sm" data-icon="visibility">visibility</span>
+                Student View
+            </button>
+</div>
+</div>
+</body></html>

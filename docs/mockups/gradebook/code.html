@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary": "#545f74",
+                    "on-tertiary-fixed": "#374155",
+                    "error-dim": "#4e0309",
+                    "inverse-on-surface": "#9b9d9d",
+                    "secondary-dim": "#465468",
+                    "tertiary-container": "#dae6fe",
+                    "outline": "#747c7c",
+                    "outline-variant": "#abb4b3",
+                    "surface-container-high": "#e3e9e8",
+                    "on-error-container": "#752121",
+                    "on-primary": "#eefaff",
+                    "primary-fixed": "#b6ebfe",
+                    "inverse-primary": "#ade2f6",
+                    "error": "#9f403d",
+                    "tertiary-fixed-dim": "#ccd7ef",
+                    "secondary-fixed": "#d5e3fc",
+                    "primary": "#306576",
+                    "secondary-fixed-dim": "#c7d5ed",
+                    "on-error": "#fff7f6",
+                    "on-secondary-fixed-variant": "#4e5c71",
+                    "surface-bright": "#f9f9f8",
+                    "surface-container": "#eaefee",
+                    "on-tertiary-container": "#495468",
+                    "on-secondary": "#f8f8ff",
+                    "on-tertiary": "#f8f8ff",
+                    "tertiary-dim": "#485367",
+                    "surface-container-highest": "#dce4e3",
+                    "surface-dim": "#d2dcdb",
+                    "on-surface-variant": "#586160",
+                    "inverse-surface": "#0c0f0e",
+                    "primary-dim": "#215969",
+                    "on-tertiary-fixed-variant": "#535e72",
+                    "surface-tint": "#306576",
+                    "on-secondary-container": "#455367",
+                    "secondary-container": "#d5e3fc",
+                    "background": "#f9f9f8",
+                    "on-secondary-fixed": "#324053",
+                    "tertiary-fixed": "#dae6fe",
+                    "primary-fixed-dim": "#a8dcf0",
+                    "on-surface": "#2c3433",
+                    "primary-container": "#b6ebfe",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-low": "#f1f4f3",
+                    "on-primary-fixed": "#034655",
+                    "surface-variant": "#dce4e3",
+                    "on-primary-container": "#205869",
+                    "on-background": "#2c3433",
+                    "secondary": "#526074",
+                    "on-primary-fixed-variant": "#2c6273",
+                    "error-container": "#fe8983",
+                    "surface": "#f9f9f8"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .headline { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .grade-cell-hover:hover {
+            background-color: rgba(241, 244, 243, 0.8);
+        }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-background text-on-surface">
+<!-- SideNavBar Anchor -->
+<nav class="h-screen w-64 fixed left-0 top-0 flex flex-col bg-[#eaefee] dark:bg-slate-900 transition-all z-50">
+<div class="flex flex-col h-full py-6">
+<div class="px-6 mb-8">
+<div class="text-xl font-bold tracking-tight text-[#0F4C5C] dark:text-teal-400 font-headline">Optimark</div>
+<div class="text-[11px] font-medium tracking-wider uppercase text-slate-500 mt-1">CS101: Data Structures</div>
+</div>
+<div class="flex-1 space-y-1">
+<a class="flex items-center px-6 py-3 text-slate-500 dark:text-slate-400 hover:text-[#0F4C5C] hover:bg-[#f1f4f3] transition-colors duration-200 group" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="dashboard">dashboard</span>
+<span class="text-[11px] font-medium tracking-wider uppercase">Dashboard</span>
+</a>
+<a class="flex items-center px-6 py-3 text-slate-500 dark:text-slate-400 hover:text-[#0F4C5C] hover:bg-[#f1f4f3] transition-colors duration-200 group" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="assignment">assignment</span>
+<span class="text-[11px] font-medium tracking-wider uppercase">Assignments</span>
+</a>
+<a class="flex items-center px-6 py-3 text-slate-500 dark:text-slate-400 hover:text-[#0F4C5C] hover:bg-[#f1f4f3] transition-colors duration-200 group" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="list_alt">list_alt</span>
+<span class="text-[11px] font-medium tracking-wider uppercase">Submissions</span>
+</a>
+<a class="flex items-center px-6 py-3 text-[#0F4C5C] dark:text-teal-300 font-semibold border-r-4 border-[#0F4C5C] bg-[#f1f4f3]/50 transition-all group" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="analytics">analytics</span>
+<span class="text-[11px] font-medium tracking-wider uppercase">Gradebook</span>
+</a>
+<a class="flex items-center px-6 py-3 text-slate-500 dark:text-slate-400 hover:text-[#0F4C5C] hover:bg-[#f1f4f3] transition-colors duration-200 group" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="group">group</span>
+<span class="text-[11px] font-medium tracking-wider uppercase">Students</span>
+</a>
+<a class="flex items-center px-6 py-3 text-slate-500 dark:text-slate-400 hover:text-[#0F4C5C] hover:bg-[#f1f4f3] transition-colors duration-200 group" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="settings">settings</span>
+<span class="text-[11px] font-medium tracking-wider uppercase">Settings</span>
+</a>
+</div>
+<div class="px-6 mb-6">
+<button class="w-full py-2.5 px-4 bg-primary text-on-primary rounded-lg text-sm font-semibold flex items-center justify-center gap-2 shadow-sm hover:opacity-90 transition-all">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+                    New Assessment
+                </button>
+</div>
+<div class="mt-auto border-t border-slate-200/50 pt-4">
+<a class="flex items-center px-6 py-2 text-slate-500 hover:text-[#0F4C5C] transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3 text-lg" data-icon="help_outline">help_outline</span>
+<span class="text-[11px] font-medium tracking-wider uppercase">Help</span>
+</a>
+<a class="flex items-center px-6 py-2 text-slate-500 hover:text-[#0F4C5C] transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3 text-lg" data-icon="archive">archive</span>
+<span class="text-[11px] font-medium tracking-wider uppercase">Archive</span>
+</a>
+<div class="flex items-center px-6 mt-6 gap-3">
+<img class="w-8 h-8 rounded-full object-cover" data-alt="close-up portrait of a professional male instructor in a modern minimalist office with soft morning light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZvtHKHHmkv4M7o_kdmWhx3xt579_NPUn1m4fl6to4WW4iZYQKvqgI6UL0Rp5EPoRW2xA1KSFagRt07NTeKy1IaLJ3oY9QjVMgOGpDDIDVXrWwgdCmYE27hjSlS8OfXp5cI0Q1bDFsf2iucv7fGolNY1O_TO4EXIZ2PcD2s31KrIKZo-dTxuwLNT_-Cz9V9tNgifYpjoL2Zq9RN4_M9P3Kfb1OmvRb-QNSd0XB7k8IOr4o-Als8Qf9dc1Wq1PCciPFCd1oC4v2jLzZ"/>
+<div class="overflow-hidden">
+<div class="text-[11px] font-bold text-on-surface truncate">Dr. Aris Thorne</div>
+<div class="text-[10px] text-on-surface-variant truncate">Course Lead</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+<!-- TopAppBar Anchor -->
+<header class="flex justify-between items-center w-full px-8 h-16 ml-64 max-w-[calc(100%-16rem)] sticky top-0 z-40 bg-[#f9f9f8]/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200/30 dark:border-slate-800/30 shadow-sm dark:shadow-none">
+<div class="flex items-center gap-8">
+<h1 class="text-lg font-bold text-primary headline">Gradebook</h1>
+<nav class="hidden lg:flex items-center gap-6">
+<a class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-[#0F4C5C] transition-colors" href="#">Course Settings</a>
+<a class="text-sm font-bold text-[#306576] border-b-2 border-[#306576] py-5" href="#">Analytics</a>
+<a class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-[#0F4C5C] transition-colors" href="#">Audit Log</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative group">
+<span class="absolute inset-y-0 left-3 flex items-center text-slate-400">
+<span class="material-symbols-outlined text-lg" data-icon="search">search</span>
+</span>
+<input class="bg-surface-container-high border-none rounded-full pl-10 pr-4 py-1.5 text-sm w-64 focus:ring-1 focus:ring-primary focus:bg-surface-container-lowest transition-all" placeholder="Search entries..." type="text"/>
+</div>
+<button class="p-2 text-slate-500 hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-slate-500 hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+</button>
+<div class="flex items-center gap-2 ml-4">
+<button class="px-4 py-1.5 text-sm font-semibold text-primary hover:bg-primary/5 rounded transition-all">Regrade</button>
+<button class="px-4 py-1.5 bg-primary text-on-primary rounded font-semibold text-sm shadow-sm hover:opacity-90 transition-all">Publish All</button>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 p-8 min-h-[calc(100vh-64px)]">
+<!-- Quick Stats Bento Section -->
+<section class="grid grid-cols-12 gap-6 mb-10">
+<div class="col-span-12 lg:col-span-8 bg-surface-container-low rounded-xl p-6 flex flex-col justify-between">
+<div>
+<h2 class="text-2xl font-extrabold text-on-surface headline tracking-tight">Academic Overview</h2>
+<p class="text-sm text-on-surface-variant mt-1">CS101: Data Structures • Fall 2023</p>
+</div>
+<div class="flex gap-12 mt-8">
+<div>
+<span class="block text-[10px] font-bold uppercase tracking-widest text-outline mb-1">Average Grade</span>
+<div class="flex items-baseline gap-2">
+<span class="text-4xl font-bold text-on-surface">84.2</span>
+<span class="text-primary text-sm font-semibold">+1.4%</span>
+</div>
+</div>
+<div>
+<span class="block text-[10px] font-bold uppercase tracking-widest text-outline mb-1">Completion Rate</span>
+<div class="flex items-baseline gap-2">
+<span class="text-4xl font-bold text-on-surface">92%</span>
+<span class="text-outline text-sm font-medium">12 Pending</span>
+</div>
+</div>
+<div>
+<span class="block text-[10px] font-bold uppercase tracking-widest text-outline mb-1">Next Deadline</span>
+<div class="flex items-baseline gap-2">
+<span class="text-4xl font-bold text-on-surface">Oct 12</span>
+<span class="text-error text-sm font-semibold">2 Days</span>
+</div>
+</div>
+</div>
+</div>
+<div class="col-span-12 lg:col-span-4 bg-surface-container-lowest border border-outline-variant/20 rounded-xl p-6 shadow-sm">
+<h3 class="text-sm font-bold uppercase tracking-wider text-outline mb-4">Grading Distribution</h3>
+<div class="flex items-end gap-2 h-32 mb-4">
+<div class="w-full bg-primary/20 rounded-t h-[20%]"></div>
+<div class="w-full bg-primary/40 rounded-t h-[45%]"></div>
+<div class="w-full bg-primary rounded-t h-[90%]"></div>
+<div class="w-full bg-primary/60 rounded-t h-[65%]"></div>
+<div class="w-full bg-primary/30 rounded-t h-[15%]"></div>
+</div>
+<div class="flex justify-between text-[10px] font-bold text-outline uppercase tracking-tighter">
+<span>F</span><span>D</span><span>C</span><span>B</span><span>A</span>
+</div>
+</div>
+</section>
+<!-- Gradebook Controls -->
+<div class="flex flex-col md:flex-row justify-between items-end mb-6 gap-4">
+<div class="flex gap-4 flex-wrap">
+<div class="flex flex-col gap-1.5">
+<label class="text-[10px] font-bold uppercase tracking-widest text-outline px-1">Filter by Student</label>
+<div class="relative">
+<select class="appearance-none bg-surface-container-high border-none rounded-lg py-2 pl-4 pr-10 text-sm font-medium text-on-surface focus:ring-1 focus:ring-primary w-48">
+<option>All Students</option>
+<option>Undergrad Section A</option>
+<option>Undergrad Section B</option>
+<option>Graduate Auditors</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-2 text-slate-500 pointer-events-none" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="text-[10px] font-bold uppercase tracking-widest text-outline px-1">Assignment Status</label>
+<div class="relative">
+<select class="appearance-none bg-surface-container-high border-none rounded-lg py-2 pl-4 pr-10 text-sm font-medium text-on-surface focus:ring-1 focus:ring-primary w-48">
+<option>All Statuses</option>
+<option>Released Only</option>
+<option>Pending Grading</option>
+<option>Missing Items</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-2 text-slate-500 pointer-events-none" data-icon="filter_list">filter_list</span>
+</div>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="flex items-center gap-2 px-4 py-2 bg-surface-container-high text-on-surface rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-surface-container-highest transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="download">download</span>
+                    Export CSV
+                </button>
+<button class="flex items-center gap-2 px-4 py-2 bg-surface-container-high text-on-surface rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-surface-container-highest transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="settings_suggest">settings_suggest</span>
+                    View Settings
+                </button>
+</div>
+</div>
+<!-- Spreadsheet Gradebook Table -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm border border-outline-variant/10">
+<div class="overflow-x-auto scrollbar-hide">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container border-b border-outline-variant/30 sticky top-0 z-10">
+<th class="py-4 px-6 text-[11px] font-bold uppercase tracking-widest text-outline-variant whitespace-nowrap min-w-[240px] sticky left-0 bg-surface-container z-20">Student Name</th>
+<th class="py-4 px-6 text-[11px] font-bold uppercase tracking-widest text-outline-variant whitespace-nowrap">HW1 <span class="block font-normal normal-case text-[9px] mt-0.5">Graphs</span></th>
+<th class="py-4 px-6 text-[11px] font-bold uppercase tracking-widest text-outline-variant whitespace-nowrap">HW2 <span class="block font-normal normal-case text-[9px] mt-0.5">Trees</span></th>
+<th class="py-4 px-6 text-[11px] font-bold uppercase tracking-widest text-outline-variant whitespace-nowrap">HW3 <span class="block font-normal normal-case text-[9px] mt-0.5">Hashing</span></th>
+<th class="py-4 px-6 text-[11px] font-bold uppercase tracking-widest text-outline-variant whitespace-nowrap">HW4 <span class="block font-normal normal-case text-[9px] mt-0.5">Sorting</span></th>
+<th class="py-4 px-6 text-[11px] font-bold uppercase tracking-widest text-outline-variant whitespace-nowrap">Midterm <span class="block font-normal normal-case text-[9px] mt-0.5">Algorithms</span></th>
+<th class="py-4 px-6 text-[11px] font-bold uppercase tracking-widest text-outline-variant whitespace-nowrap text-right pr-12">Overall</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<!-- Row 1 -->
+<tr class="group hover:bg-surface-container-low transition-colors">
+<td class="py-4 px-6 sticky left-0 bg-white group-hover:bg-surface-container-low transition-colors z-10">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-bold text-xs">AA</div>
+<div>
+<div class="text-sm font-semibold text-on-surface">Alex Abramov</div>
+<div class="text-[10px] text-on-surface-variant font-medium">a.abramov@university.edu</div>
+</div>
+</div>
+</td>
+<td class="py-4 px-6 grade-cell-hover">
+<div class="text-sm font-semibold text-on-surface">95/100</div>
+<div class="mt-1"><span class="px-2 py-0.5 rounded-full bg-primary-container text-on-primary-container text-[9px] font-bold uppercase">Released</span></div>
+</td>
+<td class="py-4 px-6 grade-cell-hover">
+<div class="text-sm font-semibold text-on-surface">88/100</div>
+<div class="mt-1"><span class="px-2 py-0.5 rounded-full bg-primary-container text-on-primary-container text-[9px] font-bold uppercase">Released</span></div>
+</td>
+<td class="py-4 px-6 grade-cell-hover">
+<div class="text-sm font-semibold text-on-surface">--/100</div>
+<div class="mt-1"><span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container text-[9px] font-bold uppercase">Pending</span></div>
+</td>
+<td class="py-4 px-6 grade-cell-hover">
+<div class="text-sm font-semibold text-on-surface">--/100</div>
+<div class="mt-1"><span class="px-2 py-0.5 rounded-full bg-surface-container-highest text-outline text-[9px] font-bold uppercase italic">Missing</span></div>
+</td>
+<td class="py-4 px-6 grade-cell-hover">
+<div class="text-sm font-semibold text-on-surface">142/150</div>
+<div class="mt-1"><span class="px-2 py-0.5 rounded-full bg-primary-container text-on-primary-container text-[9px] font-bold uppercase">Released</span></div>
+</td>
+<td class="py-4 px-6 text-right pr-12">
+<span class="text-sm font-bold text-primary">91.4%</span>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="group hover:bg-surface-container-low transition-colors">
+<td class="py-4 px-6 sticky left-0 bg-white group-hover:bg-surface-container-low transition-colors z-10">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-tertiary-container text-on-tertiary-container flex items-center justify-center font-bold text-xs">EL</div>
+<div>
+<div class="text-sm font-semibold text-on-surface">Elena Laveau</div>
+<div class="text-[10px] text-on-surface-variant font-medium">e.laveau@university.edu</div>
+</div>
+</div>
+</td>
+<td class="py-4 px-6 grade-cell-hover">
+<div class="text-sm font-semibold text-on-surface">100/100</div>
+<div class="mt-1"><span class="px-2 py-0.5 rounded-full bg-primary-container text-on-primary-container text-[9px] font-bold uppercase">Released</span></div>
+</td>
+<td class="py-4 px-6 grade-cell-hover">
+<div class="text-sm font-semibold text-on-surface">94/100</div>
+<div class="mt-1"><span class="px-2 py-0.5 rounded-full bg-primary-container text-on-primary-container text-[9px] font-bold uppercase">Released</span></div>
+</td>
+<td class="py-4 px-6 grade-cell-hover">
+<div class="text-sm font-semibold text-on-surface">98/100</div>
+<div class="mt-1"><span class="px-2 py-0.5 rounded-full bg-primary-container text-on-primary-container text-[9px] font-bold uppercase">Released</span></div>
+</td>
+<td class="py-4 px-6 grade-cell-hover">
+<div class="text-sm font-semibold text-on-surface">92/100</div>
+<div class="mt-1"><span class="px-2 py-0.5 rounded-full bg-primary-container text-on-primary-container text-[9px] font-bold uppercase">Released</span></div>
+</td>
+<td class="py-4 px-6 grade-cell-hover">
+<div class="text-sm font-semibold text-on-surface">148/150</div>
+<div class="mt-1"><span class="px-2 py-0.5 rounded-full bg-primary-container text-on-primary-container text-[9px] font-bold uppercase">Released</span></div>
+</td>
+<td class="py-4 px-6 text-right pr-12">
+<span class="text-sm font-bold text-primary">97.8%</span>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="group hover:bg-surface-container-low transition-colors">
+<td class="py-4 px-6 sticky left-0 bg-white group-hover:bg-surface-container-low transition-colors z-10">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-error-container text-on-error-container flex items-center justify-center font-bold text-xs">JM</div>
+<div>
+<div class="text-sm font-semibold text-on-surface">Jordan Miller</div>
+<div class="text-[10px] text-on-surface-variant font-medium">j.miller@university.edu</div>
+</div>
+</div>
+</td>
+<td class="py-4 px-6 grade-cell-hover">
+<div class="text-sm font-semibold text-on-surface text-error">64/100</div>
+<div class="mt-1"><span class="px-2 py-0.5 rounded-full bg-primary-container text-on-primary-container text-[9px] font-bold uppercase">Released</span></div>
+</td>
+<td class="py-4 px-6 grade-cell-hover">
+<div class="text-sm font-semibold text-on-surface">72/100</div>
+<div class="mt-1"><span class="px-2 py-0.5 rounded-full bg-primary-container text-on-primary-container text-[9px] font-bold uppercase">Released</span></div>
+</td>
+<td class="py-4 px-6 grade-cell-hover">
+<div class="text-sm font-semibold text-on-surface">--/100</div>
+<div class="mt-1"><span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container text-[9px] font-bold uppercase">Pending</span></div>
+</td>
+<td class="py-4 px-6 grade-cell-hover">
+<div class="text-sm font-semibold text-on-surface">--/100</div>
+<div class="mt-1"><span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container text-[9px] font-bold uppercase">Pending</span></div>
+</td>
+<td class="py-4 px-6 grade-cell-hover">
+<div class="text-sm font-semibold text-on-surface">110/150</div>
+<div class="mt-1"><span class="px-2 py-0.5 rounded-full bg-primary-container text-on-primary-container text-[9px] font-bold uppercase">Released</span></div>
+</td>
+<td class="py-4 px-6 text-right pr-12">
+<span class="text-sm font-bold text-error">68.2%</span>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="group hover:bg-surface-container-low transition-colors">
+<td class="py-4 px-6 sticky left-0 bg-white group-hover:bg-surface-container-low transition-colors z-10">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-secondary-fixed text-on-secondary-fixed flex items-center justify-center font-bold text-xs">SW</div>
+<div>
+<div class="text-sm font-semibold text-on-surface">Sarah Wu</div>
+<div class="text-[10px] text-on-surface-variant font-medium">s.wu@university.edu</div>
+</div>
+</div>
+</td>
+<td class="py-4 px-6 grade-cell-hover">
+<div class="text-sm font-semibold text-on-surface">92/100</div>
+<div class="mt-1"><span class="px-2 py-0.5 rounded-full bg-primary-container text-on-primary-container text-[9px] font-bold uppercase">Released</span></div>
+</td>
+<td class="py-4 px-6 grade-cell-hover">
+<div class="text-sm font-semibold text-on-surface">89/100</div>
+<div class="mt-1"><span class="px-2 py-0.5 rounded-full bg-primary-container text-on-primary-container text-[9px] font-bold uppercase">Released</span></div>
+</td>
+<td class="py-4 px-6 grade-cell-hover">
+<div class="text-sm font-semibold text-on-surface">91/100</div>
+<div class="mt-1"><span class="px-2 py-0.5 rounded-full bg-primary-container text-on-primary-container text-[9px] font-bold uppercase">Released</span></div>
+</td>
+<td class="py-4 px-6 grade-cell-hover">
+<div class="text-sm font-semibold text-on-surface">88/100</div>
+<div class="mt-1"><span class="px-2 py-0.5 rounded-full bg-primary-container text-on-primary-container text-[9px] font-bold uppercase">Released</span></div>
+</td>
+<td class="py-4 px-6 grade-cell-hover">
+<div class="text-sm font-semibold text-on-surface">138/150</div>
+<div class="mt-1"><span class="px-2 py-0.5 rounded-full bg-primary-container text-on-primary-container text-[9px] font-bold uppercase">Released</span></div>
+</td>
+<td class="py-4 px-6 text-right pr-12">
+<span class="text-sm font-bold text-primary">90.5%</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="px-6 py-4 border-t border-outline-variant/10 bg-surface-container-lowest flex justify-between items-center">
+<span class="text-[10px] font-bold uppercase tracking-widest text-outline">Showing 4 of 124 Students</span>
+<div class="flex gap-2">
+<button class="p-1 hover:bg-surface-container transition-colors rounded">
+<span class="material-symbols-outlined text-lg" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="px-2 py-1 text-[10px] font-bold bg-primary text-on-primary rounded">1</button>
+<button class="px-2 py-1 text-[10px] font-bold hover:bg-surface-container rounded">2</button>
+<button class="px-2 py-1 text-[10px] font-bold hover:bg-surface-container rounded">3</button>
+<span class="px-2 py-1 text-[10px] font-bold">...</span>
+<button class="px-2 py-1 text-[10px] font-bold hover:bg-surface-container rounded">31</button>
+<button class="p-1 hover:bg-surface-container transition-colors rounded">
+<span class="material-symbols-outlined text-lg" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Footnote / Info -->
+<div class="mt-8 flex items-center gap-2 p-4 bg-primary/5 rounded-lg border border-primary/10">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="info">info</span>
+<p class="text-[11px] text-on-primary-container font-medium">Final grades are calculated using a weighted average: Assignments (40%), Midterm (30%), Final Project (30%). Current overall grades exclude pending submissions.</p>
+</div>
+</main>
+<!-- Professional Tooling Command Bar -->
+<div class="fixed bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-2 p-2 bg-surface-container-lowest/85 backdrop-blur-md rounded-full shadow-[0_12px_40px_rgba(44,52,51,0.12)] z-50 border border-white/20">
+<div class="flex items-center px-4 gap-2 border-r border-outline-variant/30 pr-4">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="text-xs font-bold text-on-surface uppercase tracking-wider">3 Students Selected</span>
+</div>
+<div class="flex gap-1 p-1">
+<button class="px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-on-surface hover:bg-surface-container-high rounded-full transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="mail">mail</span> Message
+            </button>
+<button class="px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-on-surface hover:bg-surface-container-high rounded-full transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="edit_note">edit_note</span> Batch Edit
+            </button>
+<button class="px-5 py-2 text-[10px] font-bold uppercase tracking-widest bg-primary text-on-primary rounded-full shadow-sm hover:opacity-90 transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="publish">publish</span> Release Selected
+            </button>
+</div>
+</div>
+</body></html>

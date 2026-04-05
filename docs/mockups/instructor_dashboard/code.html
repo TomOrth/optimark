@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Optimark | Instructor Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary": "#545f74",
+                    "on-tertiary-fixed": "#374155",
+                    "error-dim": "#4e0309",
+                    "inverse-on-surface": "#9b9d9d",
+                    "secondary-dim": "#465468",
+                    "tertiary-container": "#dae6fe",
+                    "outline": "#747c7c",
+                    "outline-variant": "#abb4b3",
+                    "surface-container-high": "#e3e9e8",
+                    "on-error-container": "#752121",
+                    "on-primary": "#eefaff",
+                    "primary-fixed": "#b6ebfe",
+                    "inverse-primary": "#ade2f6",
+                    "error": "#9f403d",
+                    "tertiary-fixed-dim": "#ccd7ef",
+                    "secondary-fixed": "#d5e3fc",
+                    "primary": "#306576",
+                    "secondary-fixed-dim": "#c7d5ed",
+                    "on-error": "#fff7f6",
+                    "on-secondary-fixed-variant": "#4e5c71",
+                    "surface-bright": "#f9f9f8",
+                    "surface-container": "#eaefee",
+                    "on-tertiary-container": "#495468",
+                    "on-secondary": "#f8f8ff",
+                    "on-tertiary": "#f8f8ff",
+                    "tertiary-dim": "#485367",
+                    "surface-container-highest": "#dce4e3",
+                    "surface-dim": "#d2dcdb",
+                    "on-surface-variant": "#586160",
+                    "inverse-surface": "#0c0f0e",
+                    "primary-dim": "#215969",
+                    "on-tertiary-fixed-variant": "#535e72",
+                    "surface-tint": "#306576",
+                    "on-secondary-container": "#455367",
+                    "secondary-container": "#d5e3fc",
+                    "background": "#f9f9f8",
+                    "on-secondary-fixed": "#324053",
+                    "tertiary-fixed": "#dae6fe",
+                    "primary-fixed-dim": "#a8dcf0",
+                    "on-surface": "#2c3433",
+                    "primary-container": "#b6ebfe",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-low": "#f1f4f3",
+                    "on-primary-fixed": "#034655",
+                    "surface-variant": "#dce4e3",
+                    "on-primary-container": "#205869",
+                    "on-background": "#2c3433",
+                    "secondary": "#526074",
+                    "on-primary-fixed-variant": "#2c6273",
+                    "error-container": "#fe8983",
+                    "surface": "#f9f9f8"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-headline { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface flex min-h-screen">
+<!-- SideNavBar (Shared Component) -->
+<aside class="h-screen w-64 fixed left-0 top-0 flex flex-col bg-[#eaefee] dark:bg-slate-900 py-6 z-50">
+<div class="px-6 mb-8">
+<h1 class="text-xl font-bold tracking-tight text-[#0F4C5C] dark:text-teal-400 font-headline">Optimark</h1>
+<p class="text-[11px] font-medium tracking-wider uppercase text-slate-500 mt-1">CS101: Data Structures</p>
+</div>
+<nav class="flex-1 px-4 space-y-1">
+<!-- Active: Dashboard -->
+<a class="flex items-center px-3 py-2 text-[#0F4C5C] dark:text-teal-300 font-semibold border-r-4 border-[#0F4C5C] bg-[#f1f4f3]/50 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3 text-lg" data-icon="dashboard">dashboard</span>
+<span class="text-[11px] font-medium tracking-wider uppercase">Dashboard</span>
+</a>
+<a class="flex items-center px-3 py-2 text-slate-500 dark:text-slate-400 hover:text-[#0F4C5C] hover:bg-[#f1f4f3] dark:hover:bg-slate-800 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3 text-lg" data-icon="assignment">assignment</span>
+<span class="text-[11px] font-medium tracking-wider uppercase">Assignments</span>
+</a>
+<a class="flex items-center px-3 py-2 text-slate-500 dark:text-slate-400 hover:text-[#0F4C5C] hover:bg-[#f1f4f3] dark:hover:bg-slate-800 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3 text-lg" data-icon="list_alt">list_alt</span>
+<span class="text-[11px] font-medium tracking-wider uppercase">Submissions</span>
+</a>
+<a class="flex items-center px-3 py-2 text-slate-500 dark:text-slate-400 hover:text-[#0F4C5C] hover:bg-[#f1f4f3] dark:hover:bg-slate-800 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3 text-lg" data-icon="analytics">analytics</span>
+<span class="text-[11px] font-medium tracking-wider uppercase">Gradebook</span>
+</a>
+<a class="flex items-center px-3 py-2 text-slate-500 dark:text-slate-400 hover:text-[#0F4C5C] hover:bg-[#f1f4f3] dark:hover:bg-slate-800 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3 text-lg" data-icon="group">group</span>
+<span class="text-[11px] font-medium tracking-wider uppercase">Students</span>
+</a>
+<a class="flex items-center px-3 py-2 text-slate-500 dark:text-slate-400 hover:text-[#0F4C5C] hover:bg-[#f1f4f3] dark:hover:bg-slate-800 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3 text-lg" data-icon="settings">settings</span>
+<span class="text-[11px] font-medium tracking-wider uppercase">Settings</span>
+</a>
+</nav>
+<div class="mt-auto px-4 space-y-1">
+<button class="w-full bg-gradient-to-r from-primary to-primary-dim text-on-primary py-2.5 rounded-lg text-xs font-bold uppercase tracking-widest mb-6 shadow-sm">
+                New Assessment
+            </button>
+<a class="flex items-center px-3 py-2 text-slate-500 hover:text-[#0F4C5C]" href="#">
+<span class="material-symbols-outlined mr-3 text-lg" data-icon="help_outline">help_outline</span>
+<span class="text-[11px] font-medium tracking-wider uppercase">Help</span>
+</a>
+<a class="flex items-center px-3 py-2 text-slate-500 hover:text-[#0F4C5C]" href="#">
+<span class="material-symbols-outlined mr-3 text-lg" data-icon="archive">archive</span>
+<span class="text-[11px] font-medium tracking-wider uppercase">Archive</span>
+</a>
+<div class="pt-6 border-t border-slate-200/50 mt-2 flex items-center px-3">
+<img alt="Instructor Profile" class="w-8 h-8 rounded-full bg-surface-container-high" data-alt="minimalist professional portrait of an academic instructor in a professional office setting with soft natural light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAn7LJM-rD6Y-YZo9-0P28zIoEYahZwmSzbjm9zsX4PeIVULtT8QVJdDJvlQUrCILCe76tbgvG1LlJY--cflybCPHvlI7gbEqH6ny3wlMrD9-rB5spBnaQFnAMQO8pItijSvsQ_nTgI1KDAqzslnruLfu9Ub3Pfa5GEEVEfJhsjluOarBxh4zWSa90H5SsbmDmB4aSonRL-tHtQyI69bX9oMuZ6Co3smdTFZSkyPqE01iJeUrAMpf8AwrSq8WsIEHcABYL7h0irnUvY"/>
+<div class="ml-3">
+<p class="text-xs font-bold text-on-surface">Dr. Aris Thorne</p>
+<p class="text-[10px] text-on-surface-variant">Lead Instructor</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 flex-1 flex flex-col min-h-screen">
+<!-- TopAppBar (Shared Component Implementation) -->
+<header class="flex justify-between items-center w-full px-8 h-16 sticky top-0 z-40 bg-[#f9f9f8]/80 backdrop-blur-md border-b border-slate-200/30">
+<div class="flex items-center space-x-6">
+<span class="text-on-surface font-headline font-extrabold text-lg tracking-tight">Dashboard</span>
+<nav class="hidden md:flex items-center space-x-6">
+<a class="text-[#306576] font-bold border-b-2 border-[#306576] text-xs uppercase tracking-tighter py-5" href="#">Course Settings</a>
+<a class="text-slate-600 hover:text-[#0F4C5C] text-xs uppercase tracking-tighter py-5 transition-all" href="#">Analytics</a>
+<a class="text-slate-600 hover:text-[#0F4C5C] text-xs uppercase tracking-tighter py-5 transition-all" href="#">Audit Log</a>
+</nav>
+</div>
+<div class="flex items-center space-x-4">
+<div class="relative group">
+<span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+<span class="material-symbols-outlined text-sm" data-icon="search">search</span>
+</span>
+<input class="bg-surface-container-high border-none rounded-lg text-xs pl-9 pr-4 py-2 w-64 focus:ring-1 focus:ring-primary focus:bg-surface-container-lowest transition-all" placeholder="Search assessments..." type="text"/>
+</div>
+<div class="flex items-center space-x-2 border-l border-slate-200/50 pl-4">
+<button class="p-2 text-slate-500 hover:bg-surface-container transition-colors rounded-lg">
+<span class="material-symbols-outlined text-xl" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-slate-500 hover:bg-surface-container transition-colors rounded-lg">
+<span class="material-symbols-outlined text-xl" data-icon="history">history</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Scrollable Workspace -->
+<div class="p-8 max-w-7xl w-full mx-auto space-y-8">
+<!-- Page Header / Context -->
+<div class="flex justify-between items-end">
+<div>
+<h2 class="text-3xl font-headline font-extrabold text-on-surface tracking-tight">CS101: Data Structures</h2>
+<p class="text-on-surface-variant flex items-center mt-1">
+<span class="material-symbols-outlined text-sm mr-1" data-icon="calendar_today">calendar_today</span>
+<span class="label-sm tracking-wide text-xs">FALL 2026 TERM</span>
+<span class="mx-2 text-outline-variant">•</span>
+<span class="label-sm tracking-wide text-xs">INSTRUCTOR VIEW</span>
+</p>
+</div>
+<div class="flex space-x-3">
+<button class="bg-surface-container-highest text-on-surface px-4 py-2 rounded-lg text-xs font-semibold hover:bg-surface-dim transition-colors flex items-center">
+<span class="material-symbols-outlined text-lg mr-2" data-icon="grid_view">grid_view</span>
+                        Open Gradebook
+                    </button>
+<button class="bg-gradient-to-r from-primary to-primary-dim text-on-primary px-4 py-2 rounded-lg text-xs font-semibold shadow-sm flex items-center">
+<span class="material-symbols-outlined text-lg mr-2" data-icon="publish">publish</span>
+                        Publish All
+                    </button>
+</div>
+</div>
+<!-- Bento Stats Grid -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_12px_40px_rgba(44,52,51,0.04)] flex flex-col justify-between border border-outline-variant/10">
+<span class="text-[10px] font-bold tracking-[0.15em] text-on-surface-variant uppercase">Drafts</span>
+<div class="mt-4 flex items-baseline space-x-2">
+<span class="text-4xl font-headline font-bold text-on-surface">4</span>
+<span class="text-xs text-on-surface-variant font-medium">Items</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_12px_40px_rgba(44,52,51,0.04)] flex flex-col justify-between border border-outline-variant/10">
+<span class="text-[10px] font-bold tracking-[0.15em] text-primary uppercase">Published</span>
+<div class="mt-4 flex items-baseline space-x-2">
+<span class="text-4xl font-headline font-bold text-primary">12</span>
+<span class="text-xs text-on-surface-variant font-medium">Live</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_12px_40px_rgba(44,52,51,0.04)] flex flex-col justify-between border border-outline-variant/10">
+<span class="text-[10px] font-bold tracking-[0.15em] text-error uppercase">Pending Review</span>
+<div class="mt-4 flex items-baseline space-x-2">
+<span class="text-4xl font-headline font-bold text-error">8</span>
+<span class="text-xs text-on-surface-variant font-medium">Grading</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_12px_40px_rgba(44,52,51,0.04)] flex flex-col justify-between border border-outline-variant/10">
+<span class="text-[10px] font-bold tracking-[0.15em] text-on-surface-variant uppercase">Completed</span>
+<div class="mt-4 flex items-baseline space-x-2">
+<span class="text-4xl font-headline font-bold text-on-surface">45</span>
+<span class="text-xs text-on-surface-variant font-medium">Students</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Main Assignment Table -->
+<div class="lg:col-span-2 space-y-4">
+<div class="flex items-center justify-between">
+<h3 class="text-sm font-bold tracking-tight text-on-surface flex items-center">
+<span class="material-symbols-outlined mr-2 text-lg text-primary" data-icon="summarize">summarize</span>
+                            Active Coursework
+                        </h3>
+<div class="flex items-center space-x-2">
+<span class="text-[10px] text-on-surface-variant uppercase font-medium">Filter:</span>
+<select class="bg-transparent border-none text-[11px] font-bold text-primary focus:ring-0 cursor-pointer">
+<option>All Assignments</option>
+<option>Quizzes</option>
+<option>Homework</option>
+</select>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-xl overflow-hidden">
+<table class="w-full border-collapse text-left">
+<thead>
+<tr class="bg-surface-container-high/50">
+<th class="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Name</th>
+<th class="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Type</th>
+<th class="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest text-center">Status</th>
+<th class="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Due Date</th>
+<th class="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest text-right">Submissions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<tr class="hover:bg-surface-container-lowest transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center">
+<span class="text-xs font-bold text-on-surface group-hover:text-primary transition-colors">Homework 4: Linked Lists</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-[11px] font-medium text-on-surface-variant">Practical</span>
+</td>
+<td class="px-6 py-4 text-center">
+<span class="px-2.5 py-0.5 bg-primary-container text-on-primary-container text-[9px] font-extrabold rounded-full uppercase tracking-tighter">Published</span>
+</td>
+<td class="px-6 py-4">
+<span class="text-[11px] text-on-surface">Oct 12, 23:59</span>
+</td>
+<td class="px-6 py-4 text-right">
+<span class="text-xs font-bold text-on-surface">42 / 45</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center">
+<span class="text-xs font-bold text-on-surface group-hover:text-primary transition-colors">Assignment 3: Binary Trees</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-[11px] font-medium text-on-surface-variant">Programming</span>
+</td>
+<td class="px-6 py-4 text-center">
+<span class="px-2.5 py-0.5 bg-secondary-container text-on-secondary-container text-[9px] font-extrabold rounded-full uppercase tracking-tighter">Reviewing</span>
+</td>
+<td class="px-6 py-4">
+<span class="text-[11px] text-on-surface">Oct 05, 12:00</span>
+</td>
+<td class="px-6 py-4 text-right">
+<span class="text-xs font-bold text-on-surface">45 / 45</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center">
+<span class="text-xs font-bold text-on-surface group-hover:text-primary transition-colors">Midterm Quiz: Core Concepts</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-[11px] font-medium text-on-surface-variant">Exam</span>
+</td>
+<td class="px-6 py-4 text-center">
+<span class="px-2.5 py-0.5 bg-surface-container-highest text-on-surface-variant text-[9px] font-extrabold rounded-full uppercase tracking-tighter">Draft</span>
+</td>
+<td class="px-6 py-4">
+<span class="text-[11px] text-on-surface">Oct 24, 09:00</span>
+</td>
+<td class="px-6 py-4 text-right">
+<span class="text-xs font-bold text-on-surface">0 / 45</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center">
+<span class="text-xs font-bold text-on-surface group-hover:text-primary transition-colors">Homework 5: Graph Theory</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-[11px] font-medium text-on-surface-variant">Practical</span>
+</td>
+<td class="px-6 py-4 text-center">
+<span class="px-2.5 py-0.5 bg-surface-container-highest text-on-surface-variant text-[9px] font-extrabold rounded-full uppercase tracking-tighter">Draft</span>
+</td>
+<td class="px-6 py-4">
+<span class="text-[11px] text-on-surface">Nov 02, 23:59</span>
+</td>
+<td class="px-6 py-4 text-right">
+<span class="text-xs font-bold text-on-surface">0 / 45</span>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="bg-surface-container-low px-6 py-3 border-t border-outline-variant/10">
+<button class="text-[10px] font-bold text-primary hover:underline flex items-center">
+                                VIEW ALL ASSIGNMENTS
+                                <span class="material-symbols-outlined text-[10px] ml-1" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Recent Activity Feed -->
+<div class="space-y-4">
+<h3 class="text-sm font-bold tracking-tight text-on-surface flex items-center">
+<span class="material-symbols-outlined mr-2 text-lg text-primary" data-icon="bolt">bolt</span>
+                        Operational Feed
+                    </h3>
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/10 shadow-sm space-y-6">
+<div class="flex space-x-4">
+<div class="mt-1">
+<div class="w-8 h-8 rounded-lg bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="upload_file">upload_file</span>
+</div>
+</div>
+<div>
+<p class="text-xs text-on-surface leading-relaxed">
+<span class="font-bold">Student A</span> submitted <span class="text-primary font-medium">Homework 4</span>
+</p>
+<p class="text-[10px] text-on-surface-variant mt-0.5 uppercase tracking-wide">12 minutes ago</p>
+</div>
+</div>
+<div class="flex space-x-4">
+<div class="mt-1">
+<div class="w-8 h-8 rounded-lg bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-sm" data-icon="smart_toy">smart_toy</span>
+</div>
+</div>
+<div>
+<p class="text-xs text-on-surface leading-relaxed">
+                                    Autograde completed for <span class="text-primary font-medium">Assignment 3</span>
+</p>
+<p class="text-[10px] text-on-surface-variant mt-0.5 uppercase tracking-wide">45 minutes ago</p>
+<div class="mt-2 flex items-center space-x-2">
+<span class="bg-surface-container-high px-2 py-0.5 rounded text-[9px] font-bold text-on-surface-variant">82% AVG</span>
+<span class="bg-surface-container-high px-2 py-0.5 rounded text-[9px] font-bold text-on-surface-variant">4 ERROR FLAGS</span>
+</div>
+</div>
+</div>
+<div class="flex space-x-4">
+<div class="mt-1">
+<div class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant text-sm" data-icon="rate_review">rate_review</span>
+</div>
+</div>
+<div>
+<p class="text-xs text-on-surface leading-relaxed">
+                                    Manual review started on <span class="text-primary font-medium">Midterm Essays</span>
+</p>
+<p class="text-[10px] text-on-surface-variant mt-0.5 uppercase tracking-wide">2 hours ago</p>
+</div>
+</div>
+<div class="flex space-x-4">
+<div class="mt-1">
+<div class="w-8 h-8 rounded-lg bg-error-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-error-container text-sm" data-icon="report">report</span>
+</div>
+</div>
+<div>
+<p class="text-xs text-on-surface leading-relaxed font-semibold text-error">
+                                    System: Plagiarism detected in Homework 4
+                                </p>
+<p class="text-[10px] text-on-surface-variant mt-0.5 uppercase tracking-wide">3 hours ago</p>
+</div>
+</div>
+<button class="w-full text-center py-2 border-t border-outline-variant/10 text-[10px] font-bold text-on-surface-variant tracking-widest uppercase hover:text-primary transition-colors">
+                            Full Activity Log
+                        </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Floating Command Bar (Operational Tooling Spec) -->
+<div class="fixed bottom-8 left-1/2 -translate-x-1/2 ml-32">
+<div class="bg-surface-container-lowest/85 backdrop-blur-xl border border-outline-variant/20 px-6 py-3 rounded-full shadow-[0_12px_40px_rgba(44,52,51,0.12)] flex items-center space-x-6">
+<div class="flex items-center space-x-4 pr-6 border-r border-outline-variant/20">
+<span class="text-[10px] font-extrabold uppercase tracking-[0.2em] text-on-surface-variant">Quick Actions</span>
+<button class="text-on-surface hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-xl" data-icon="search">search</span>
+</button>
+<button class="text-on-surface hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-xl" data-icon="add_circle">add_circle</span>
+</button>
+</div>
+<div class="flex space-x-4">
+<button class="text-xs font-bold text-on-surface-variant hover:text-on-surface uppercase tracking-wider">Regrade</button>
+<button class="text-xs font-bold text-primary hover:text-primary-dim uppercase tracking-wider">Download CSV</button>
+</div>
+</div>
+</div>
+</main>
+</body></html>

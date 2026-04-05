@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Optimark | Submission Processing</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary": "#545f74",
+                        "on-tertiary-fixed": "#374155",
+                        "error-dim": "#4e0309",
+                        "inverse-on-surface": "#9b9d9d",
+                        "secondary-dim": "#465468",
+                        "tertiary-container": "#dae6fe",
+                        "outline": "#747c7c",
+                        "outline-variant": "#abb4b3",
+                        "surface-container-high": "#e3e9e8",
+                        "on-error-container": "#752121",
+                        "on-primary": "#eefaff",
+                        "primary-fixed": "#b6ebfe",
+                        "inverse-primary": "#ade2f6",
+                        "error": "#9f403d",
+                        "tertiary-fixed-dim": "#ccd7ef",
+                        "secondary-fixed": "#d5e3fc",
+                        "primary": "#306576",
+                        "secondary-fixed-dim": "#c7d5ed",
+                        "on-error": "#fff7f6",
+                        "on-secondary-fixed-variant": "#4e5c71",
+                        "surface-bright": "#f9f9f8",
+                        "surface-container": "#eaefee",
+                        "on-tertiary-container": "#495468",
+                        "on-secondary": "#f8f8ff",
+                        "on-tertiary": "#f8f8ff",
+                        "tertiary-dim": "#485367",
+                        "surface-container-highest": "#dce4e3",
+                        "surface-dim": "#d2dcdb",
+                        "on-surface-variant": "#586160",
+                        "inverse-surface": "#0c0f0e",
+                        "primary-dim": "#215969",
+                        "on-tertiary-fixed-variant": "#535e72",
+                        "surface-tint": "#306576",
+                        "on-secondary-container": "#455367",
+                        "secondary-container": "#d5e3fc",
+                        "background": "#f9f9f8",
+                        "on-secondary-fixed": "#324053",
+                        "tertiary-fixed": "#dae6fe",
+                        "primary-fixed-dim": "#a8dcf0",
+                        "on-surface": "#2c3433",
+                        "primary-container": "#b6ebfe",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-low": "#f1f4f3",
+                        "on-primary-fixed": "#034655",
+                        "surface-variant": "#dce4e3",
+                        "on-primary-container": "#205869",
+                        "on-background": "#2c3433",
+                        "secondary": "#526074",
+                        "on-primary-fixed-variant": "#2c6273",
+                        "error-container": "#fe8983",
+                        "surface": "#f9f9f8"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"],
+                        "mono": ["JetBrains Mono"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            vertical-align: middle;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+        .log-area { font-family: 'JetBrains Mono', monospace; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface">
+<!-- Sidebar Navigation -->
+<aside class="h-screen w-64 fixed left-0 top-0 flex flex-col bg-[#eaefee] dark:bg-slate-900 z-50">
+<div class="flex flex-col h-full py-6">
+<div class="px-6 mb-10">
+<h1 class="text-xl font-bold tracking-tight text-[#0F4C5C] dark:text-teal-400">Optimark</h1>
+<p class="text-[11px] font-medium tracking-wider uppercase text-slate-500 mt-1">CS101: Data Structures</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center px-6 py-3 text-slate-500 dark:text-slate-400 hover:text-[#0F4C5C] hover:bg-[#f1f4f3] dark:hover:bg-slate-800 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3">dashboard</span>
+<span class="text-[13px] font-medium">Dashboard</span>
+</a>
+<a class="flex items-center px-6 py-3 text-[#0F4C5C] dark:text-teal-300 font-semibold border-r-4 border-[#0F4C5C] bg-[#f1f4f3]/50" href="#">
+<span class="material-symbols-outlined mr-3">assignment</span>
+<span class="text-[13px] font-medium">Assignments</span>
+</a>
+<a class="flex items-center px-6 py-3 text-slate-500 dark:text-slate-400 hover:text-[#0F4C5C] hover:bg-[#f1f4f3] dark:hover:bg-slate-800 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3">list_alt</span>
+<span class="text-[13px] font-medium">Submissions</span>
+</a>
+<a class="flex items-center px-6 py-3 text-slate-500 dark:text-slate-400 hover:text-[#0F4C5C] hover:bg-[#f1f4f3] dark:hover:bg-slate-800 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3">analytics</span>
+<span class="text-[13px] font-medium">Gradebook</span>
+</a>
+</nav>
+<div class="px-6 mt-auto space-y-1 pt-6 border-t border-slate-200/20">
+<a class="flex items-center py-2 text-slate-500 hover:text-[#0F4C5C] transition-colors" href="#">
+<span class="material-symbols-outlined mr-3 text-lg">help_outline</span>
+<span class="text-[12px] font-medium">Help</span>
+</a>
+<div class="flex items-center gap-3 py-4 mt-2">
+<img alt="Instructor Profile" class="w-8 h-8 rounded-full bg-surface-container-highest" data-alt="close-up portrait of a professional male instructor in a modern minimalist office environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuArvkfz4tfg9l-W0TMlkE4gL6BUrNw_UQmkrUlBz7baUqcLSYL-WAb9iLnPBAclwYWj0J6nziP_KfpVOV997vO8n79ckxSxwCfiA1oyRK4PlBJWMcD6kErwWVkjZU1LjsaHDgccWYIu4dZziiSFZht_XGn364xfV6YNll13vYa8nkM2OcZaD3JYqfTIDjwfq4py9cn4vH8Zy3hTS-bxK1zkJt93B1CLxRlU41NXkuXh4IDNM0DsKQqgisF3yCR7tfC4xxY8bFwb-3-A"/>
+<div class="flex flex-col">
+<span class="text-xs font-semibold">Prof. Marcus</span>
+<span class="text-[10px] text-slate-500">Instructor</span>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Top App Bar -->
+<header class="flex justify-between items-center w-full px-8 h-16 ml-64 max-w-[calc(100%-16rem)] sticky top-0 z-40 bg-[#f9f9f8]/80 backdrop-blur-md border-b border-slate-200/30">
+<div class="flex items-center gap-4">
+<span class="text-sm font-semibold text-primary">Submissions</span>
+<span class="text-outline-variant text-xs">/</span>
+<span class="text-sm text-on-surface">ac123 Processing</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-4">
+<a class="text-xs font-medium text-slate-600 hover:text-[#0F4C5C]" href="#">Course Settings</a>
+<a class="text-xs font-medium text-slate-600 hover:text-[#0F4C5C]" href="#">Analytics</a>
+</div>
+<div class="h-6 w-[1px] bg-outline-variant/30"></div>
+<div class="flex items-center gap-3">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">notifications</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">history</button>
+</div>
+</div>
+</header>
+<main class="ml-64 p-8 max-w-6xl mx-auto">
+<!-- Student Identity Header -->
+<div class="flex items-start justify-between mb-12">
+<div class="flex gap-5 items-center">
+<div class="w-16 h-16 rounded-lg bg-surface-container-high flex items-center justify-center overflow-hidden">
+<img alt="Alice Chen Profile" class="w-full h-full object-cover" data-alt="professional headshot of a young asian woman with a neutral friendly expression against a light grey studio background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBx3_6_MBnPLHJiuNcDRHAPSUO7o7NyhD5z7JohgPwVkTjpQSZ5XxMyj4-F6IlBAw9NgLzyiAHHUpsJkXYM-w5iQmR7WXxCv5sqvksuZFSXsl9TJbLWyU9LGQ15924Ef0VMyvdDbElo_dueIGTEJmIlo6C8YeEv6yzEoZio6_RQdZmnAP4lKtCS9a1rNNCR1EwOXuDeyI9vLbj0mUw3SyufRvRcgaPuVBvUd2X9awyJi5NEdYpq6DZr9c6GgFqi0yD_mJ-3qNOS9u-"/>
+</div>
+<div>
+<h2 class="text-3xl font-extrabold tracking-tight text-on-surface">Alice Chen <span class="text-outline-variant font-normal text-xl ml-2">ac123</span></h2>
+<p class="text-on-surface-variant flex items-center gap-2 mt-1">
+<span class="material-symbols-outlined text-sm">code</span>
+                        Homework 4: Linked Lists
+                    </p>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<div class="flex items-center gap-2 px-3 py-1 bg-primary-container text-on-primary-container rounded-full text-xs font-semibold">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+</span>
+                    Running (75% complete)
+                </div>
+<p class="text-[10px] text-outline-variant uppercase tracking-widest mt-2">Active Session ID: 982-AX-LL</p>
+</div>
+</div>
+<!-- Central Processing Status -->
+<div class="grid grid-cols-12 gap-8 items-start mb-12">
+<!-- Timeline Column -->
+<div class="col-span-4 space-y-6">
+<h3 class="text-xs font-bold uppercase tracking-widest text-outline-variant mb-6">Processing Pipeline</h3>
+<div class="relative space-y-8 before:content-[''] before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-surface-container-high">
+<!-- Completed Step -->
+<div class="relative pl-10 flex flex-col">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-sm">check</span>
+</div>
+<span class="text-sm font-semibold text-on-surface">Submitted</span>
+<span class="text-xs text-outline-variant font-mono">14:22:10</span>
+</div>
+<!-- Completed Step -->
+<div class="relative pl-10 flex flex-col">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-sm">check</span>
+</div>
+<span class="text-sm font-semibold text-on-surface">Queued</span>
+<span class="text-xs text-outline-variant font-mono">14:22:15</span>
+</div>
+<!-- Completed Step -->
+<div class="relative pl-10 flex flex-col">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-sm">check</span>
+</div>
+<span class="text-sm font-semibold text-on-surface">Initializing Runner</span>
+<span class="text-xs text-outline-variant font-mono">14:22:20</span>
+</div>
+<!-- Active Step -->
+<div class="relative pl-10 flex flex-col">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-primary-container border-2 border-primary text-primary flex items-center justify-center z-10">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+</div>
+<span class="text-sm font-bold text-primary">Running Autograder</span>
+<span class="text-xs text-primary/70 font-mono">14:22:25 (In progress)</span>
+</div>
+<!-- Pending Step -->
+<div class="relative pl-10 flex flex-col opacity-40">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-surface-container-high z-10"></div>
+<span class="text-sm font-medium text-on-surface">Finalizing Score</span>
+<span class="text-xs text-outline-variant font-mono">--:--:--</span>
+</div>
+</div>
+</div>
+<!-- Central Visualization Column -->
+<div class="col-span-8">
+<div class="bg-surface-container-low rounded-xl p-8 h-full border-b border-surface-container-highest/50">
+<div class="flex justify-between items-center mb-10">
+<h3 class="text-lg font-bold">Execution Health</h3>
+<div class="flex gap-4">
+<div class="flex flex-col items-end">
+<span class="text-[10px] uppercase tracking-tighter text-outline-variant">Runtime</span>
+<span class="text-sm font-mono font-medium">1.42s</span>
+</div>
+<div class="flex flex-col items-end">
+<span class="text-[10px] uppercase tracking-tighter text-outline-variant">Memory</span>
+<span class="text-sm font-mono font-medium">124MB</span>
+</div>
+</div>
+</div>
+<!-- Progress Visualization -->
+<div class="space-y-12">
+<div class="relative">
+<div class="h-1 w-full bg-surface-container-high rounded-full">
+<div class="h-1 bg-primary rounded-full" style="width: 75%;"></div>
+</div>
+<div class="absolute top-4 left-[75%] -translate-x-1/2 flex flex-col items-center">
+<div class="w-[2px] h-3 bg-primary mb-2"></div>
+<span class="text-3xl font-black text-primary">75<span class="text-lg">%</span></span>
+</div>
+</div>
+<!-- Test Case Grid -->
+<div class="grid grid-cols-5 gap-3 pt-4">
+<div class="aspect-square bg-primary-container/40 border border-primary/20 rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
+</div>
+<div class="aspect-square bg-primary-container/40 border border-primary/20 rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
+</div>
+<div class="aspect-square bg-primary-container/40 border border-primary/20 rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
+</div>
+<div class="aspect-square bg-surface-container-highest rounded animate-pulse"></div>
+<div class="aspect-square bg-surface-container-highest rounded"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Diagnostic Log Preview Area -->
+<section>
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant">terminal</span>
+<h3 class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Real-time Diagnostic Output</h3>
+</div>
+<div class="flex gap-3">
+<button class="text-[10px] uppercase tracking-widest font-bold text-outline hover:text-primary transition-colors">Clear Log</button>
+<button class="text-[10px] uppercase tracking-widest font-bold text-outline hover:text-primary transition-colors">Export .txt</button>
+</div>
+</div>
+<div class="surface-container-low rounded-xl overflow-hidden border border-surface-container-highest/30">
+<div class="bg-on-surface p-6 log-area min-h-[240px] text-[13px] leading-relaxed selection:bg-primary selection:text-white">
+<div class="text-teal-400 opacity-80 mb-1">[SYSTEM] Container instance optimark-rnr-04 initialized successfully.</div>
+<div class="text-slate-400 mb-1">[DOCKER] Spawning worker thread #12... OK</div>
+<div class="text-slate-400 mb-1">[COMPILER] javac Submission.java LinkedNode.java ... OK (0.24s)</div>
+<div class="text-slate-200 mb-1">Testing Case 1 (Empty List): <span class="text-teal-400">PASSED</span></div>
+<div class="text-slate-200 mb-1">Testing Case 2 (Single Element Insertion): <span class="text-teal-400">PASSED</span></div>
+<div class="text-slate-200 mb-1">Testing Case 3 (Sequential Append 100x): <span class="text-teal-400">PASSED</span></div>
+<div class="text-white font-bold mb-1">Running Case 4 (Recursive Reverse Search)... <span class="animate-pulse">_</span></div>
+<div class="text-slate-500 italic mt-4">// Awaiting memory address allocation for recursive stack profiling...</div>
+</div>
+</div>
+</section>
+<!-- Contextual Command Bar -->
+<div class="fixed bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-6 px-6 py-3 glass-panel rounded-full shadow-lg border border-white/20 z-50">
+<button class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary to-primary-dim text-white text-sm font-semibold rounded-full shadow-md hover:opacity-90 transition-all">
+<span class="material-symbols-outlined text-lg">pause_circle</span>
+                Pause Queue
+            </button>
+<div class="h-4 w-[1px] bg-outline-variant/40"></div>
+<button class="text-on-surface-variant hover:text-primary text-sm font-medium flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">cancel</span>
+                Terminate
+            </button>
+<button class="text-on-surface-variant hover:text-primary text-sm font-medium flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">settings_suggest</span>
+                Adjust Config
+            </button>
+</div>
+</main>
+</body></html>

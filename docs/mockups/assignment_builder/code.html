@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Optimark - Create Assignment</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary": "#545f74",
+                    "on-tertiary-fixed": "#374155",
+                    "error-dim": "#4e0309",
+                    "inverse-on-surface": "#9b9d9d",
+                    "secondary-dim": "#465468",
+                    "tertiary-container": "#dae6fe",
+                    "outline": "#747c7c",
+                    "outline-variant": "#abb4b3",
+                    "surface-container-high": "#e3e9e8",
+                    "on-error-container": "#752121",
+                    "on-primary": "#eefaff",
+                    "primary-fixed": "#b6ebfe",
+                    "inverse-primary": "#ade2f6",
+                    "error": "#9f403d",
+                    "tertiary-fixed-dim": "#ccd7ef",
+                    "secondary-fixed": "#d5e3fc",
+                    "primary": "#306576",
+                    "secondary-fixed-dim": "#c7d5ed",
+                    "on-error": "#fff7f6",
+                    "on-secondary-fixed-variant": "#4e5c71",
+                    "surface-bright": "#f9f9f8",
+                    "surface-container": "#eaefee",
+                    "on-tertiary-container": "#495468",
+                    "on-secondary": "#f8f8ff",
+                    "on-tertiary": "#f8f8ff",
+                    "tertiary-dim": "#485367",
+                    "surface-container-highest": "#dce4e3",
+                    "surface-dim": "#d2dcdb",
+                    "on-surface-variant": "#586160",
+                    "inverse-surface": "#0c0f0e",
+                    "primary-dim": "#215969",
+                    "on-tertiary-fixed-variant": "#535e72",
+                    "surface-tint": "#306576",
+                    "on-secondary-container": "#455367",
+                    "secondary-container": "#d5e3fc",
+                    "background": "#f9f9f8",
+                    "on-secondary-fixed": "#324053",
+                    "tertiary-fixed": "#dae6fe",
+                    "primary-fixed-dim": "#a8dcf0",
+                    "on-surface": "#2c3433",
+                    "primary-container": "#b6ebfe",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-low": "#f1f4f3",
+                    "on-primary-fixed": "#034655",
+                    "surface-variant": "#dce4e3",
+                    "on-primary-container": "#205869",
+                    "on-background": "#2c3433",
+                    "secondary": "#526074",
+                    "on-primary-fixed-variant": "#2c6273",
+                    "error-container": "#fe8983",
+                    "surface": "#f9f9f8"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .small-caps { font-variant: all-small-caps; letter-spacing: 0.05em; }
+    </style>
+</head>
+<body class="bg-background text-on-background antialiased selection:bg-primary-container">
+<!-- SideNavBar (Shared Component) -->
+<aside class="h-screen w-64 fixed left-0 top-0 flex flex-col bg-[#eaefee] dark:bg-slate-900 py-6 z-50">
+<div class="px-6 mb-8">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 bg-primary rounded flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined text-sm">code</span>
+</div>
+<div>
+<h1 class="text-xl font-bold tracking-tight text-[#0F4C5C] dark:text-teal-400">Optimark</h1>
+<p class="text-[10px] text-slate-500 font-medium uppercase tracking-widest">CS101: Data Structures</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-1 px-3">
+<a class="flex items-center gap-3 px-3 py-2 text-slate-500 dark:text-slate-400 hover:text-[#0F4C5C] hover:bg-[#f1f4f3] transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[11px] font-medium tracking-wider uppercase">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-[#0F4C5C] dark:text-teal-300 font-semibold border-r-4 border-[#0F4C5C] bg-[#f1f4f3]/50 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="text-[11px] font-medium tracking-wider uppercase">Assignments</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-500 dark:text-slate-400 hover:text-[#0F4C5C] hover:bg-[#f1f4f3] transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">list_alt</span>
+<span class="text-[11px] font-medium tracking-wider uppercase">Submissions</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-500 dark:text-slate-400 hover:text-[#0F4C5C] hover:bg-[#f1f4f3] transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="text-[11px] font-medium tracking-wider uppercase">Gradebook</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-500 dark:text-slate-400 hover:text-[#0F4C5C] hover:bg-[#f1f4f3] transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="text-[11px] font-medium tracking-wider uppercase">Students</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-500 dark:text-slate-400 hover:text-[#0F4C5C] hover:bg-[#f1f4f3] transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[11px] font-medium tracking-wider uppercase">Settings</span>
+</a>
+</nav>
+<div class="px-6 mb-6">
+<button class="w-full py-2 bg-primary text-on-primary rounded text-[11px] font-bold uppercase tracking-widest shadow-sm hover:bg-primary-dim transition-all">
+                New Assessment
+            </button>
+</div>
+<div class="px-3 border-t border-outline-variant/10 pt-4 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-slate-500 hover:text-[#0F4C5C] transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-lg">help_outline</span>
+<span class="text-[11px] font-medium uppercase">Help</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-500 hover:text-[#0F4C5C] transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-lg">archive</span>
+<span class="text-[11px] font-medium uppercase">Archive</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Shell -->
+<main class="ml-64 min-h-screen pb-24">
+<!-- TopAppBar (Shared Component) -->
+<header class="flex justify-between items-center w-full px-8 h-16 sticky top-0 z-40 bg-[#f9f9f8]/80 backdrop-blur-md border-b border-slate-200/30">
+<div class="flex items-center gap-8">
+<nav class="flex gap-6">
+<a class="text-slate-600 dark:text-slate-400 hover:text-[#0F4C5C] text-sm small-caps font-medium" href="#">Course Settings</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-[#0F4C5C] text-sm small-caps font-medium" href="#">Analytics</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-[#0F4C5C] text-sm small-caps font-medium" href="#">Audit Log</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative group">
+<span class="absolute inset-y-0 left-3 flex items-center text-slate-400 group-focus-within:text-primary">
+<span class="material-symbols-outlined text-sm">search</span>
+</span>
+<input class="pl-10 pr-4 py-1.5 bg-surface-container-low border-none rounded-lg text-sm w-64 focus:ring-1 focus:ring-primary focus:bg-white transition-all" placeholder="Search assessments..." type="text"/>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 text-slate-500 hover:text-primary transition-transform active:scale-95">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-slate-500 hover:text-primary transition-transform active:scale-95">
+<span class="material-symbols-outlined">history</span>
+</button>
+<img alt="User Avatar" class="w-8 h-8 rounded-full border border-surface-container-highest object-cover shadow-sm" data-alt="professional portrait of a university professor in a modern office with warm intellectual lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDgQBO4q1mUBTNMfCRATgv0w-NQjcgqlP1rh-c_2_65688i4QoSfkDmE6LCMtEX9ZlmmNW8oqgLbQkjMa4QN69059Nx3fTH-2iPUPUiVfaQj7abwMswCu2idCOvycbbgPS9uhCg24l1DNj-PP2ggarwguKdvVFIfo8bYRLApfvBJqGLZhOWRCh90XP7l-M59OyJ7BG91tAwWXA3oeunqS448NjQdyjcjBTLLKnyMBgvj_VQXeJYTQnxK0Yo_oYrABsL1_XR8U9V_uRP"/>
+</div>
+</div>
+</header>
+<!-- Canvas Body (Asymmetric Grid) -->
+<div class="max-w-[1400px] mx-auto px-8 py-10 grid grid-cols-12 gap-10">
+<!-- Left Column: Primary Form -->
+<section class="col-span-8 space-y-12">
+<div>
+<span class="text-xs font-bold text-primary small-caps tracking-widest block mb-2">Assignment Editor</span>
+<input class="text-4xl font-extrabold text-on-surface bg-transparent border-none p-0 focus:ring-0 w-full placeholder:text-surface-dim" placeholder="Untitled Assignment" type="text" value="Homework 4: Linked Lists"/>
+</div>
+<!-- Markdown Editor Context -->
+<div class="space-y-4">
+<div class="flex items-center justify-between border-b border-surface-container-high pb-2">
+<h2 class="text-sm font-semibold text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">description</span>
+                            Description
+                        </h2>
+<div class="flex gap-4">
+<button class="text-xs font-medium text-slate-500 hover:text-primary">Write</button>
+<button class="text-xs font-medium text-slate-500 hover:text-primary">Preview</button>
+</div>
+</div>
+<div class="rounded-lg bg-surface-container-low min-h-[300px] p-6 focus-within:bg-surface-container-lowest focus-within:ring-1 focus-within:ring-primary transition-all">
+<textarea class="w-full h-full bg-transparent border-none focus:ring-0 text-sm font-mono leading-relaxed text-on-surface-variant resize-none" rows="12">## Instructions
+Implement a singly linked list with the following methods:
+- `append(value)`
+- `prepend(value)`
+- `delete(value)`
+- `find(value)`
+
+### Constraints
+- Time Complexity: O(n) for searching
+- Space Complexity: O(1) for deletions
+
+Ensure all edge cases are handled (empty list, single node list).</textarea>
+</div>
+</div>
+<!-- Files Section -->
+<div class="space-y-6">
+<h2 class="text-sm font-semibold text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">folder_open</span>
+                        Starter Files
+                    </h2>
+<div class="grid grid-cols-1 gap-3">
+<div class="group flex items-center justify-between p-4 bg-surface-container-low rounded-lg border border-transparent hover:border-outline-variant/20 hover:bg-white transition-all shadow-sm">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary text-2xl">description</span>
+<div>
+<p class="text-sm font-medium text-on-surface">linked_list.py</p>
+<p class="text-[10px] text-slate-500 uppercase tracking-tighter">Python Source • 2.4 KB</p>
+</div>
+</div>
+<div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 hover:bg-surface-container text-slate-400 hover:text-primary rounded"><span class="material-symbols-outlined text-sm">edit</span></button>
+<button class="p-1.5 hover:bg-error-container/10 text-slate-400 hover:text-error rounded"><span class="material-symbols-outlined text-sm">delete</span></button>
+</div>
+</div>
+<div class="group flex items-center justify-between p-4 bg-surface-container-low rounded-lg border border-transparent hover:border-outline-variant/20 hover:bg-white transition-all shadow-sm">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary text-2xl" style="font-variation-settings: 'FILL' 1;">terminal</span>
+<div>
+<p class="text-sm font-medium text-on-surface">test_suite.py</p>
+<p class="text-[10px] text-slate-500 uppercase tracking-tighter">Python Test • 5.1 KB</p>
+</div>
+</div>
+<div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 hover:bg-surface-container text-slate-400 hover:text-primary rounded"><span class="material-symbols-outlined text-sm">edit</span></button>
+<button class="p-1.5 hover:bg-error-container/10 text-slate-400 hover:text-error rounded"><span class="material-symbols-outlined text-sm">delete</span></button>
+</div>
+</div>
+<button class="flex items-center justify-center gap-2 p-4 border-2 border-dashed border-outline-variant/30 rounded-lg text-slate-400 hover:text-primary hover:border-primary transition-all">
+<span class="material-symbols-outlined text-lg">add_circle</span>
+<span class="text-xs font-semibold uppercase tracking-wider">Upload Additional Files</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Right Column: Inspector -->
+<aside class="col-span-4 space-y-8">
+<div class="bg-surface-container-low/50 p-6 rounded-xl space-y-8 sticky top-24 border border-surface-container-high">
+<div class="space-y-6">
+<h3 class="text-xs font-bold text-on-surface uppercase tracking-widest flex items-center gap-2">
+<span class="w-1.5 h-1.5 bg-primary rounded-full"></span>
+                            Metadata
+                        </h3>
+<div class="space-y-4">
+<!-- Input Groups -->
+<div class="space-y-1">
+<label class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter ml-1">Due Date</label>
+<div class="relative">
+<span class="absolute inset-y-0 left-3 flex items-center text-slate-400">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-lowest border-none rounded shadow-sm text-sm focus:ring-1 focus:ring-primary transition-all" type="text" value="Oct 15, 2026"/>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-1">
+<label class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter ml-1">Points</label>
+<input class="w-full px-4 py-2 bg-surface-container-lowest border-none rounded shadow-sm text-sm focus:ring-1 focus:ring-primary transition-all" type="number" value="100"/>
+</div>
+<div class="space-y-1">
+<label class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter ml-1">Language</label>
+<select class="w-full px-4 py-2 bg-surface-container-lowest border-none rounded shadow-sm text-sm focus:ring-1 focus:ring-primary transition-all">
+<option selected="">Python 3.10</option>
+<option>Python 3.12</option>
+<option>Java 17</option>
+<option>C++ 20</option>
+</select>
+</div>
+</div>
+<div class="space-y-1">
+<label class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter ml-1">Submission Limit</label>
+<div class="flex items-center gap-3">
+<input class="w-full accent-primary h-1.5 bg-surface-container-high rounded-lg appearance-none cursor-pointer" max="10" min="1" type="range" value="3"/>
+<span class="text-sm font-bold text-primary w-4">3</span>
+</div>
+</div>
+</div>
+</div>
+<div class="space-y-4 pt-6 border-t border-surface-container-high">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-slate-400 text-lg">visibility_off</span>
+<span class="text-xs font-semibold text-on-surface-variant">Visibility</span>
+</div>
+<span class="text-xs px-2 py-0.5 bg-surface-container-highest text-on-surface rounded-full font-medium">Hidden</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-slate-400 text-lg">label</span>
+<span class="text-xs font-semibold text-on-surface-variant">Category</span>
+</div>
+<span class="text-xs px-2 py-0.5 bg-primary-container text-on-primary-container rounded-full font-medium">Coding</span>
+</div>
+</div>
+<!-- Environment Preview Card -->
+<div class="relative overflow-hidden rounded-lg group aspect-video">
+<img alt="Environment Preview" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="close-up of clean python code syntax highlighting on a dark terminal screen with shallow depth of field" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgGcy5aA3c193wgQLpzH1gSpSWUb_sIoMEDDnkja0obJHvvof9bKDAmgPqTb1OEsWz1-w6w7_aw5-VfNs1D0gDOFaViIw-6wyxCexV9OeRc1Vfx1i-1NPgKUFamd8uAbBnDGykOjjpge0fe2cYGkO-YMeX2bIrhL0Hmra0EGPNmQvb4kC4Xs7IpYfYdeZx1s6q8-fRslsx77L5OVlS7xsZjH1BPchIF-HxYX18kiFNKgk4dUurLHlIaucOAgve57LxV1BlLLtVExC2"/>
+<div class="absolute inset-0 bg-primary-dim/60 backdrop-blur-[2px] flex items-center justify-center">
+<div class="text-center p-4">
+<span class="material-symbols-outlined text-on-primary text-3xl mb-1">settings_suggest</span>
+<p class="text-on-primary font-bold text-[10px] uppercase tracking-widest">Verify Environment</p>
+</div>
+</div>
+</div>
+</div>
+</aside>
+</div>
+<!-- Floating Command Bar (Shared Component Strategy) -->
+<div class="fixed bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-3 px-6 py-4 bg-surface-container-lowest/85 backdrop-blur-xl rounded-full shadow-[0_12px_40px_rgba(44,52,51,0.06)] border border-white/20 z-50">
+<div class="flex items-center gap-4 pr-6 border-r border-slate-200">
+<div class="flex flex-col">
+<span class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Current Status</span>
+<span class="text-xs font-bold text-on-surface flex items-center gap-1.5">
+<span class="w-2 h-2 bg-secondary rounded-full animate-pulse"></span>
+                        Draft Saving...
+                    </span>
+</div>
+</div>
+<div class="flex items-center gap-3 pl-3">
+<button class="px-6 py-2.5 text-xs font-bold uppercase tracking-wider text-slate-600 hover:text-on-surface transition-colors active:scale-95">
+                    Save Draft
+                </button>
+<button class="flex items-center gap-2 px-8 py-2.5 bg-gradient-to-r from-primary to-primary-dim text-on-primary rounded-full text-xs font-bold uppercase tracking-widest shadow-md hover:shadow-lg transition-all active:scale-95">
+                    Publish
+                    <span class="material-symbols-outlined text-sm">rocket_launch</span>
+</button>
+</div>
+<div class="ml-4 flex gap-1">
+<button class="p-2 text-slate-400 hover:text-primary rounded-full transition-colors">
+<span class="material-symbols-outlined text-lg">more_vert</span>
+</button>
+</div>
+</div>
+</main>
+</body></html>

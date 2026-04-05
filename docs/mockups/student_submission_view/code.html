@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "tertiary": "#545f74",
+                "on-tertiary-fixed": "#374155",
+                "error-dim": "#4e0309",
+                "inverse-on-surface": "#9b9d9d",
+                "secondary-dim": "#465468",
+                "tertiary-container": "#dae6fe",
+                "outline": "#747c7c",
+                "outline-variant": "#abb4b3",
+                "surface-container-high": "#e3e9e8",
+                "on-error-container": "#752121",
+                "on-primary": "#eefaff",
+                "primary-fixed": "#b6ebfe",
+                "inverse-primary": "#ade2f6",
+                "error": "#9f403d",
+                "tertiary-fixed-dim": "#ccd7ef",
+                "secondary-fixed": "#d5e3fc",
+                "primary": "#306576",
+                "secondary-fixed-dim": "#c7d5ed",
+                "on-error": "#fff7f6",
+                "on-secondary-fixed-variant": "#4e5c71",
+                "surface-bright": "#f9f9f8",
+                "surface-container": "#eaefee",
+                "on-tertiary-container": "#495468",
+                "on-secondary": "#f8f8ff",
+                "on-tertiary": "#f8f8ff",
+                "tertiary-dim": "#485367",
+                "surface-container-highest": "#dce4e3",
+                "surface-dim": "#d2dcdb",
+                "on-surface-variant": "#586160",
+                "inverse-surface": "#0c0f0e",
+                "primary-dim": "#215969",
+                "on-tertiary-fixed-variant": "#535e72",
+                "surface-tint": "#306576",
+                "on-secondary-container": "#455367",
+                "secondary-container": "#d5e3fc",
+                "background": "#f9f9f8",
+                "on-secondary-fixed": "#324053",
+                "tertiary-fixed": "#dae6fe",
+                "primary-fixed-dim": "#a8dcf0",
+                "on-surface": "#2c3433",
+                "primary-container": "#b6ebfe",
+                "surface-container-lowest": "#ffffff",
+                "surface-container-low": "#f1f4f3",
+                "on-primary-fixed": "#034655",
+                "surface-variant": "#dce4e3",
+                "on-primary-container": "#205869",
+                "on-background": "#2c3433",
+                "secondary": "#526074",
+                "on-primary-fixed-variant": "#2c6273",
+                "error-container": "#fe8983",
+                "surface": "#f9f9f8"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.125rem",
+                "lg": "0.25rem",
+                "xl": "0.5rem",
+                "full": "0.75rem"
+            },
+            "fontFamily": {
+                "headline": ["Manrope"],
+                "body": ["Inter"],
+                "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+            line-height: 1;
+        }
+        .sc-active-border { border-right: 4px solid #0F4C5C; }
+    </style>
+</head>
+<body class="bg-background text-on-surface antialiased min-h-screen">
+<!-- SideNavBar (JSON Component) -->
+<aside class="h-screen w-64 fixed left-0 top-0 flex flex-col bg-[#eaefee] dark:bg-slate-900 transition-all duration-200 z-50">
+<div class="px-6 py-8">
+<div class="flex items-center gap-3 mb-10">
+<div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined text-[20px]" data-icon="terminal">terminal</span>
+</div>
+<h1 class="text-xl font-bold tracking-tight text-[#0F4C5C] dark:text-teal-400">Optimark</h1>
+</div>
+<nav class="space-y-1">
+<!-- Navigation Items -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-l-lg text-slate-500 dark:text-slate-400 hover:text-[#0F4C5C] hover:bg-[#f1f4f3] transition-colors duration-200 group" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-[11px] font-medium tracking-wider uppercase">Dashboard</span>
+</a>
+<!-- Assignments is active for this screen -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-l-lg text-[#0F4C5C] dark:text-teal-300 font-semibold border-r-4 border-[#0F4C5C] bg-[#f1f4f3]/50 transition-all opacity-90 group" href="#">
+<span class="material-symbols-outlined" data-icon="assignment">assignment</span>
+<span class="text-[11px] font-medium tracking-wider uppercase">Assignments</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-l-lg text-slate-500 dark:text-slate-400 hover:text-[#0F4C5C] hover:bg-[#f1f4f3] transition-colors duration-200 group" href="#">
+<span class="material-symbols-outlined" data-icon="list_alt">list_alt</span>
+<span class="text-[11px] font-medium tracking-wider uppercase">Submissions</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-l-lg text-slate-500 dark:text-slate-400 hover:text-[#0F4C5C] hover:bg-[#f1f4f3] transition-colors duration-200 group" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="text-[11px] font-medium tracking-wider uppercase">Gradebook</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-l-lg text-slate-500 dark:text-slate-400 hover:text-[#0F4C5C] hover:bg-[#f1f4f3] transition-colors duration-200 group" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="text-[11px] font-medium tracking-wider uppercase">Students</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-l-lg text-slate-500 dark:text-slate-400 hover:text-[#0F4C5C] hover:bg-[#f1f4f3] transition-colors duration-200 group" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-[11px] font-medium tracking-wider uppercase">Settings</span>
+</a>
+</nav>
+</div>
+<div class="mt-auto px-6 py-8 space-y-4">
+<div class="p-4 bg-surface-container-low rounded-xl">
+<p class="text-[10px] font-semibold uppercase tracking-widest text-on-surface-variant mb-1">Current Course</p>
+<p class="text-sm font-bold text-[#0F4C5C]">CS101: Data Structures</p>
+</div>
+<a class="flex items-center gap-3 px-4 py-2 text-slate-500 hover:text-[#0F4C5C] transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="help_outline">help_outline</span>
+<span class="text-[11px] font-medium tracking-wider uppercase">Help</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-slate-500 hover:text-[#0F4C5C] transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="archive">archive</span>
+<span class="text-[11px] font-medium tracking-wider uppercase">Archive</span>
+</a>
+</div>
+</aside>
+<!-- TopAppBar (JSON Component) -->
+<header class="flex justify-between items-center w-full px-8 h-16 ml-64 max-w-[calc(100%-16rem)] bg-[#f9f9f8]/80 dark:bg-slate-950/80 backdrop-blur-md sticky top-0 z-40 border-b border-slate-200/30 dark:border-slate-800/30 shadow-sm dark:shadow-none">
+<div class="flex items-center gap-6">
+<nav class="flex gap-8">
+<a class="text-slate-600 dark:text-slate-400 hover:text-[#0F4C5C] transition-all text-[13px] font-medium uppercase tracking-tight" href="#">Course Settings</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-[#0F4C5C] transition-all text-[13px] font-medium uppercase tracking-tight" href="#">Analytics</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-[#0F4C5C] transition-all text-[13px] font-medium uppercase tracking-tight" href="#">Audit Log</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-3 mr-4">
+<button class="p-2 text-slate-500 hover:text-[#0F4C5C] transition-all">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-slate-500 hover:text-[#0F4C5C] transition-all">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+</button>
+</div>
+<button class="px-4 py-1.5 bg-surface-container-highest text-on-surface rounded-lg text-sm font-semibold hover:bg-surface-dim transition-colors">Regrade</button>
+<button class="px-5 py-1.5 bg-gradient-to-r from-primary to-primary-dim text-white rounded-lg text-sm font-bold shadow-md hover:shadow-lg transition-all active:scale-95">Publish All</button>
+<img alt="Instructor Profile" class="w-8 h-8 rounded-full border-2 border-surface-container-high object-cover" data-alt="Close-up professional headshot of a middle-aged academic instructor with a friendly expression and glasses in a softly lit office" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxEeYc2FtoHtB9suAxGdjkHINdf1OP_r0RlWMlzkVmpSWr5Wu533o5EqpCpOrfF2AWe6AvhxVGPkMziMnoDN00tIli4-7ZO3glrMM8XQYb5XFKzDp07hGDbsemh_BY5XBrWc2vDeMdBAjY_ZCIVITG6cetqbakFSRmusU2gS4pFfG2e-mJcM8X2attkIzPuOQO7ku5N_xHpTUj_WtwRgMpgXq6t3dl0pluU--QKkuOnre6BjwLkuS-3duNQaB4o5e1U95p7dBHMvN5"/>
+</div>
+</header>
+<!-- Main Content -->
+<main class="ml-64 p-8 max-w-[1400px]">
+<!-- Header Section -->
+<header class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div class="space-y-2">
+<nav class="flex items-center gap-2 text-on-surface-variant text-[11px] font-medium uppercase tracking-widest mb-4">
+<a class="hover:text-primary" href="#">Assignments</a>
+<span class="material-symbols-outlined text-[14px]" data-icon="chevron_right">chevron_right</span>
+<span class="text-on-surface">Homework 4</span>
+</nav>
+<h2 class="text-4xl font-extrabold tracking-tight text-on-surface max-w-2xl">Homework 4: Linked Lists</h2>
+<div class="flex items-center gap-4 pt-2">
+<span class="inline-flex items-center px-3 py-1 bg-primary-container text-on-primary-container rounded-full text-[12px] font-bold">
+<span class="material-symbols-outlined text-[16px] mr-1" data-icon="calendar_today">calendar_today</span>
+                        Due Oct 15, 2026
+                    </span>
+<span class="text-error font-semibold text-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]" data-icon="timer">timer</span>
+                        3 days remaining
+                    </span>
+</div>
+</div>
+</header>
+<!-- Asymmetric Layout Grid -->
+<div class="grid grid-cols-12 gap-8 items-start">
+<!-- Left Column: Instructions -->
+<div class="col-span-12 lg:col-span-8 space-y-8">
+<!-- Main Card -->
+<section class="bg-surface-container-lowest rounded-xl p-8 shadow-[0_12px_40px_rgba(44,52,51,0.06)]">
+<h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="description">description</span>
+                        Implementation Requirements
+                    </h3>
+<div class="prose prose-slate max-w-none text-on-surface-variant space-y-4 leading-relaxed">
+<p>In this assignment, you will implement a doubly linked list data structure from scratch. You are required to handle all edge cases, including operations on empty lists and single-node lists.</p>
+<div class="bg-surface-container-low p-5 rounded-lg border-l-4 border-primary my-6">
+<h4 class="font-bold text-on-surface text-sm uppercase tracking-wider mb-2">Core Methods to Implement:</h4>
+<ul class="list-disc list-inside space-y-1 text-sm">
+<li><code>insert_at_head(data)</code>: O(1) complexity</li>
+<li><code>insert_at_tail(data)</code>: O(1) complexity</li>
+<li><code>remove_node(node_ptr)</code>: Proper memory management required</li>
+<li><code>reverse_list()</code>: In-place reversal of pointers</li>
+</ul>
+</div>
+<p>Memory leaks will be checked using Valgrind. Ensure that your destructor correctly deallocates all heap-allocated nodes. Submit your source code as a single <code>linked_list.cpp</code> file or a compressed archive if you use custom headers.</p>
+</div>
+<div class="mt-10 pt-8 border-t border-outline-variant/15">
+<h3 class="text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-4">Starter Materials</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+<a class="flex items-center justify-between p-3 bg-surface-container-low rounded-lg hover:bg-surface-container-high transition-colors group" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="code">code</span>
+<div>
+<p class="text-sm font-semibold">linked_list.h</p>
+<p class="text-[10px] text-on-surface-variant">Header Template • 4 KB</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary" data-icon="download">download</span>
+</a>
+<a class="flex items-center justify-between p-3 bg-surface-container-low rounded-lg hover:bg-surface-container-high transition-colors group" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="terminal">terminal</span>
+<div>
+<p class="text-sm font-semibold">test_cases.py</p>
+<p class="text-[10px] text-on-surface-variant">Verification Script • 12 KB</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary" data-icon="download">download</span>
+</a>
+</div>
+</div>
+</section>
+<!-- Submissions History -->
+<section class="bg-surface-container-low rounded-xl p-8">
+<h3 class="text-lg font-bold mb-6">Prior Submissions</h3>
+<div class="overflow-hidden">
+<table class="w-full text-left">
+<thead>
+<tr class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">
+<th class="pb-4">Timestamp</th>
+<th class="pb-4">File Name</th>
+<th class="pb-4">Status</th>
+<th class="pb-4 text-right">Score</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<tr class="group hover:bg-surface-container-highest/30 transition-colors">
+<td class="py-4 text-sm font-medium">Oct 10, 2026 • 14:22</td>
+<td class="py-4 text-sm text-on-surface-variant">submission_v2.zip</td>
+<td class="py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-primary-container text-on-primary-container">
+                                            Completed
+                                        </span>
+</td>
+<td class="py-4 text-right text-sm font-bold text-primary">85/100</td>
+</tr>
+<tr class="group hover:bg-surface-container-highest/30 transition-colors">
+<td class="py-4 text-sm font-medium">Oct 08, 2026 • 09:15</td>
+<td class="py-4 text-sm text-on-surface-variant">initial_draft.cpp</td>
+<td class="py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-primary-container text-on-primary-container">
+                                            Completed
+                                        </span>
+</td>
+<td class="py-4 text-right text-sm font-bold text-on-surface-variant">42/100</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+<!-- Right Column: Submission Panel -->
+<div class="col-span-12 lg:col-span-4 space-y-6">
+<!-- Upload Panel -->
+<section class="bg-surface-container-lowest rounded-xl p-6 shadow-[0_12px_40px_rgba(44,52,51,0.06)] border-2 border-dashed border-outline-variant/30 hover:border-primary/50 transition-all group">
+<div class="flex flex-col items-center text-center py-8">
+<div class="w-16 h-16 bg-surface-container-low rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="cloud_upload">cloud_upload</span>
+</div>
+<h4 class="text-lg font-bold mb-2">Submit Assessment</h4>
+<p class="text-sm text-on-surface-variant mb-6 px-4">Drop files here or click to browse your computer.</p>
+<button class="w-full py-3 bg-gradient-to-r from-primary to-primary-dim text-white rounded-lg font-bold text-sm shadow-md hover:shadow-lg transition-all active:scale-95">
+                            Upload Submission
+                        </button>
+</div>
+<div class="pt-4 border-t border-outline-variant/15 flex items-center justify-between">
+<span class="text-[11px] font-medium text-on-surface-variant uppercase tracking-wider">Accepted formats:</span>
+<span class="text-[11px] font-bold text-primary">.CPP, .ZIP, .TAR</span>
+</div>
+</section>
+<!-- Grading Stats Bento Card -->
+<div class="bg-surface-container rounded-xl overflow-hidden">
+<div class="p-6">
+<h4 class="text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-4">Performance Insights</h4>
+<div class="space-y-4">
+<div class="flex justify-between items-end">
+<div>
+<p class="text-[10px] text-on-surface-variant uppercase font-semibold">Average Class Score</p>
+<p class="text-2xl font-bold">78%</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] text-on-surface-variant uppercase font-semibold">Points Possible</p>
+<p class="text-sm font-bold">100</p>
+</div>
+</div>
+<div class="h-2 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary-fixed-dim w-[78%]"></div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-highest/30 p-4 flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="info" style="font-variation-settings: 'FILL' 1;">info</span>
+<p class="text-[11px] text-on-surface-variant leading-tight">Last updated 2 hours ago by autograder.</p>
+</div>
+</div>
+<!-- Teacher's Note Card -->
+<section class="bg-primary text-on-primary rounded-xl p-6 relative overflow-hidden">
+<span class="material-symbols-outlined absolute -right-4 -bottom-4 text-8xl opacity-10" data-icon="lightbulb">lightbulb</span>
+<h4 class="font-bold text-sm mb-2 flex items-center gap-2">
+<span class="material-symbols-outlined text-lg" data-icon="tips_and_updates">tips_and_updates</span>
+                        Instructor's Note
+                    </h4>
+<p class="text-sm opacity-90 leading-relaxed italic">
+                        "Focus on edge-case testing for the reverse_list method. It is often where students lose points for pointer dangling."
+                    </p>
+</section>
+</div>
+</div>
+</main>
+<!-- Operational Command Bar -->
+<div class="fixed bottom-8 left-1/2 -translate-x-1/2 bg-surface-container-lowest/85 backdrop-blur-xl px-6 py-4 rounded-full shadow-[0_20px_50px_rgba(44,52,51,0.15)] flex items-center gap-8 border border-white/20 z-50">
+<div class="flex items-center gap-4">
+<div class="flex flex-col">
+<span class="text-[9px] font-bold uppercase tracking-widest text-on-surface-variant">Last Saved</span>
+<span class="text-xs font-semibold">Today, 10:45 AM</span>
+</div>
+<div class="h-6 w-px bg-outline-variant/30"></div>
+<div class="flex gap-2">
+<button class="p-2 hover:bg-surface-container-low rounded-lg transition-colors group">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary" data-icon="share">share</span>
+</button>
+<button class="p-2 hover:bg-surface-container-low rounded-lg transition-colors group">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary" data-icon="print">print</span>
+</button>
+</div>
+</div>
+<button class="px-8 py-2.5 bg-primary text-white rounded-lg font-bold text-sm hover:bg-primary-dim transition-all shadow-md active:scale-95">
+            Submit Final Version
+        </button>
+</div>
+</body></html>

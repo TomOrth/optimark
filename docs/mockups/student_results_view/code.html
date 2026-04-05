@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Optimark - Homework 4: Linked Lists Results</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-dim": "#d2dcdb",
+                        "on-primary": "#eefaff",
+                        "on-secondary-fixed": "#324053",
+                        "tertiary-fixed-dim": "#ccd7ef",
+                        "surface-tint": "#306576",
+                        "surface-container-high": "#e3e9e8",
+                        "secondary-dim": "#465468",
+                        "on-secondary-fixed-variant": "#4e5c71",
+                        "surface-container-low": "#f1f4f3",
+                        "error-container": "#fe8983",
+                        "on-tertiary-fixed-variant": "#535e72",
+                        "secondary": "#526074",
+                        "tertiary-dim": "#485367",
+                        "tertiary": "#545f74",
+                        "on-tertiary-container": "#495468",
+                        "on-secondary": "#f8f8ff",
+                        "secondary-fixed-dim": "#c7d5ed",
+                        "on-error": "#fff7f6",
+                        "outline": "#747c7c",
+                        "surface-container": "#eaefee",
+                        "on-primary-fixed": "#034655",
+                        "surface-container-lowest": "#ffffff",
+                        "background": "#f9f9f8",
+                        "on-background": "#2c3433",
+                        "surface-bright": "#f9f9f8",
+                        "surface-container-highest": "#dce4e3",
+                        "on-tertiary-fixed": "#374155",
+                        "on-surface": "#2c3433",
+                        "inverse-on-surface": "#9b9d9d",
+                        "tertiary-container": "#dae6fe",
+                        "on-secondary-container": "#455367",
+                        "secondary-container": "#d5e3fc",
+                        "on-surface-variant": "#586160",
+                        "on-primary-container": "#205869",
+                        "inverse-surface": "#0c0f0e",
+                        "surface": "#f9f9f8",
+                        "secondary-fixed": "#d5e3fc",
+                        "primary-dim": "#215969",
+                        "primary": "#306576",
+                        "primary-fixed-dim": "#a8dcf0",
+                        "error": "#9f403d",
+                        "surface-variant": "#dce4e3",
+                        "primary-fixed": "#b6ebfe",
+                        "inverse-primary": "#ade2f6",
+                        "primary-container": "#b6ebfe",
+                        "on-primary-fixed-variant": "#2c6273",
+                        "on-error-container": "#752121",
+                        "error-dim": "#4e0309",
+                        "outline-variant": "#abb4b3",
+                        "tertiary-fixed": "#dae6fe",
+                        "on-tertiary": "#f8f8ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4 { font-family: 'Manrope', sans-serif; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen">
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 flex flex-col bg-[#eaefee] dark:bg-slate-900 py-6">
+<div class="px-6 mb-10">
+<h1 class="text-xl font-bold tracking-tight text-[#0F4C5C] dark:text-teal-400">Optimark</h1>
+<p class="text-[11px] font-medium tracking-wider uppercase text-slate-500">Student Portal</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center px-6 py-3 text-slate-500 dark:text-slate-400 hover:text-[#0F4C5C] hover:bg-[#f1f4f3] transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3">book</span>
+<span class="text-sm font-medium">My Courses</span>
+</a>
+<a class="flex items-center px-6 py-3 text-[#0F4C5C] dark:text-teal-300 font-semibold border-r-4 border-[#0F4C5C] bg-[#f1f4f3]/50" href="#">
+<span class="material-symbols-outlined mr-3">event_note</span>
+<span class="text-sm font-medium">Assignments</span>
+</a>
+<a class="flex items-center px-6 py-3 text-slate-500 dark:text-slate-400 hover:text-[#0F4C5C] hover:bg-[#f1f4f3] transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3">grade</span>
+<span class="text-sm font-medium">Grades</span>
+</a>
+<a class="flex items-center px-6 py-3 text-slate-500 dark:text-slate-400 hover:text-[#0F4C5C] hover:bg-[#f1f4f3] transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3">library_books</span>
+<span class="text-sm font-medium">Resources</span>
+</a>
+</nav>
+<div class="px-6 mt-auto pt-6 border-t border-slate-200/50">
+<a class="flex items-center py-2 text-slate-500 hover:text-[#0F4C5C] transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">help_outline</span>
+<span class="text-sm font-medium">Help Center</span>
+</a>
+<a class="flex items-center py-2 text-slate-500 hover:text-[#0F4C5C] transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a>
+<div class="mt-6 flex items-center gap-3">
+<img alt="Student Profile Avatar" class="w-10 h-10 rounded-full object-cover grayscale" data-alt="Close up portrait of a young male student with a friendly expression and neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA5kzfFUkkICTtRVgekCH9XEqfGVHMuZXjsY2OnhKQnwxVtU66AzhX7ZMHoH5AWu6Uuc1W1d82_0n4hm_M8IIHpXAPg4_yTTrw_qZbIc0oAA1qRmNzjbuBqJAPsV7kljPO_R_VvrleuH31uuPxSDikog-B2hqAageZcjjQctEljOKbvGYd6ykRT6USK3BQ9r5Ar-JBLuTYeeUuJAScyxB6-SIgHm6CrVF644qlr1mqfrRFgBdFQbiPegmfpw_9uGDzkdDAZL45gO4Wi"/>
+<div class="overflow-hidden">
+<p class="text-sm font-bold text-on-surface truncate">Alex Rivera</p>
+<p class="text-[10px] uppercase tracking-tighter text-on-surface-variant">CS ID: 88421</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- TopAppBar -->
+<header class="flex justify-between items-center w-full px-8 h-16 ml-64 max-w-[calc(100%-16rem)] sticky top-0 z-40 bg-[#f9f9f8]/80 dark:bg-slate-950/80 backdrop-blur-md shadow-sm border-b border-slate-200/30">
+<div class="flex gap-8">
+<a class="text-slate-600 dark:text-slate-400 hover:text-[#0F4C5C] text-xs font-semibold uppercase tracking-widest transition-all" href="#">Upcoming Deadlines</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-[#0F4C5C] text-xs font-semibold uppercase tracking-widest transition-all" href="#">Course Materials</a>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors">notifications</span>
+<span class="absolute -top-1 -right-1 w-2 h-2 bg-primary rounded-full"></span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors">history</span>
+<div class="h-8 w-[1px] bg-outline-variant/30"></div>
+<div class="flex items-center gap-2 px-3 py-1 bg-surface-container-low rounded-lg">
+<span class="material-symbols-outlined text-primary scale-75">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-48 text-on-surface placeholder-on-surface-variant/50" placeholder="Search assignments..." type="text"/>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="ml-64 p-12 min-h-[calc(100vh-4rem)]">
+<div class="max-w-6xl mx-auto grid grid-cols-12 gap-8">
+<!-- Left Column: Primary Content -->
+<div class="col-span-12 lg:col-span-8 space-y-8">
+<!-- Assignment Header -->
+<section class="mb-12">
+<nav class="flex items-center gap-2 text-xs font-medium text-on-surface-variant mb-4 uppercase tracking-widest">
+<span>CS201: Data Structures</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span>Assignments</span>
+</nav>
+<div class="flex justify-between items-end">
+<div>
+<h2 class="text-4xl font-extrabold text-on-surface tracking-tight leading-tight">Homework 4: Linked Lists</h2>
+<p class="text-on-surface-variant mt-2 text-lg">Final feedback and assessment results.</p>
+</div>
+<button class="flex items-center gap-2 px-6 py-3 bg-gradient-to-b from-primary to-primary-dim text-on-primary rounded-lg font-bold shadow-md hover:opacity-90 transition-all active:scale-95">
+<span>View Submission</span>
+<span class="material-symbols-outlined">code</span>
+</button>
+</div>
+</section>
+<!-- Grade Summary Card -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="col-span-2 bg-surface-container-lowest p-8 rounded-xl flex items-center justify-between shadow-sm">
+<div>
+<p class="text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface-variant mb-1">Final Grade</p>
+<div class="flex items-baseline gap-1">
+<span class="text-6xl font-black text-primary">84</span>
+<span class="text-2xl font-bold text-outline-variant">/ 100</span>
+</div>
+</div>
+<div class="text-right">
+<span class="px-4 py-1.5 bg-primary-container text-on-primary-container rounded-full text-xs font-bold uppercase tracking-wider">Released</span>
+<p class="text-xs text-on-surface-variant mt-3">Graded by: <span class="font-semibold">Auto-Grader + TA</span></p>
+</div>
+</div>
+<div class="bg-surface-container-low p-8 rounded-xl flex flex-col justify-center">
+<p class="text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface-variant mb-2">Performance</p>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">trending_up</span>
+<span class="text-lg font-bold text-on-surface">Above Average</span>
+</div>
+<p class="text-xs text-on-surface-variant mt-1">Class median: 78%</p>
+</div>
+</div>
+<!-- Detailed Rubric Feedback -->
+<section class="space-y-4">
+<h3 class="text-xl font-bold text-on-surface px-1">Detailed Assessment</h3>
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden divide-y divide-surface-container">
+<!-- Criterion 1 -->
+<div class="p-6 transition-colors hover:bg-surface-container-low/30">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h4 class="font-bold text-on-surface">Documentation</h4>
+<p class="text-sm text-on-surface-variant">Quality of inline comments and Javadoc structure.</p>
+</div>
+<div class="text-right">
+<p class="text-lg font-bold text-primary">20/20</p>
+<span class="text-[10px] uppercase font-bold text-primary tracking-widest">Mastery</span>
+</div>
+</div>
+<div class="bg-surface-container-low/50 p-4 rounded-lg border-l-4 border-primary/20">
+<p class="text-sm text-on-surface italic">"Excellent work documenting the edge cases in the doubly-linked implementation. Very clear and concise."</p>
+</div>
+</div>
+<!-- Criterion 2 -->
+<div class="p-6 transition-colors hover:bg-surface-container-low/30">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h4 class="font-bold text-on-surface">Edge Case Handling</h4>
+<p class="text-sm text-on-surface-variant">Handling empty lists, single nodes, and tail removals.</p>
+</div>
+<div class="text-right">
+<p class="text-lg font-bold text-primary">34/40</p>
+<span class="text-[10px] uppercase font-bold text-on-surface-variant tracking-widest">Proficient</span>
+</div>
+</div>
+<div class="bg-surface-container-low/50 p-4 rounded-lg border-l-4 border-primary/20">
+<p class="text-sm text-on-surface italic">"Missed a null pointer check in the `reverse()` method when the list has exactly two elements. See logs for failed test case 'REVERSE_2_NODES'."</p>
+</div>
+</div>
+<!-- Criterion 3 -->
+<div class="p-6 transition-colors hover:bg-surface-container-low/30">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h4 class="font-bold text-on-surface">Memory Safety</h4>
+<p class="text-sm text-on-surface-variant">Valgrind leak checks and proper pointer deallocation.</p>
+</div>
+<div class="text-right">
+<p class="text-lg font-bold text-primary">30/40</p>
+<span class="text-[10px] uppercase font-bold text-error tracking-widest">Developing</span>
+</div>
+</div>
+<div class="bg-surface-container-low/50 p-4 rounded-lg border-l-4 border-error/20">
+<p class="text-sm text-on-surface italic">"Minor memory leaks detected in the clear() function. Ensure all nodes are iterated and freed."</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Artifacts and Logs -->
+<section class="space-y-4">
+<h3 class="text-xl font-bold text-on-surface px-1">Build Artifacts</h3>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<div class="flex items-center justify-between p-4 bg-surface-container rounded-xl hover:bg-surface-container-highest transition-colors cursor-pointer group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">terminal</span>
+<div>
+<p class="text-sm font-bold text-on-surface">test-suite-results.log</p>
+<p class="text-[10px] text-on-surface-variant uppercase">Plain Text • 42KB</p>
+</div>
+</div>
+<span class="material-symbols-outlined opacity-0 group-hover:opacity-100 transition-opacity">download</span>
+</div>
+<div class="flex items-center justify-between p-4 bg-surface-container rounded-xl hover:bg-surface-container-highest transition-colors cursor-pointer group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">memory</span>
+<div>
+<p class="text-sm font-bold text-on-surface">valgrind-report.xml</p>
+<p class="text-[10px] text-on-surface-variant uppercase">XML Data • 128KB</p>
+</div>
+</div>
+<span class="material-symbols-outlined opacity-0 group-hover:opacity-100 transition-opacity">download</span>
+</div>
+</div>
+</section>
+<!-- Submission History -->
+<section class="space-y-4">
+<h3 class="text-xl font-bold text-on-surface px-1">Submission History</h3>
+<div class="bg-surface-container-low rounded-xl p-2">
+<div class="overflow-x-auto">
+<table class="w-full text-left text-sm">
+<thead>
+<tr class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold border-b border-outline-variant/10">
+<th class="px-4 py-3">Timestamp</th>
+<th class="px-4 py-3">Commit</th>
+<th class="px-4 py-3">Auto-Score</th>
+<th class="px-4 py-3 text-right">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/5">
+<tr class="bg-surface-container-lowest/50">
+<td class="px-4 py-4 font-medium">Oct 14, 2023, 11:54 PM</td>
+<td class="px-4 py-4 font-mono text-xs">#8d2f1a3</td>
+<td class="px-4 py-4 font-bold text-primary">84/100</td>
+<td class="px-4 py-4 text-right">
+<span class="text-[10px] font-bold text-primary uppercase bg-primary-container px-2 py-1 rounded">Current</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest/30 cursor-pointer">
+<td class="px-4 py-4">Oct 12, 2023, 04:20 PM</td>
+<td class="px-4 py-4 font-mono text-xs">#c55e921</td>
+<td class="px-4 py-4 text-on-surface-variant">62/100</td>
+<td class="px-4 py-4 text-right">
+<button class="text-[10px] font-bold text-on-surface-variant uppercase hover:text-primary">Load</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest/30 cursor-pointer">
+<td class="px-4 py-4">Oct 11, 2023, 10:15 AM</td>
+<td class="px-4 py-4 font-mono text-xs">#a2b8e44</td>
+<td class="px-4 py-4 text-on-surface-variant">45/100</td>
+<td class="px-4 py-4 text-right">
+<button class="text-[10px] font-bold text-on-surface-variant uppercase hover:text-primary">Load</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column: Inspector / Quick Stats -->
+<aside class="col-span-12 lg:col-span-4 space-y-6">
+<div class="glass-panel p-6 rounded-xl shadow-sm border border-outline-variant/10">
+<h4 class="text-sm font-bold text-on-surface mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">info</span>
+                        Assignment Details
+                    </h4>
+<div class="space-y-6">
+<div>
+<p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-2">Released On</p>
+<p class="text-sm font-semibold text-on-surface">Oct 16, 2023 — 08:00 AM</p>
+</div>
+<div>
+<p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-2">Class Statistics</p>
+<div class="space-y-3">
+<div class="flex justify-between items-center">
+<span class="text-xs text-on-surface-variant">Average Score</span>
+<span class="text-sm font-bold text-on-surface">78.4%</span>
+</div>
+<div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[78%]"></div>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-xs text-on-surface-variant">Your Percentile</span>
+<span class="text-sm font-bold text-on-surface">Top 15%</span>
+</div>
+</div>
+</div>
+<div>
+<p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-2">Quick Actions</p>
+<div class="grid grid-cols-2 gap-2">
+<button class="flex flex-col items-center justify-center p-4 bg-surface-container-low rounded-lg hover:bg-surface-container transition-colors group">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary mb-1">forum</span>
+<span class="text-[10px] font-bold text-on-surface-variant uppercase">Contact TA</span>
+</button>
+<button class="flex flex-col items-center justify-center p-4 bg-surface-container-low rounded-lg hover:bg-surface-container transition-colors group">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary mb-1">print</span>
+<span class="text-[10px] font-bold text-on-surface-variant uppercase">Export PDF</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Professor's Note -->
+<div class="bg-primary-container/30 p-6 rounded-xl border border-primary/10">
+<div class="flex gap-4 items-start">
+<img alt="Instructor Avatar" class="w-10 h-10 rounded-full object-cover" data-alt="Close up of middle-aged male professor with glasses and a kind expression in a library setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCWtBnzTOznk3vt0Jon8Ov_8vZpN3gNLrB00dOukmCcRyzMVvy060Xz7KaaPuL8womTHiX0z7tZGd6yooznesPfNGXPIhfG4afEOJFgK7BDkvB8AZMZ6R5TpDj6F3sOCFvup-xJSWmHU0xg-prglyMJ3QpsMxnLulKuByPtuxD-yWGgaKqvWTWBcMOTbDJ9oDjtYj5vyT5moTj2OA1bFRCF2PgNbCwJpDQmbj4BFL4A2aC3m_6FOqaYTSc_hC7rm16A3UoTOLDed_Vp"/>
+<div>
+<p class="text-[10px] font-bold text-primary uppercase tracking-widest mb-1">Instructor's Note</p>
+<p class="text-sm text-on-primary-container leading-relaxed">"This was a challenging assignment. Great job on the core logic. For Lab 5, focus on the memory management patterns we discussed on Tuesday."</p>
+<p class="text-xs font-bold text-primary mt-3">— Dr. Julian Vance</p>
+</div>
+</div>
+</div>
+<!-- Learning Resources -->
+<div class="p-6">
+<p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-4">Recommended Review</p>
+<ul class="space-y-4">
+<li class="flex items-center gap-3 group cursor-pointer">
+<div class="w-8 h-8 rounded bg-surface-container flex items-center justify-center group-hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary text-sm">link</span>
+</div>
+<span class="text-xs font-medium text-on-surface group-hover:text-primary transition-colors">Lecture 12: Memory Safety in C++</span>
+</li>
+<li class="flex items-center gap-3 group cursor-pointer">
+<div class="w-8 h-8 rounded bg-surface-container flex items-center justify-center group-hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary text-sm">link</span>
+</div>
+<span class="text-xs font-medium text-on-surface group-hover:text-primary transition-colors">Common Doubly-Linked List Pitfalls</span>
+</li>
+</ul>
+</div>
+</aside>
+</div>
+</main>
+<!-- Global Command Bar -->
+<div class="fixed bottom-8 left-1/2 -translate-x-1/2 glass-panel px-6 py-4 rounded-full shadow-2xl border border-outline-variant/20 flex items-center gap-8 z-50">
+<button class="flex items-center gap-2 text-xs font-bold text-on-surface-variant hover:text-primary transition-all">
+<span class="material-symbols-outlined text-[18px]">keyboard_backspace</span>
+            Back to Assignments
+        </button>
+<div class="h-4 w-[1px] bg-outline-variant/30"></div>
+<div class="flex items-center gap-4">
+<button class="flex items-center gap-2 text-xs font-bold text-on-surface-variant hover:text-primary transition-all">
+<span class="material-symbols-outlined text-[18px]">share</span>
+                Share Result
+            </button>
+<button class="flex items-center gap-2 text-xs font-bold text-primary hover:opacity-80 transition-all">
+<span class="material-symbols-outlined text-[18px]">help_center</span>
+                Request Review
+            </button>
+</div>
+</div>
+</body></html>

@@ -3,7 +3,9 @@
 Optimark is an instructor-first assessment platform starting with coding assignments, asynchronous autograding, and manual review workflows. This repository is currently in the foundation phase and is organized as a monorepo so the frontend and backend can evolve independently while staying in one codebase.
 
 ## Current status
+
 The repository currently includes:
+
 - a Bun-ready frontend workspace
 - a uv-managed Python backend workspace
 - a shared root `Makefile`
@@ -13,6 +15,7 @@ The repository currently includes:
 It still does not implement product UI, API routes, or grading logic.
 
 ## Repository layout
+
 ```text
 optimark/
   backend/
@@ -35,12 +38,15 @@ optimark/
 ```
 
 ## Workspace responsibilities
+
 ### `frontend/`
+
 - Bun-managed React application workspace
 - Will hold the instructor, TA, and student web application
 - App bootstrap and product UI land in later issues
 
 ### `backend/`
+
 - uv workspace for Python services and shared packages
 - `apps/api`: future FastAPI HTTP API
 - `apps/worker`: future background worker
@@ -49,12 +55,16 @@ optimark/
 - `packages/contracts`: API and worker contract schemas
 
 ### `docs/`
+
 - product and architecture spec
 - ADRs
 - UI-generation brief for design exploration
+- UI mockups
 
 ## Getting started
+
 ### Prerequisites
+
 - `bun`
 - `python3`
 - `uv`
@@ -62,6 +72,7 @@ optimark/
 - `docker compose`
 
 ### Common commands
+
 ```sh
 make help
 cp .env.example .env
@@ -74,7 +85,9 @@ make backend-sync
 The frontend and backend commands are still scaffold entrypoints rather than full application bootstraps, but the local infrastructure stack is now ready for upcoming backend and submission-workflow issues.
 
 ## Local development services
+
 Optimark uses a local Docker Compose stack for core infrastructure:
+
 - Postgres
 - Redis
 - SeaweedFS for S3-compatible object storage
@@ -91,7 +104,9 @@ make dev-services-logs
 See [local development stack docs](docs/local-development-stack.md) for connection defaults and service details.
 
 ## Related planning docs
+
 - [AI spec](docs/optimark-ai-spec.md)
 - [UI generation brief](docs/optimark-ui-brief.md)
 - [ADR index](docs/adr/README.md)
 - [Local development stack](docs/local-development-stack.md)
+- [UI Mockups](docs/mockups)
