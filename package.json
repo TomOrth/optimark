@@ -1,0 +1,16 @@
+{
+  "name": "optimark-tooling",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "bun@1.3.6",
+  "scripts": {
+    "prepare": "husky",
+    "commitlint": "commitlint --config commitlint.config.cjs --edit",
+    "commitlint:range": "commitlint --config commitlint.config.cjs --from origin/main --to HEAD"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "husky": "^9.1.7"
+  }
+}
