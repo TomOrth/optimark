@@ -12,6 +12,7 @@
 - [ADR-0003: Generic Assessment Domain with Coding as a Specialized Assignment Type](./adr/0003-generic-assessment-domain.md)
 - [ADR-0004: Contract-Driven Coding Submission Engine](./adr/0004-contract-driven-coding-engine.md)
 - [ADR-0005: Hosted SaaS First with Self-Hosting Seams](./adr/0005-hosted-saas-first.md)
+- [ADR-0007: Backend uv Workspace Package Topology](./adr/0007-backend-uv-workspace-package-topology.md)
 
 ## 1. Product Summary
 Optimark is an instructor-first assessment platform that begins with coding assignments and autograding, while intentionally preserving a path to broader assessment workflows similar to Gradescope. The first release should serve CS instructors, TAs, and students, but the core domain model must remain generic enough to support non-coding assignments later.
