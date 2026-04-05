@@ -16,11 +16,8 @@ import {
 import {
   Bell,
   BookOpen,
-  ChevronDown,
-  CircleDot,
   Clock3,
   FileCode2,
-  FolderOpen,
   Gauge,
   GraduationCap,
   History,
@@ -31,9 +28,7 @@ import {
   Sparkles,
   Users,
 } from "lucide-react";
-import {
-  useQuery,
-} from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { brand, shellTabs, shellUtilityLinks } from "@optimark/calliope";
 import "./styles.css";
 
@@ -41,144 +36,103 @@ type AppContext = {
   queryClient: QueryClient;
 };
 
-type StatCard = {
+type FoundationMetric = {
   label: string;
   value: string;
   context: string;
   tone?: "default" | "accent" | "alert";
 };
 
-type AssignmentRow = {
-  name: string;
-  type: string;
-  status: string;
-  due: string;
-  submissions: string;
+type ScaffoldRoute = {
+  path: string;
+  summary: string;
+  status: "ready" | "planned" | "stub";
 };
 
-type ActivityItem = {
+type FoundationPattern = {
   title: string;
-  when: string;
-  tag?: string;
-  tone?: "default" | "alert";
+  description: string;
 };
 
-type CourseSnapshot = {
+type FoundationOverview = {
   title: string;
-  term: string;
-  viewLabel: string;
-  stats: StatCard[];
-  assignments: AssignmentRow[];
-  activity: ActivityItem[];
+  subtitle: string;
+  metrics: FoundationMetric[];
+  routes: ScaffoldRoute[];
+  patterns: FoundationPattern[];
 };
 
 const queryClient = new QueryClient();
 
-const appSnapshot: CourseSnapshot = {
-  title: brand.courseLabel,
-  term: brand.courseTerm,
-  viewLabel: brand.viewLabel,
-  stats: [
-    { label: "Drafts", value: "4", context: "Items" },
-    { label: "Published", value: "12", context: "Live", tone: "accent" },
-    { label: "Pending Review", value: "8", context: "Grading", tone: "alert" },
-    { label: "Completed", value: "45", context: "Students" },
+const foundationOverview: FoundationOverview = {
+  title: `${brand.name} Shell`,
+  subtitle: "Router, query, package boundaries, and shared shell primitives are wired for future product tickets.",
+  metrics: [
+    { label: "Routes", value: "7", context: "Scaffolded", tone: "accent" },
+    { label: "Query", value: "1", context: "Provider" },
+    { label: "Packages", value: "2", context: "Apollo + Calliope" },
+    { label: "Status", value: "Ready", context: "Bootstrap", tone: "alert" },
   ],
-  assignments: [
+  routes: [
     {
-      name: "Homework 4: Linked Lists",
-      type: "Practical",
-      status: "Published",
-      due: "Oct 12, 23:59",
-      submissions: "42 / 45",
+      path: "/dashboard",
+      summary: "Shell preview and shared foundation patterns.",
+      status: "ready",
     },
     {
-      name: "Assignment 3: Binary Trees",
-      type: "Programming",
-      status: "Reviewing",
-      due: "Oct 05, 12:00",
-      submissions: "45 / 45",
+      path: "/assignments",
+      summary: "Reserved for issue #8 assignment management flows.",
+      status: "planned",
     },
     {
-      name: "Midterm Quiz: Core Concepts",
-      type: "Exam",
-      status: "Draft",
-      due: "Oct 24, 09:00",
-      submissions: "0 / 45",
+      path: "/assignments/new",
+      summary: "Reserved route for the future assignment builder entrypoint.",
+      status: "stub",
     },
     {
-      name: "Homework 5: Graph Theory",
-      type: "Practical",
-      status: "Draft",
-      due: "Nov 02, 23:59",
-      submissions: "0 / 45",
-    },
-  ],
-  activity: [
-    { title: "Student A submitted Homework 4", when: "12 minutes ago" },
-    {
-      title: "Autograde completed for Assignment 3",
-      when: "45 minutes ago",
-      tag: "82% avg",
+      path: "/submissions",
+      summary: "Reserved for student submission and processing work.",
+      status: "planned",
     },
     {
-      title: "Manual review started on Midterm Essays",
-      when: "2 hours ago",
+      path: "/gradebook",
+      summary: "Reserved for instructor and student read-oriented grade views.",
+      status: "planned",
     },
     {
-      title: "System: plagiarism detected in Homework 4",
-      when: "3 hours ago",
-      tone: "alert",
+      path: "/students",
+      summary: "Reserved for roster and per-student workflow surfaces.",
+      status: "planned",
+    },
+    {
+      path: "/settings",
+      summary: "Reserved for course configuration and policy controls.",
+      status: "planned",
     },
   ],
-};
-
-type AssignmentDraft = {
-  title: string;
-  dueDate: string;
-  points: number;
-  language: string;
-  submissionLimit: number;
-  visibility: string;
-  category: string;
-  description: string;
-  starterFiles: { name: string; meta: string }[];
-};
-
-const assignmentDraft: AssignmentDraft = {
-  title: "Homework 4: Linked Lists",
-  dueDate: "Oct 15, 2026",
-  points: 100,
-  language: "Python 3.10+",
-  submissionLimit: 3,
-  visibility: "Hidden",
-  category: "Coding",
-  description: `## Instructions
-Implement a singly linked list with the following methods:
-- append(value)
-- prepend(value)
-- delete(value)
-- find(value)
-
-### Constraints
-- Time Complexity: O(n) for searching
-- Space Complexity: O(1) for deletions
-
-Ensure all edge cases are handled (empty list, single node list).`,
-  starterFiles: [
-    { name: "linked_list.py", meta: "Python Source • 2.4 KB" },
-    { name: "test_suite.py", meta: "Python Test • 5.1 KB" },
+  patterns: [
+    {
+      title: "App Shell",
+      description: "Persistent sidebar, sticky top bar, and centered workspace canvas are ready for authenticated flows.",
+    },
+    {
+      title: "Page Primitives",
+      description: "Page headers, actions, placeholder states, and surface panels are available for future screens.",
+    },
+    {
+      title: "State Styling",
+      description: "Status pills, loading states, and restrained surface treatments provide a consistent baseline.",
+    },
+    {
+      title: "Package Boundaries",
+      description: "Apollo owns the app runtime while Calliope owns shared brand and shell definitions.",
+    },
   ],
 };
 
-const loadSnapshot = async (): Promise<CourseSnapshot> => {
+const loadFoundationOverview = async (): Promise<FoundationOverview> => {
   await new Promise((resolve) => setTimeout(resolve, 60));
-  return appSnapshot;
-};
-
-const loadAssignmentDraft = async (): Promise<AssignmentDraft> => {
-  await new Promise((resolve) => setTimeout(resolve, 60));
-  return assignmentDraft;
+  return foundationOverview;
 };
 
 const rootRoute = createRootRouteWithContext<AppContext>()({
@@ -196,7 +150,7 @@ const indexRoute = createRoute({
 const dashboardRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/dashboard",
-  component: DashboardPage,
+  component: FoundationPreviewPage,
 });
 
 const assignmentsRoute = createRoute({
@@ -208,7 +162,7 @@ const assignmentsRoute = createRoute({
 const assignmentEditorRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/assignments/new",
-  component: AssignmentEditorPage,
+  component: AssignmentBuilderRoutePage,
 });
 
 const submissionsRoute = createRoute({
@@ -379,31 +333,31 @@ function PageHeader(props: {
   );
 }
 
-function DashboardPage() {
+function FoundationPreviewPage() {
   const { data } = useQuery({
-    queryKey: ["course-snapshot"],
-    queryFn: loadSnapshot,
+    queryKey: ["foundation-overview"],
+    queryFn: loadFoundationOverview,
   });
 
   if (!data) {
-    return <PageSkeleton title="Loading dashboard..." />;
+    return <PageSkeleton title="Loading shell preview..." />;
   }
 
   return (
     <section className="page-shell">
       <PageHeader
         title={data.title}
-        subtitle={`${data.term} • ${data.viewLabel}`}
+        subtitle={data.subtitle}
         actions={
           <>
-            <button className="secondary-shell-action">Open Gradebook</button>
-            <button className="primary-shell-action">Publish All</button>
+            <button className="secondary-shell-action">Secondary Action</button>
+            <button className="primary-shell-action">Primary Action</button>
           </>
         }
       />
 
       <div className="stats-grid">
-        {data.stats.map((stat) => (
+        {data.metrics.map((stat) => (
           <article key={stat.label} className="stat-panel">
             <span className={`stat-label stat-label-${stat.tone ?? "default"}`}>
               {stat.label}
@@ -419,36 +373,29 @@ function DashboardPage() {
       <div className="content-grid">
         <section className="surface-panel panel-large">
           <div className="panel-heading">
-            <h3>Active Coursework</h3>
-            <button className="inline-action">
-              Filter
-              <ChevronDown size={14} />
-            </button>
+            <h3>Route Map</h3>
+            <span className="inline-action">Shared Scaffold</span>
           </div>
 
           <div className="table-shell">
             <table>
               <thead>
                 <tr>
-                  <th>Name</th>
-                  <th>Type</th>
-                  <th>Status</th>
-                  <th>Due Date</th>
-                  <th className="align-right">Submissions</th>
+                  <th>Path</th>
+                  <th>Purpose</th>
+                  <th className="align-right">Status</th>
                 </tr>
               </thead>
               <tbody>
-                {data.assignments.map((row) => (
-                  <tr key={row.name}>
-                    <td className="cell-strong">{row.name}</td>
-                    <td>{row.type}</td>
-                    <td>
-                      <span className={`status-pill status-${row.status.toLowerCase()}`}>
-                        {row.status}
+                {data.routes.map((route) => (
+                  <tr key={route.path}>
+                    <td className="cell-strong">{route.path}</td>
+                    <td>{route.summary}</td>
+                    <td className="align-right">
+                      <span className={`status-pill status-${route.status}`}>
+                        {route.status}
                       </span>
                     </td>
-                    <td>{row.due}</td>
-                    <td className="align-right">{row.submissions}</td>
                   </tr>
                 ))}
               </tbody>
@@ -458,20 +405,19 @@ function DashboardPage() {
 
         <aside className="surface-panel panel-activity">
           <div className="panel-heading">
-            <h3>Operational Feed</h3>
+            <h3>Foundation Patterns</h3>
             <Sparkles size={14} />
           </div>
 
           <div className="activity-list">
-            {data.activity.map((item) => (
+            {data.patterns.map((item) => (
               <article key={item.title} className="activity-item">
-                <div className={`activity-mark activity-${item.tone ?? "default"}`}>
-                  <CircleDot size={14} />
+                <div className="activity-mark">
+                  <Sparkles size={14} />
                 </div>
                 <div>
                   <strong>{item.title}</strong>
-                  <p>{item.when}</p>
-                  {item.tag ? <span className="activity-tag">{item.tag}</span> : null}
+                  <p>{item.description}</p>
                 </div>
               </article>
             ))}
@@ -482,85 +428,12 @@ function DashboardPage() {
   );
 }
 
-function AssignmentEditorPage() {
-  const { data } = useQuery({
-    queryKey: ["assignment-draft"],
-    queryFn: loadAssignmentDraft,
-  });
-
-  if (!data) {
-    return <PageSkeleton title="Loading assignment editor..." />;
-  }
-
+function AssignmentBuilderRoutePage() {
   return (
-    <section className="page-shell">
-      <PageHeader
-        eyebrow="Assignment Editor"
-        title={data.title}
-        actions={
-          <>
-            <button className="secondary-shell-action">Save Draft</button>
-            <button className="primary-shell-action">Publish</button>
-          </>
-        }
-      />
-
-      <div className="editor-grid">
-        <section className="editor-main">
-          <div className="section-heading">
-            <h3>Description</h3>
-            <div className="toggle-set">
-              <span className="toggle-active">Write</span>
-              <span>Preview</span>
-            </div>
-          </div>
-
-          <div className="editor-surface">
-            <pre>{data.description}</pre>
-          </div>
-
-          <div className="section-heading">
-            <h3>Starter Files</h3>
-          </div>
-
-          <div className="file-stack">
-            {data.starterFiles.map((file) => (
-              <div key={file.name} className="file-row">
-                <div className="file-row-main">
-                  <FolderOpen size={16} />
-                  <div>
-                    <strong>{file.name}</strong>
-                    <p>{file.meta}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-            <button className="upload-shell">Upload Additional Files</button>
-          </div>
-        </section>
-
-        <aside className="surface-panel editor-sidebar">
-          <div className="panel-heading">
-            <h3>Metadata</h3>
-          </div>
-
-          <div className="meta-grid">
-            <MetaField label="Due Date" value={data.dueDate} />
-            <MetaField label="Points" value={String(data.points)} />
-            <MetaField label="Language" value={data.language} />
-            <MetaField label="Submission Limit" value={String(data.submissionLimit)} />
-            <MetaField label="Visibility" value={data.visibility} />
-            <MetaField label="Category" value={data.category} />
-          </div>
-
-          <div className="verify-panel">
-            <Settings size={18} />
-            <strong>Verify Environment</strong>
-            <p>Confirm dependencies, runner config, and starter files before publishing.</p>
-          </div>
-        </aside>
-      </div>
-    </section>
+    <PlaceholderPage
+      title="Assignment Builder Route"
+      subtitle="This route is reserved for the future assignment editor flow in issue #8."
+    />
   );
 }
 
@@ -569,7 +442,7 @@ function AssignmentsOverviewPage() {
     <PlaceholderPage
       title="Assignments"
       subtitle="Use this route group for future assignment lists, creation flows, and publishing controls."
-      actionLabel="Open Editor"
+      actionLabel="Open Reserved Builder Route"
       actionTo="/assignments/new"
     />
   );
@@ -639,15 +512,6 @@ function PlaceholderPage(props: {
         </p>
       </div>
     </section>
-  );
-}
-
-function MetaField(props: { label: string; value: string }) {
-  return (
-    <div className="meta-field">
-      <span>{props.label}</span>
-      <strong>{props.value}</strong>
-    </div>
   );
 }
 

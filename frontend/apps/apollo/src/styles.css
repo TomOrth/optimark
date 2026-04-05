@@ -149,7 +149,6 @@ a {
 
 .primary-shell-action,
 .secondary-shell-action,
-.upload-shell,
 .inline-action {
   display: inline-flex;
   align-items: center;
@@ -172,7 +171,6 @@ a {
 
 .primary-shell-action:hover,
 .secondary-shell-action:hover,
-.upload-shell:hover,
 .inline-action:hover {
   transform: translateY(-1px);
 }
@@ -383,10 +381,7 @@ a {
 
 .stat-panel,
 .surface-panel,
-.placeholder-surface,
-.editor-surface,
-.file-row,
-.verify-panel {
+.placeholder-surface {
   background: rgba(255, 255, 255, 0.82);
   border: 1px solid rgba(43, 52, 52, 0.06);
   box-shadow: var(--shadow);
@@ -441,8 +436,7 @@ a {
   padding: 1.2rem;
 }
 
-.panel-heading,
-.section-heading {
+.panel-heading {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -450,8 +444,7 @@ a {
   margin-bottom: 0.95rem;
 }
 
-.panel-heading h3,
-.section-heading h3 {
+.panel-heading h3 {
   margin: 0;
   font-size: 0.96rem;
   font-weight: 800;
@@ -502,17 +495,17 @@ th {
   letter-spacing: 0.08em;
 }
 
-.status-published {
+.status-ready {
   background: var(--primary-soft);
   color: var(--primary-strong);
 }
 
-.status-reviewing {
+.status-planned {
   background: #dde4f4;
   color: #51627c;
 }
 
-.status-draft {
+.status-stub {
   background: var(--surface-soft);
   color: var(--muted);
 }
@@ -556,143 +549,11 @@ th {
   font-size: 0.84rem;
 }
 
-.activity-item p,
-.activity-tag {
-  margin: 0.2rem 0 0;
+.activity-item p {
+  margin: 0.35rem 0 0;
   color: var(--muted);
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.editor-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.8fr) minmax(19rem, 1fr);
-  gap: 1.3rem;
-}
-
-.editor-main {
-  display: flex;
-  flex-direction: column;
-  gap: 1.35rem;
-}
-
-.toggle-set {
-  display: inline-flex;
-  gap: 1rem;
-  color: var(--muted);
-  font-size: 0.76rem;
-  font-weight: 700;
-}
-
-.toggle-active {
-  color: var(--primary);
-}
-
-.editor-surface {
-  border-radius: var(--radius-lg);
-  padding: 1.4rem;
-  min-height: 19rem;
-}
-
-.editor-surface pre {
-  margin: 0;
-  white-space: pre-wrap;
-  color: #657173;
-  font: 0.95rem/1.7 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-}
-
-.file-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 0.85rem;
-}
-
-.file-row {
-  border-radius: 1rem;
-  padding: 1rem 1.1rem;
-}
-
-.file-row-main {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-}
-
-.file-row strong {
-  display: block;
-  font-size: 0.9rem;
-}
-
-.file-row p {
-  margin: 0.2rem 0 0;
-  font-size: 0.72rem;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.upload-shell {
-  width: 100%;
-  min-height: 4.5rem;
-  border: 2px dashed rgba(43, 52, 52, 0.1);
-  background: rgba(255, 255, 255, 0.45);
-  color: var(--muted);
-}
-
-.editor-sidebar {
-  align-self: start;
-  position: sticky;
-  top: 5.5rem;
-}
-
-.meta-grid {
-  display: grid;
-  gap: 0.85rem;
-}
-
-.meta-field {
-  padding: 0.9rem 1rem;
-  border-radius: 1rem;
-  background: var(--surface-soft);
-}
-
-.meta-field span {
-  display: block;
-  font-size: 0.66rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: var(--muted);
-}
-
-.meta-field strong {
-  display: block;
-  margin-top: 0.45rem;
-  font-size: 0.95rem;
-}
-
-.verify-panel {
-  margin-top: 1rem;
-  border-radius: 1.1rem;
-  padding: 1.2rem;
-  background:
-    linear-gradient(135deg, rgba(22, 66, 77, 0.96), rgba(37, 95, 111, 0.92)),
-    radial-gradient(circle at top right, rgba(255, 255, 255, 0.18), transparent 13rem);
-  color: white;
-}
-
-.verify-panel strong {
-  display: block;
-  margin-top: 0.75rem;
-  margin-bottom: 0.25rem;
-}
-
-.verify-panel p {
-  margin: 0;
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 0.8rem;
-  line-height: 1.55;
+  font-size: 0.78rem;
+  line-height: 1.5;
 }
 
 .placeholder-surface {
@@ -706,13 +567,8 @@ th {
 
 @media (max-width: 1100px) {
   .stats-grid,
-  .content-grid,
-  .editor-grid {
+  .content-grid {
     grid-template-columns: 1fr;
-  }
-
-  .editor-sidebar {
-    position: static;
   }
 }
 
