@@ -93,6 +93,7 @@ The backend workspace keeps readable directory names while using themed uv packa
 make help
 cp .env.example .env
 make dev-services-up
+make tooling-install
 make frontend-install
 make frontend-dev
 make backend-sync
@@ -139,3 +140,4 @@ Examples:
 - `docs(adr): document backend uv workspace topology`
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the supported types and workflow details.
+Run `make tooling-install` or `bun install` at the repository root at least once so Husky hooks are installed locally.

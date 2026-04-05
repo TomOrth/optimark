@@ -1,4 +1,4 @@
-.PHONY: help frontend-install frontend-dev backend-sync backend-lock backend-api-dev backend-worker-run dev-services-up dev-services-down dev-services-reset dev-services-logs
+.PHONY: help tooling-install frontend-install frontend-dev backend-sync backend-lock backend-api-dev backend-worker-run dev-services-up dev-services-down dev-services-reset dev-services-logs
 
 help:
 	@printf "%s\n" \
@@ -8,7 +8,8 @@ help:
 	"  make dev-services-down Stop the local development services" \
 	"  make dev-services-reset Stop and remove local development service volumes" \
 	"  make dev-services-logs Tail logs for the local development services" \
-	"  make frontend-install  Install Bun dependencies for the frontend workspace" \
+	"  make tooling-install   Install repo-level tooling such as Husky and commitlint" \
+	"  make frontend-install  Install repo tooling and Bun dependencies for the frontend workspace" \
 	"  make frontend-dev      Run the frontend workspace dev script" \
 	"  make backend-sync      Sync the uv backend workspace" \
 	"  make backend-lock      Refresh the backend uv lockfile" \
@@ -27,7 +28,10 @@ dev-services-reset:
 dev-services-logs:
 	docker compose logs -f
 
-frontend-install:
+tooling-install:
+	bun install
+
+frontend-install: tooling-install
 	cd frontend && bun install
 
 frontend-dev:
