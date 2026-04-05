@@ -1,0 +1,16 @@
+[project]
+name = "optimark-backend-workspace"
+version = "0.1.0"
+description = "Backend workspace root for Optimark"
+requires-python = ">=3.13"
+dependencies = []
+
+[tool.uv.workspace]
+members = [
+  "apps/api",
+  "apps/worker",
+  "packages/contracts",
+  "packages/db",
+  "packages/domain",
+]
+

@@ -1,0 +1,43 @@
+version = 1
+revision = 3
+requires-python = ">=3.13"
+
+[manifest]
+members = [
+    "optimark-api",
+    "optimark-backend-workspace",
+    "optimark-contracts",
+    "optimark-db",
+    "optimark-domain",
+    "optimark-worker",
+]
+
+[[package]]
+name = "optimark-api"
+version = "0.1.0"
+source = { editable = "apps/api" }
+
+[[package]]
+name = "optimark-backend-workspace"
+version = "0.1.0"
+source = { virtual = "." }
+
+[[package]]
+name = "optimark-contracts"
+version = "0.1.0"
+source = { editable = "packages/contracts" }
+
+[[package]]
+name = "optimark-db"
+version = "0.1.0"
+source = { editable = "packages/db" }
+
+[[package]]
+name = "optimark-domain"
+version = "0.1.0"
+source = { editable = "packages/domain" }
+
+[[package]]
+name = "optimark-worker"
+version = "0.1.0"
+source = { editable = "apps/worker" }

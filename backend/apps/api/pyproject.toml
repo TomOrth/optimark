@@ -1,0 +1,10 @@
+[project]
+name = "optimark-api"
+version = "0.1.0"
+description = "API application package for Optimark"
+requires-python = ">=3.13"
+dependencies = []
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
