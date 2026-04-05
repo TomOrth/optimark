@@ -1,7 +1,6 @@
 services:
   postgres:
     image: postgres:17-alpine
-    container_name: optimark-postgres
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-optimark}
       POSTGRES_USER: ${POSTGRES_USER:-optimark}
@@ -20,7 +19,6 @@ services:
 
   redis:
     image: redis:7-alpine
-    container_name: optimark-redis
     ports:
       - "127.0.0.1:${REDIS_PORT:-6379}:6379"
     volumes:
@@ -37,7 +35,6 @@ services:
 
   seaweedfs:
     image: chrislusf/seaweedfs:4.06
-    container_name: optimark-seaweedfs
     environment:
       AWS_ACCESS_KEY_ID: ${SEAWEEDFS_ACCESS_KEY:-admin}
       AWS_SECRET_ACCESS_KEY: ${SEAWEEDFS_SECRET_KEY:-key}

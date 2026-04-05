@@ -37,6 +37,12 @@ This starts:
 
 All published service ports are bound to `127.0.0.1` so the local development stack is not exposed on the broader network by default.
 
+If you need multiple concurrent local stacks, use a Compose project name instead of relying on fixed container names:
+
+```sh
+docker compose -p optimark-yourname up -d
+```
+
 ## Stop the stack
 ```sh
 make dev-services-down
