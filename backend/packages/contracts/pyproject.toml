@@ -5,7 +5,6 @@ description = "Shared contracts package for Optimark"
 requires-python = ">=3.13"
 dependencies = [
   "metis",
-  "mnemosyne",
   "pydantic>=2.11,<3.0",
 ]
 

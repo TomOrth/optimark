@@ -90,14 +90,12 @@ version = "0.1.0"
 source = { editable = "packages/contracts" }
 dependencies = [
     { name = "metis" },
-    { name = "mnemosyne" },
     { name = "pydantic" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "metis", editable = "packages/domain" },
-    { name = "mnemosyne", editable = "packages/db" },
     { name = "pydantic", specifier = ">=2.11,<3.0" },
 ]
 
