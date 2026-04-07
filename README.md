@@ -95,6 +95,7 @@ cp .env.example .env
 make dev-services-up
 make tooling-install
 make frontend-install
+make ci
 make frontend-dev
 make backend-sync
 make backend-api-dev
@@ -102,6 +103,19 @@ make backend-worker-run
 ```
 
 The frontend now boots a real routed SPA with a shared workspace shell, while the backend includes a minimal FastAPI and worker bootstrap for upcoming product work.
+
+## Quality checks
+
+The baseline CI workflow runs on pushes to `main` and pull requests. It validates the current monorepo quality gate:
+
+- frontend dependency install, typecheck, and build
+- backend uv sync, Ruff linting, and pytest smoke tests
+
+Run the same checks locally with:
+
+```sh
+make ci
+```
 
 ## Local development services
 

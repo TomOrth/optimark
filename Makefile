@@ -1,4 +1,4 @@
-.PHONY: help tooling-install frontend-install frontend-dev backend-sync backend-lock backend-api-dev backend-worker-run dev-services-up dev-services-down dev-services-reset dev-services-logs
+.PHONY: help tooling-install frontend-install frontend-check frontend-build frontend-dev backend-sync backend-lock backend-lint backend-test backend-api-dev backend-worker-run ci dev-services-up dev-services-down dev-services-reset dev-services-logs
 
 help:
 	@printf "%s\n" \
@@ -10,11 +10,16 @@ help:
 	"  make dev-services-logs Tail logs for the local development services" \
 	"  make tooling-install   Install repo-level tooling such as Husky and commitlint" \
 	"  make frontend-install  Install repo tooling and Bun dependencies for the frontend workspace" \
+	"  make frontend-check    Typecheck the frontend workspace" \
+	"  make frontend-build    Build the frontend workspace" \
 	"  make frontend-dev      Run the frontend workspace dev script" \
 	"  make backend-sync      Sync the uv backend workspace" \
 	"  make backend-lock      Refresh the backend uv lockfile" \
+	"  make backend-lint      Lint the backend workspace with Ruff" \
+	"  make backend-test      Run backend pytest tests" \
 	"  make backend-api-dev   Run the FastAPI backend app with reload" \
-	"  make backend-worker-run Run the worker bootstrap command"
+	"  make backend-worker-run Run the worker bootstrap command" \
+	"  make ci                Run the baseline local CI quality gates"
 
 dev-services-up:
 	docker compose up -d
@@ -34,6 +39,12 @@ tooling-install:
 frontend-install: tooling-install
 	cd frontend && bun install
 
+frontend-check:
+	cd frontend && bun run check
+
+frontend-build:
+	cd frontend && bun run build
+
 frontend-dev:
 	cd frontend && bun run dev
 
@@ -43,8 +54,16 @@ backend-sync:
 backend-lock:
 	cd backend && uv lock
 
+backend-lint:
+	cd backend && uv run ruff check .
+
+backend-test:
+	cd backend && uv run pytest
+
 backend-api-dev:
 	cd backend && uv run --package athena uvicorn optimark_athena.app:app --reload
 
 backend-worker-run:
 	cd backend && uv run --package hermes hermes-worker
+
+ci: frontend-check frontend-build backend-lint backend-test
