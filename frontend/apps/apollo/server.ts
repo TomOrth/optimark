@@ -32,14 +32,22 @@ const server = Bun.serve({
   port,
   async fetch(request) {
     const url = new URL(request.url);
-    const fileUrl = distUrlFor(decodeURIComponent(url.pathname));
+    let decodedPathname: string;
+
+    try {
+      decodedPathname = decodeURIComponent(url.pathname);
+    } catch {
+      return new Response("Bad Request", { status: 400 });
+    }
+
+    const fileUrl = distUrlFor(decodedPathname);
 
     if (!fileUrl) {
       return new Response("Not found", { status: 404 });
     }
 
     const file = Bun.file(fileUrl);
-    const responsePathname = url.pathname === "/" ? "/index.html" : url.pathname;
+    const responsePathname = decodedPathname === "/" ? "/index.html" : decodedPathname;
 
     if (await file.exists()) {
       return new Response(file, {
