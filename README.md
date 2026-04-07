@@ -110,6 +110,7 @@ The baseline CI workflow runs on pull requests, pushes to `main`, and tag pushes
 
 - frontend dependency install, typecheck, and build
 - backend uv sync, Ruff linting, and pytest smoke tests
+- CodeQL code scanning for GitHub Actions workflows, JavaScript/TypeScript, and Python
 
 On push events, CI also builds and publishes the frontend and backend container images.
 
