@@ -93,9 +93,9 @@ The backend workspace keeps readable directory names while using themed uv packa
 make help
 cp .env.example .env
 make dev-services-up
+make ci
 make tooling-install
 make frontend-install
-make ci
 make frontend-dev
 make backend-sync
 make backend-api-dev
@@ -111,11 +111,13 @@ The baseline CI workflow runs on pushes to `main` and pull requests. It validate
 - frontend dependency install, typecheck, and build
 - backend uv sync, Ruff linting, and pytest smoke tests
 
-Run the same checks locally with:
+Run the same setup and checks locally with one command:
 
 ```sh
 make ci
 ```
+
+`make ci` installs frontend dependencies with `--frozen-lockfile`, syncs the backend workspace with `--frozen`, and then runs the same frontend and backend quality gates as GitHub Actions.
 
 ## Local development services
 
