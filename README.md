@@ -106,10 +106,12 @@ The frontend now boots a real routed SPA with a shared workspace shell, while th
 
 ## Quality checks
 
-The baseline CI workflow runs on pushes to `main` and pull requests. It validates the current monorepo quality gate:
+The baseline CI workflow runs on pull requests, pushes to `main`, and tag pushes. It validates the current monorepo quality gate:
 
 - frontend dependency install, typecheck, and build
 - backend uv sync, Ruff linting, and pytest smoke tests
+
+On push events, CI also builds and publishes the frontend and backend container images.
 
 Run the same setup and checks locally with one command:
 
@@ -118,6 +120,29 @@ make ci
 ```
 
 `make ci` installs frontend dependencies with `--frozen-lockfile`, syncs the backend workspace with `--frozen`, and then runs the same frontend and backend quality gates as GitHub Actions.
+
+## Containers
+
+Optimark publishes two application images to GitHub Container Registry:
+
+- `ghcr.io/tomorth/optimark-frontend`
+- `ghcr.io/tomorth/optimark-backend`
+
+Pushes to `main` publish images tagged `latest`; tag pushes publish images with the Git tag. The publish job uses Docker Hardened Images base images from `dhi.io`, so the repository must define `DHI_USERNAME` and `DHI_TOKEN` secrets that can pull those base images. Published images are scanned with Trivy, and SARIF vulnerability reports are uploaded to GitHub code scanning for review.
+
+Build the images locally from the repository root:
+
+```sh
+docker build -f frontend/Dockerfile -t optimark-frontend .
+docker build -f backend/Dockerfile -t optimark-backend .
+```
+
+Run the containers locally:
+
+```sh
+docker run --rm -p 4173:4173 optimark-frontend
+docker run --rm -p 8000:8000 optimark-backend
+```
 
 ## Local development services
 

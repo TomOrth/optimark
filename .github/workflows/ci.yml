@@ -6,9 +6,14 @@ on:
   push:
     branches:
       - main
+    tags:
+      - "*"
 
 permissions:
   contents: read
+
+env:
+  REGISTRY: ghcr.io
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
@@ -70,3 +75,94 @@ jobs:
 
       - name: Test backend
         run: uv run --frozen pytest
+
+  container-images:
+    name: Container Images
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      security-events: write
+    needs:
+      - frontend
+      - backend
+    env:
+      DHI_USERNAME: ${{ secrets.DHI_USERNAME }}
+      DHI_TOKEN: ${{ secrets.DHI_TOKEN }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - component: frontend
+            image: tomorth/optimark-frontend
+            dockerfile: frontend/Dockerfile
+          - component: backend
+            image: tomorth/optimark-backend
+            dockerfile: backend/Dockerfile
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Verify Docker Hardened Images credentials
+        if: env.DHI_USERNAME == '' || env.DHI_TOKEN == ''
+        run: |
+          echo "::error::DHI_USERNAME and DHI_TOKEN repository secrets are required to pull dhi.io base images."
+          exit 1
+
+      - name: Log in to Docker Hardened Images registry
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
+        with:
+          registry: dhi.io
+          username: ${{ env.DHI_USERNAME }}
+          password: ${{ env.DHI_TOKEN }}
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate image metadata
+        id: metadata
+        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ matrix.image }}
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=ref,event=tag
+            type=sha,prefix=sha-
+
+      - name: Build container image
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
+        with:
+          context: .
+          file: ${{ matrix.dockerfile }}
+          push: true
+          tags: ${{ steps.metadata.outputs.tags }}
+          labels: ${{ steps.metadata.outputs.labels }}
+
+      - name: Select image tag for scanning
+        id: scan-image
+        env:
+          IMAGE_TAGS: ${{ steps.metadata.outputs.tags }}
+        run: |
+          image_ref="$(printf "%s\n" "$IMAGE_TAGS" | head -n 1)"
+          echo "ref=${image_ref}" >> "$GITHUB_OUTPUT"
+
+      - name: Scan container image for vulnerabilities
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # 0.35.0
+        with:
+          image-ref: ${{ steps.scan-image.outputs.ref }}
+          format: sarif
+          output: trivy-${{ matrix.component }}.sarif
+          vuln-type: os,library
+          severity: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
+          exit-code: "0"
+
+      - name: Upload vulnerability scan report
+        uses: github/codeql-action/upload-sarif@d4b3ca9fa7f69d38bfcd667bdc45bc373d16277e # v4
+        with:
+          sarif_file: trivy-${{ matrix.component }}.sarif
+          category: trivy-${{ matrix.component }}
