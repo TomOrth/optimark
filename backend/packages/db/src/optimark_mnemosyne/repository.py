@@ -37,6 +37,21 @@ class SqlAlchemyAcademicRepository:
         self._session.flush()
         return _user_from_model(model)
 
+    def get_user_by_email(self, email: str) -> User | None:
+        """Fetch a user by canonical email address.
+
+        Args:
+            email: Canonical email address to look up.
+
+        Returns:
+            User | None: The matching user when present.
+        """
+        statement = select(UserModel).where(UserModel.email == email)
+        model = self._session.scalar(statement)
+        if model is None:
+            return None
+        return _user_from_model(model)
+
     def get_user(self, user_id: UUID) -> User | None:
         """Fetch a user by identifier.
 

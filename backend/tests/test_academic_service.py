@@ -3,7 +3,7 @@
 from sqlalchemy.exc import IntegrityError
 
 from optimark_metis.academic import CourseRole
-from optimark_metis.errors import DuplicateEnrollmentError
+from optimark_metis.errors import DuplicateEmailError, DuplicateEnrollmentError
 from optimark_metis.service import AcademicService
 from optimark_mnemosyne.repository import SqlAlchemyAcademicRepository
 
@@ -132,6 +132,41 @@ def test_academic_service_rejects_duplicate_enrollment(
             course_id=course.id,
             user_id=user.id,
             role=CourseRole.TA,
+        )
+        db_session.commit()
+    except IntegrityError:
+        db_session.rollback()
+    else:
+        raise AssertionError("expected the database unique constraint to reject duplicates")
+
+
+def test_academic_service_rejects_duplicate_canonical_email(
+    academic_service: AcademicService,
+    db_session,
+) -> None:
+    """Verify canonical duplicate emails are blocked in service and database layers."""
+    created_user = academic_service.create_user(
+        email="Instructor@Example.edu",
+        display_name="Instructor",
+    )
+
+    try:
+        academic_service.create_user(
+            email=" instructor@example.edu ",
+            display_name="Duplicate Instructor",
+        )
+    except DuplicateEmailError:
+        pass
+    else:
+        raise AssertionError("expected duplicate canonical email to be rejected")
+
+    repository = SqlAlchemyAcademicRepository(db_session)
+    assert repository.get_user_by_email("instructor@example.edu") == created_user
+
+    try:
+        repository.add_user(
+            email="instructor@example.edu",
+            display_name="Database Duplicate",
         )
         db_session.commit()
     except IntegrityError:

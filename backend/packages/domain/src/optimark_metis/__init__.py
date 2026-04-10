@@ -3,6 +3,7 @@
 from optimark_metis.academic import Course, CourseRole, Enrollment, User
 from optimark_metis.errors import (
     AcademicDomainError,
+    DuplicateEmailError,
     DuplicateEnrollmentError,
     EntityNotFoundError,
     InvalidAcademicDataError,
@@ -17,6 +18,7 @@ __all__ = [
     "AcademicService",
     "Course",
     "CourseRole",
+    "DuplicateEmailError",
     "DuplicateEnrollmentError",
     "Enrollment",
     "EntityNotFoundError",

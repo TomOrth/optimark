@@ -5,6 +5,7 @@ from uuid import UUID
 
 from optimark_metis.academic import Course, CourseRole, Enrollment, User
 from optimark_metis.errors import (
+    DuplicateEmailError,
     DuplicateEnrollmentError,
     EntityNotFoundError,
     InvalidAcademicDataError,
@@ -34,6 +35,7 @@ class AcademicService:
             User: The persisted user entity.
 
         Raises:
+            DuplicateEmailError: If the canonicalized email already exists.
             InvalidAcademicDataError: If any required field is blank.
         """
         normalized_email = self._normalize_required(
@@ -44,6 +46,10 @@ class AcademicService:
             value=display_name,
             field_name="display_name",
         )
+
+        if self._repository.get_user_by_email(normalized_email) is not None:
+            raise DuplicateEmailError(f"user email {normalized_email} already exists")
+
         return self._repository.add_user(
             email=normalized_email,
             display_name=normalized_display_name,

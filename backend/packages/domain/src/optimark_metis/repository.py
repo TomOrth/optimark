@@ -13,6 +13,9 @@ class AcademicRepository(Protocol):
     def add_user(self, *, email: str, display_name: str) -> User:
         """Persist a new user."""
 
+    def get_user_by_email(self, email: str) -> User | None:
+        """Fetch a user by canonical email address."""
+
     def get_user(self, user_id: UUID) -> User | None:
         """Fetch a user by identifier."""
 

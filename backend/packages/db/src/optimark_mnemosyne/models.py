@@ -33,7 +33,7 @@ class UserModel(Base):
     __tablename__ = "users"
 
     id: Mapped[UUID] = mapped_column(Uuid(), primary_key=True, default=uuid4)
-    email: Mapped[str] = mapped_column(String(255), nullable=False)
+    email: Mapped[str] = mapped_column(String(255), nullable=False, unique=True)
     display_name: Mapped[str] = mapped_column(String(255), nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
@@ -92,6 +92,7 @@ class EnrollmentModel(Base):
         Uuid(),
         ForeignKey("users.id"),
         nullable=False,
+        index=True,
     )
     role: Mapped[CourseRole] = mapped_column(course_role_enum, nullable=False)
     created_at: Mapped[datetime] = mapped_column(

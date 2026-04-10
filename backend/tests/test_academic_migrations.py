@@ -24,16 +24,28 @@ def make_alembic_config(database_url: str) -> Config:
 
 
 def test_migrations_create_academic_tables_and_constraints(migrated_engine) -> None:
-    """Verify the migration creates the expected tables and uniqueness rules."""
+    """Verify the migration creates the expected tables, constraints, and indexes."""
     inspector = inspect(migrated_engine)
 
     assert set(inspector.get_table_names()) >= {"users", "courses", "enrollments"}
+
+    user_unique_constraints = inspector.get_unique_constraints("users")
+    assert {
+        tuple(constraint["column_names"])
+        for constraint in user_unique_constraints
+    } >= {("email",)}
 
     unique_constraints = inspector.get_unique_constraints("enrollments")
     assert {
         tuple(sorted(constraint["column_names"]))
         for constraint in unique_constraints
     } >= {("course_id", "user_id")}
+
+    indexes = inspector.get_indexes("enrollments")
+    assert {
+        (index["name"], tuple(index["column_names"]))
+        for index in indexes
+    } >= {("ix_enrollments_user_id", ("user_id",))}
 
 
 def test_alembic_upgrade_to_head_succeeds(sqlite_database_url: str) -> None:
