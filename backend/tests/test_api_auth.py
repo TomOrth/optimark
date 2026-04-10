@@ -1,6 +1,7 @@
 """API tests for signup, login, logout, and auth dependencies."""
 
 from datetime import timedelta
+from uuid import uuid4
 
 from fastapi import Depends, FastAPI
 from fastapi.testclient import TestClient
@@ -125,5 +126,45 @@ def test_course_capability_dependency_enforces_auth_and_role(
         client.cookies.set("optimark_session", issued_session.token)
         forbidden = client.get(f"/courses/{course.id}/grade")
         assert forbidden.status_code == 403
+
+    probe_app.dependency_overrides.clear()
+
+
+def test_course_capability_dependency_returns_404_for_missing_course(
+    db_session,
+    auth_service,
+) -> None:
+    """Verify the capability dependency returns 404 when the course is missing."""
+    probe_app = FastAPI()
+
+    @probe_app.get("/courses/{course_id}/grade")
+    def grade_probe(
+        authentication=Depends(
+            require_course_capability(CourseCapability.GRADE_SUBMISSIONS),
+        ),
+    ) -> dict[str, str]:
+        return {"user_id": str(authentication.user.id)}
+
+    def override_get_db_session():
+        yield db_session
+
+    probe_app.dependency_overrides[get_db_session] = override_get_db_session
+    probe_app.dependency_overrides[get_auth_settings] = lambda: AuthSettings(
+        cookie_name="optimark_session",
+        session_ttl=timedelta(days=14),
+        cookie_secure=False,
+        cookie_same_site="lax",
+    )
+
+    issued_session = auth_service.signup(
+        email="grader@example.edu",
+        display_name="Grader",
+        password="super-secure-pass",
+    )
+
+    with TestClient(probe_app) as client:
+        client.cookies.set("optimark_session", issued_session.token)
+        missing_course = client.get(f"/courses/{uuid4()}/grade")
+        assert missing_course.status_code == 404
 
     probe_app.dependency_overrides.clear()
