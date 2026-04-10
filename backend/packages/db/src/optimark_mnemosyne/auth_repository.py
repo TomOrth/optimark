@@ -4,6 +4,7 @@ from datetime import UTC, datetime
 from uuid import UUID
 
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from optimark_metis.academic import User
@@ -14,6 +15,7 @@ from optimark_metis.auth import (
     AuthenticatedSession,
     PasswordAuthentication,
 )
+from optimark_metis.errors import DuplicateEmailError
 from optimark_mnemosyne.models import (
     AuthIdentityModel,
     AuthSessionModel,
@@ -49,6 +51,9 @@ class SqlAlchemyAuthRepository:
 
         Returns:
             AuthIdentity: Persisted auth identity.
+
+        Raises:
+            DuplicateEmailError: If a password identity already exists for the email.
         """
         identity = AuthIdentityModel(
             user_id=user_id,
@@ -61,7 +66,14 @@ class SqlAlchemyAuthRepository:
         )
         self._session.add(identity)
         self._session.add(credential)
-        self._session.flush()
+        try:
+            self._session.flush()
+        except IntegrityError as exc:
+            if _is_duplicate_identity_integrity_error(exc):
+                raise DuplicateEmailError(
+                    f"user email {provider_subject} already exists",
+                ) from exc
+            raise
         return _auth_identity_from_model(identity)
 
     def get_password_authentication(
@@ -297,3 +309,25 @@ def _coerce_utc(value: datetime) -> datetime:
     if value.tzinfo is None:
         return value.replace(tzinfo=UTC)
     return value.astimezone(UTC)
+
+
+def _is_duplicate_identity_integrity_error(error: IntegrityError) -> bool:
+    """Return whether an integrity error represents a duplicate password identity.
+
+    Args:
+        error: Integrity error raised by SQLAlchemy during flush.
+
+    Returns:
+        bool: True when the error matches the auth-identity uniqueness constraint.
+    """
+    message = str(error.orig)
+    return (
+        "uq_auth_identities_provider_subject" in message
+        or "auth_identities.provider" in message
+        or "auth_identities.provider_subject" in message
+        or (
+            "UNIQUE constraint failed:" in message
+            and "auth_identities.provider" in message
+            and "auth_identities.provider_subject" in message
+        )
+    )

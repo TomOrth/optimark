@@ -5,9 +5,11 @@ from collections.abc import Sequence
 from uuid import UUID
 
 from sqlalchemy import Select, select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from optimark_metis.academic import Course, CourseRole, Enrollment, User
+from optimark_metis.errors import DuplicateEmailError
 from optimark_mnemosyne.models import CourseModel, EnrollmentModel, UserModel
 
 
@@ -31,10 +33,18 @@ class SqlAlchemyAcademicRepository:
 
         Returns:
             User: The persisted domain user.
+
+        Raises:
+            DuplicateEmailError: If the canonical email already exists.
         """
         model = UserModel(email=email, display_name=display_name)
         self._session.add(model)
-        self._session.flush()
+        try:
+            self._session.flush()
+        except IntegrityError as exc:
+            if _is_duplicate_email_integrity_error(exc):
+                raise DuplicateEmailError(f"user email {email} already exists") from exc
+            raise
         return _user_from_model(model)
 
     def get_user_by_email(self, email: str) -> User | None:
@@ -275,3 +285,20 @@ def _coerce_utc(value: datetime) -> datetime:
     if value.tzinfo is None:
         return value.replace(tzinfo=UTC)
     return value.astimezone(UTC)
+
+
+def _is_duplicate_email_integrity_error(error: IntegrityError) -> bool:
+    """Return whether an integrity error represents a duplicate user email.
+
+    Args:
+        error: Integrity error raised by SQLAlchemy during flush.
+
+    Returns:
+        bool: True when the error matches the user-email uniqueness constraint.
+    """
+    message = str(error.orig)
+    return (
+        "uq_users_email" in message
+        or "users.email" in message
+        or "UNIQUE constraint failed: users.email" in message
+    )

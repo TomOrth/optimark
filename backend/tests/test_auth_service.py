@@ -64,6 +64,39 @@ def test_auth_service_rejects_duplicate_canonical_signup_email(
         raise AssertionError("expected duplicate canonical email to be rejected")
 
 
+def test_auth_repository_maps_duplicate_password_identity_to_duplicate_email(
+    db_session,
+) -> None:
+    """Verify password-identity uniqueness collisions raise DuplicateEmailError."""
+    academic_repository = SqlAlchemyAcademicRepository(db_session)
+    auth_repository = SqlAlchemyAuthRepository(db_session)
+    first_user = academic_repository.add_user(
+        email="first@example.edu",
+        display_name="First User",
+    )
+    second_user = academic_repository.add_user(
+        email="second@example.edu",
+        display_name="Second User",
+    )
+
+    auth_repository.add_password_identity(
+        user_id=first_user.id,
+        provider_subject="canonical@example.edu",
+        password_hash="hash-one",
+    )
+
+    try:
+        auth_repository.add_password_identity(
+            user_id=second_user.id,
+            provider_subject="canonical@example.edu",
+            password_hash="hash-two",
+        )
+    except DuplicateEmailError:
+        db_session.rollback()
+    else:
+        raise AssertionError("expected duplicate password identity to be rejected")
+
+
 def test_auth_service_rejects_invalid_passwords(auth_service: AuthService) -> None:
     """Verify signup and login enforce the baseline password policy."""
     try:
