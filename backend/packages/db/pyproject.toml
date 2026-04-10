@@ -3,7 +3,11 @@ name = "mnemosyne"
 version = "0.1.0"
 description = "Persistence package for Optimark"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+  "metis",
+  "psycopg[binary]>=3.2,<4.0",
+  "sqlalchemy>=2.0,<3.0",
+]
 
 [build-system]
 requires = ["hatchling"]

@@ -98,11 +98,14 @@ make tooling-install
 make frontend-install
 make frontend-dev
 make backend-sync
+make backend-db-upgrade
 make backend-api-dev
 make backend-worker-run
 ```
 
 The frontend now boots a real routed SPA with a shared workspace shell, while the backend includes a minimal FastAPI and worker bootstrap for upcoming product work.
+
+The backend academic foundation now includes persisted `User`, `Course`, and `Enrollment` models plus Alembic migrations for bootstrapping the schema.
 
 ## Quality checks
 

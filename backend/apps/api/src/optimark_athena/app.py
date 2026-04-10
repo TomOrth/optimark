@@ -1,3 +1,5 @@
+"""FastAPI application bootstrap for Optimark."""
+
 from fastapi import FastAPI
 
 from optimark_clio.health import HealthResponse
@@ -14,6 +16,11 @@ app = FastAPI(
 
 @app.get("/health", response_model=HealthResponse, tags=["system"])
 def healthcheck() -> HealthResponse:
+    """Report bootstrap health and package wiring details.
+
+    Returns:
+        HealthResponse: The current service health payload.
+    """
     service = build_service_descriptor(service_name="athena", layer="api")
     persistence = default_persistence_descriptor()
     return HealthResponse.from_values(
