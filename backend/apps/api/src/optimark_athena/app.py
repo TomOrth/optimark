@@ -2,6 +2,7 @@
 
 from fastapi import FastAPI
 
+from optimark_athena.auth_routes import router as auth_router
 from optimark_clio.health import HealthResponse
 from optimark_metis.runtime import build_service_descriptor
 from optimark_mnemosyne.runtime import default_persistence_descriptor
@@ -12,6 +13,7 @@ app = FastAPI(
     summary="FastAPI bootstrap for the Optimark modular monolith.",
     version="0.1.0",
 )
+app.include_router(auth_router)
 
 
 @app.get("/health", response_model=HealthResponse, tags=["system"])
