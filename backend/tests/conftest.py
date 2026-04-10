@@ -1,15 +1,25 @@
 """Shared pytest fixtures for backend database and service tests."""
 
+from collections.abc import Iterator
+from datetime import timedelta
+from itertools import count
 from pathlib import Path
 
 import pytest
 from alembic import command
 from alembic.config import Config
+from fastapi.testclient import TestClient
+from pwdlib import PasswordHash
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
+from optimark_athena.app import app
+from optimark_athena.config import AuthSettings
+from optimark_athena.dependencies import get_auth_settings, get_db_session
+from optimark_metis.auth_service import AuthService
 from optimark_metis.service import AcademicService
 from optimark_mnemosyne.config import create_session_factory
+from optimark_mnemosyne.auth_repository import SqlAlchemyAuthRepository
 from optimark_mnemosyne.repository import SqlAlchemyAcademicRepository
 
 
@@ -88,6 +98,26 @@ def academic_service(db_session: Session) -> AcademicService:
 
 
 @pytest.fixture
+def auth_service(db_session: Session) -> AuthService:
+    """Build an auth service backed by the test session.
+
+    Args:
+        db_session: Active SQLAlchemy ORM session.
+
+    Returns:
+        AuthService: Auth service bound to the repositories under test.
+    """
+    token_counter = count()
+    return AuthService(
+        academic_repository=SqlAlchemyAcademicRepository(db_session),
+        auth_repository=SqlAlchemyAuthRepository(db_session),
+        password_hasher=PasswordHash.recommended(),
+        session_ttl=timedelta(days=14),
+        token_generator=lambda: f"test-session-token-{next(token_counter)}",
+    )
+
+
+@pytest.fixture
 def migrated_engine(migrated_database: str):
     """Yield a SQLAlchemy engine bound to a migrated test database.
 
@@ -102,3 +132,31 @@ def migrated_engine(migrated_database: str):
         yield engine
     finally:
         engine.dispose()
+
+
+@pytest.fixture
+def api_client(db_session: Session) -> Iterator[TestClient]:
+    """Yield a test client with database and auth settings overrides.
+
+    Args:
+        db_session: Active SQLAlchemy ORM session.
+
+    Yields:
+        TestClient: FastAPI test client bound to the shared test session.
+    """
+
+    def override_get_db_session() -> Iterator[Session]:
+        yield db_session
+
+    app.dependency_overrides[get_db_session] = override_get_db_session
+    app.dependency_overrides[get_auth_settings] = lambda: AuthSettings(
+        cookie_name="optimark_session",
+        session_ttl=timedelta(days=14),
+        cookie_secure=False,
+        cookie_same_site="lax",
+    )
+    try:
+        with TestClient(app) as client:
+            yield client
+    finally:
+        app.dependency_overrides.clear()

@@ -12,7 +12,7 @@ The repository currently includes:
 - a Docker Compose local development stack for Postgres, Redis, and SeaweedFS
 - product and architecture documentation
 
-It still does not implement product UI, API routes, or grading logic.
+It still does not implement course-management, assignment, submission, or grading workflows, but the backend now includes the first auth/session API routes for hosted-app access.
 
 ## Repository layout
 
@@ -103,9 +103,13 @@ make backend-api-dev
 make backend-worker-run
 ```
 
-The frontend now boots a real routed SPA with a shared workspace shell, while the backend includes a minimal FastAPI and worker bootstrap for upcoming product work.
+The frontend now boots a real routed SPA with a shared workspace shell, while the backend includes a FastAPI bootstrap plus the first hosted-auth foundation for upcoming product work.
 
-The backend academic foundation now includes persisted `User`, `Course`, and `Enrollment` models plus Alembic migrations for bootstrapping the schema.
+The backend foundation now includes:
+- persisted `User`, `Course`, and `Enrollment` models
+- email/password auth identities and opaque server-backed sessions
+- Alembic migrations for bootstrapping the schema
+- `/api/v1/auth/signup`, `/api/v1/auth/login`, `/api/v1/auth/logout`, and `/api/v1/auth/session`
 
 ## Quality checks
 
