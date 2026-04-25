@@ -1,4 +1,7 @@
-.PHONY: help tooling-install frontend-install frontend-ci-install frontend-check frontend-build frontend-dev backend-sync backend-ci-sync backend-lock backend-db-upgrade backend-db-revision backend-lint backend-test backend-api-dev backend-worker-run ci dev-services-up dev-services-down dev-services-reset dev-services-logs
+.PHONY: help tooling-install frontend-install frontend-ci-install frontend-check frontend-build frontend-dev frontend-docker-build backend-sync backend-ci-sync backend-lock backend-db-upgrade backend-db-revision backend-lint backend-test backend-api-dev backend-worker-run backend-docker-build docker-build ci dev-services-up dev-services-down dev-services-reset dev-services-logs
+
+FRONTEND_IMAGE ?= optimark-frontend
+BACKEND_IMAGE ?= optimark-backend
 
 help:
 	@printf "%s\n" \
@@ -13,6 +16,7 @@ help:
 	"  make frontend-ci-install Install frontend dependencies with a frozen lockfile" \
 	"  make frontend-check    Typecheck the frontend workspace" \
 	"  make frontend-build    Build the frontend workspace" \
+	"  make frontend-docker-build Build the frontend container image" \
 	"  make frontend-dev      Run the frontend workspace dev script" \
 	"  make backend-sync      Sync the uv backend workspace" \
 	"  make backend-ci-sync   Sync the uv backend workspace with the frozen lockfile" \
@@ -23,6 +27,8 @@ help:
 	"  make backend-test      Run backend pytest tests" \
 	"  make backend-api-dev   Run the FastAPI backend app with reload" \
 	"  make backend-worker-run Run the worker bootstrap command" \
+	"  make backend-docker-build Build the backend container image" \
+	"  make docker-build      Build both application container images" \
 	"  make ci                Run the baseline local CI quality gates"
 
 dev-services-up:
@@ -51,6 +57,9 @@ frontend-check:
 
 frontend-build:
 	cd frontend && bun run build
+
+frontend-docker-build:
+	docker build --pull -f frontend/Dockerfile -t $(FRONTEND_IMAGE) .
 
 frontend-dev:
 	cd frontend && bun run dev
@@ -82,6 +91,13 @@ backend-api-dev:
 
 backend-worker-run:
 	cd backend && uv run --package hermes hermes-worker
+
+backend-docker-build:
+	docker build --pull -f backend/Dockerfile -t $(BACKEND_IMAGE) .
+
+docker-build:
+	$(MAKE) frontend-docker-build
+	$(MAKE) backend-docker-build
 
 ci:
 	$(MAKE) frontend-ci-install
