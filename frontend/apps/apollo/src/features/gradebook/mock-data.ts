@@ -1,0 +1,70 @@
+export const gradebookRows = [
+  {
+    initials: "AA",
+    student: "Alex Abramov",
+    email: "a.abramov@university.edu",
+    accent: "secondary" as const,
+    scores: [
+      { value: "95/100", status: "Released", tone: "primary" as const },
+      { value: "88/100", status: "Released", tone: "primary" as const },
+      { value: "--/100", status: "Pending", tone: "secondary" as const },
+      { value: "--/100", status: "Missing", tone: "default" as const },
+      { value: "142/150", status: "Released", tone: "primary" as const },
+    ],
+    overall: "91.4%",
+    overallTone: "primary" as const,
+  },
+  {
+    initials: "EL",
+    student: "Elena Laveau",
+    email: "e.laveau@university.edu",
+    accent: "secondary" as const,
+    scores: [
+      { value: "100/100", status: "Released", tone: "primary" as const },
+      { value: "94/100", status: "Released", tone: "primary" as const },
+      { value: "98/100", status: "Released", tone: "primary" as const },
+      { value: "92/100", status: "Released", tone: "primary" as const },
+      { value: "148/150", status: "Released", tone: "primary" as const },
+    ],
+    overall: "97.8%",
+    overallTone: "primary" as const,
+  },
+  {
+    initials: "JM",
+    student: "Jordan Miller",
+    email: "j.miller@university.edu",
+    accent: "danger" as const,
+    scores: [
+      { value: "64/100", status: "Released", tone: "primary" as const },
+      { value: "72/100", status: "Released", tone: "primary" as const },
+      { value: "--/100", status: "Pending", tone: "secondary" as const },
+      { value: "--/100", status: "Pending", tone: "secondary" as const },
+      { value: "110/150", status: "Released", tone: "primary" as const },
+    ],
+    overall: "68.2%",
+    overallTone: "danger" as const,
+  },
+  {
+    initials: "SW",
+    student: "Sarah Wu",
+    email: "s.wu@university.edu",
+    accent: "secondary" as const,
+    scores: [
+      { value: "92/100", status: "Released", tone: "primary" as const },
+      { value: "89/100", status: "Released", tone: "primary" as const },
+      { value: "91/100", status: "Released", tone: "primary" as const },
+      { value: "88/100", status: "Released", tone: "primary" as const },
+      { value: "138/150", status: "Released", tone: "primary" as const },
+    ],
+    overall: "90.5%",
+    overallTone: "primary" as const,
+  },
+] as const;
+
+export const gradeDistribution = [
+  { label: "F", height: "18%", accent: false },
+  { label: "D", height: "42%", accent: false },
+  { label: "C", height: "78%", accent: true },
+  { label: "B", height: "60%", accent: false },
+  { label: "A", height: "14%", accent: false },
+] as const;
