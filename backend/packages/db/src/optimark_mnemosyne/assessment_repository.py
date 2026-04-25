@@ -1,6 +1,7 @@
 """SQLAlchemy-backed repository implementations for assessment data."""
 
 from collections.abc import Sequence
+from datetime import datetime
 from decimal import Decimal
 from uuid import UUID
 
@@ -162,7 +163,7 @@ class SqlAlchemyAssessmentRepository:
         student_user_id: UUID,
         state: SubmissionState,
         artifact_key: str | None,
-        submitted_at,
+        submitted_at: datetime | None,
     ) -> Submission:
         """Insert a new submission record."""
         model = SubmissionModel(

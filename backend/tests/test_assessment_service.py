@@ -1,10 +1,13 @@
 """Service tests for the generic assessment domain foundation."""
 
+from datetime import datetime, timezone
 from decimal import Decimal
 from uuid import uuid4
 
 import pytest
+from pydantic import ValidationError
 
+from optimark_clio.assessment import CreateAssignmentVersionInput, RecordEvaluationInput
 from optimark_metis.assessment import (
     AssignmentPublishState,
     AssignmentType,
@@ -214,3 +217,71 @@ def test_assessment_service_validates_related_entities(
     """Surface not-found errors when related academic entities are missing."""
     with pytest.raises(EntityNotFoundError):
         assessment_service.list_course_assignments(uuid4())
+
+
+def test_assessment_service_rejects_non_json_serializable_payloads(
+    assessment_service: AssessmentService,
+    academic_service,
+) -> None:
+    """Reject payloads that cannot be serialized into JSON columns."""
+    course = academic_service.create_course(
+        course_code="CS104",
+        title="Databases",
+        term="Fall 2027",
+    )
+    student = academic_service.create_user(
+        email="json-student@example.com",
+        display_name="JSON Student",
+    )
+    assignment = assessment_service.create_assignment(
+        course_id=course.id,
+        title="HW JSON",
+        description="Serialize all the things",
+        assignment_type=AssignmentType.CODING,
+    )
+
+    with pytest.raises(InvalidAssessmentDataError, match="config_snapshot"):
+        assessment_service.create_assignment_version(
+            assignment_id=assignment.id,
+            version_number=1,
+            config_snapshot={"released_at": datetime.now(timezone.utc)},
+        )
+
+    assignment_version = assessment_service.create_assignment_version(
+        assignment_id=assignment.id,
+        version_number=1,
+        config_snapshot={"runner": "pytest"},
+    )
+    submission = assessment_service.create_submission(
+        assignment_id=assignment.id,
+        assignment_version_id=assignment_version.id,
+        student_user_id=student.id,
+    )
+
+    with pytest.raises(InvalidAssessmentDataError, match="result_payload"):
+        assessment_service.record_evaluation(
+            submission_id=submission.id,
+            assignment_version_id=assignment_version.id,
+            evaluation_kind=EvaluationKind.AUTOMATED,
+            status=EvaluationStatus.FAILED,
+            result_payload={"finished_at": datetime.now(timezone.utc)},
+        )
+
+
+def test_assessment_contracts_reject_non_json_serializable_payloads() -> None:
+    """Reject non-JSON-serializable payloads at the contract boundary."""
+    with pytest.raises(ValidationError, match="config_snapshot must be JSON-serializable"):
+        CreateAssignmentVersionInput(
+            assignment_id=uuid4(),
+            version_number=1,
+            config_snapshot={"created_at": datetime.now(timezone.utc)},
+        )
+
+    with pytest.raises(ValidationError, match="result_payload must be JSON-serializable"):
+        RecordEvaluationInput(
+            submission_id=uuid4(),
+            assignment_version_id=uuid4(),
+            evaluation_kind=EvaluationKind.AUTOMATED,
+            status=EvaluationStatus.QUEUED,
+            result_payload={"started_at": datetime.now(timezone.utc)},
+        )

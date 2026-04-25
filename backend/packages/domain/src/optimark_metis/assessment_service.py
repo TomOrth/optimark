@@ -1,5 +1,6 @@
 """Application service layer for the generic assessment domain."""
 
+import json
 from datetime import datetime, timezone
 from decimal import Decimal
 from uuid import UUID
@@ -206,7 +207,10 @@ class AssessmentService:
             score=score,
             max_score=max_score,
             summary=summary.strip(),
-            result_payload=dict(result_payload or {}),
+            result_payload=self._normalize_json_object(
+                payload=dict(result_payload or {}),
+                field_name="result_payload",
+            ),
         )
 
     def list_submission_evaluations(
@@ -270,13 +274,45 @@ class AssessmentService:
         return normalized_value or None
 
     @staticmethod
+    def _normalize_json_object(
+        *,
+        payload: dict[str, object],
+        field_name: str,
+    ) -> dict[str, object]:
+        """Validate and copy a JSON-serializable object payload.
+
+        Args:
+            payload: Raw payload mapping to validate.
+            field_name: Field name used in validation errors.
+
+        Returns:
+            dict[str, object]: Shallow copy of the validated payload.
+
+        Raises:
+            InvalidAssessmentDataError: If the payload is not a JSON object or
+                contains non-JSON-serializable nested values.
+        """
+        if not isinstance(payload, dict):
+            raise InvalidAssessmentDataError(f"{field_name} must be a JSON object")
+        normalized_payload = dict(payload)
+        try:
+            json.dumps(normalized_payload)
+        except (TypeError, ValueError) as exc:
+            raise InvalidAssessmentDataError(
+                f"{field_name} must be JSON-serializable",
+            ) from exc
+        return normalized_payload
+
+    @classmethod
     def _normalize_snapshot(
+        cls,
         config_snapshot: dict[str, object],
     ) -> dict[str, object]:
         """Validate and copy a configuration snapshot."""
-        if not isinstance(config_snapshot, dict):
-            raise InvalidAssessmentDataError("config_snapshot must be a JSON object")
-        return dict(config_snapshot)
+        return cls._normalize_json_object(
+            payload=config_snapshot,
+            field_name="config_snapshot",
+        )
 
     @staticmethod
     def _validate_score_pair(

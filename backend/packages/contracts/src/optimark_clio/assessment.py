@@ -1,11 +1,12 @@
 """Pydantic contracts for the generic assessment domain."""
 
+import json
 from datetime import datetime
 from decimal import Decimal
 from typing import Any
 from uuid import UUID
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 from optimark_metis.assessment import (
     Assignment,
@@ -83,6 +84,26 @@ class CreateAssignmentVersionInput(BaseModel):
     change_summary: str = ""
     config_snapshot: dict[str, Any]
     created_by_user_id: UUID | None = None
+
+    @field_validator("config_snapshot")
+    @classmethod
+    def validate_config_snapshot(
+        cls,
+        value: dict[str, Any],
+    ) -> dict[str, Any]:
+        """Ensure config snapshots are JSON-serializable objects.
+
+        Args:
+            value: Candidate configuration snapshot.
+
+        Returns:
+            dict[str, Any]: Validated configuration snapshot.
+
+        Raises:
+            ValueError: If the payload is not JSON-serializable.
+        """
+        _ensure_json_serializable(value, field_name="config_snapshot")
+        return value
 
 
 class AssignmentVersionRecord(BaseModel):
@@ -164,6 +185,26 @@ class RecordEvaluationInput(BaseModel):
     summary: str = ""
     result_payload: dict[str, Any] = Field(default_factory=dict)
 
+    @field_validator("result_payload")
+    @classmethod
+    def validate_result_payload(
+        cls,
+        value: dict[str, Any],
+    ) -> dict[str, Any]:
+        """Ensure evaluation payloads are JSON-serializable objects.
+
+        Args:
+            value: Candidate result payload.
+
+        Returns:
+            dict[str, Any]: Validated result payload.
+
+        Raises:
+            ValueError: If the payload is not JSON-serializable.
+        """
+        _ensure_json_serializable(value, field_name="result_payload")
+        return value
+
 
 class EvaluationRecordPayload(BaseModel):
     """Serialized evaluation record payload."""
@@ -242,3 +283,19 @@ class GradeRecordPayload(BaseModel):
             created_at=grade_record.created_at,
             updated_at=grade_record.updated_at,
         )
+
+
+def _ensure_json_serializable(value: dict[str, Any], *, field_name: str) -> None:
+    """Validate that a mapping payload can be encoded as JSON.
+
+    Args:
+        value: Payload to validate.
+        field_name: Field name used in validation errors.
+
+    Raises:
+        ValueError: If the payload cannot be encoded as JSON.
+    """
+    try:
+        json.dumps(value)
+    except (TypeError, ValueError) as exc:
+        raise ValueError(f"{field_name} must be JSON-serializable") from exc
