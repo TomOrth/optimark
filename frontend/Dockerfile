@@ -22,9 +22,11 @@ WORKDIR /app
 ENV HOST=0.0.0.0
 ENV PORT=4173
 
+USER root
 RUN ["/usr/bin/apt-get", "update"]
 RUN ["/usr/bin/apt-get", "install", "--yes", "--only-upgrade", "libssl3t64", "openssl", "openssl-provider-legacy"]
 RUN ["/usr/bin/apt-get", "clean"]
+USER 65532:65532
 
 COPY --chown=65532:65532 --from=build /app/frontend/apps/apollo/dist ./dist
 COPY --chown=65532:65532 frontend/apps/apollo/server.ts ./server.ts
