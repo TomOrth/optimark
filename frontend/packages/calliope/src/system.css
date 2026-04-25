@@ -1,0 +1,504 @@
+:root {
+  --calliope-background: #f9f9f8;
+  --calliope-surface: #ffffff;
+  --calliope-surface-low: #f1f4f3;
+  --calliope-surface-container: #eaefee;
+  --calliope-surface-high: #e3e9e8;
+  --calliope-surface-highest: #dce4e3;
+  --calliope-surface-dim: #d2dcdb;
+  --calliope-outline-variant: rgba(171, 180, 179, 0.38);
+  --calliope-text: #2c3433;
+  --calliope-text-muted: #586160;
+  --calliope-primary: #306576;
+  --calliope-primary-dim: #215969;
+  --calliope-primary-container: #b6ebfe;
+  --calliope-secondary-container: #d5e3fc;
+  --calliope-error: #9f403d;
+  --calliope-error-container: #fe8983;
+  --calliope-shadow: 0 12px 40px rgba(44, 52, 51, 0.06);
+  --calliope-shadow-soft: 0 10px 28px rgba(44, 52, 51, 0.04);
+  --calliope-radius-sm: 0.25rem;
+  --calliope-radius-md: 0.5rem;
+  --calliope-radius-lg: 0.75rem;
+  --calliope-radius-xl: 1.25rem;
+  --calliope-sidebar-width: 19rem;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  background:
+    radial-gradient(circle at top right, rgba(48, 101, 118, 0.08), transparent 28rem),
+    linear-gradient(180deg, #fbfaf8 0%, var(--calliope-background) 100%);
+  color: var(--calliope-text);
+  font-family: Inter, sans-serif;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.calliope-app-frame {
+  display: flex;
+  min-height: 100vh;
+}
+
+.calliope-sidebar {
+  width: var(--calliope-sidebar-width);
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+  padding: 1.25rem 1rem 1rem;
+  background: linear-gradient(180deg, #eef2f1 0%, #e8efee 100%);
+  border-right: 1px solid rgba(48, 101, 118, 0.07);
+}
+
+.calliope-brand-lockup {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.25rem 0.85rem 0;
+}
+
+.calliope-brand-mark {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.45rem;
+  display: grid;
+  place-items: center;
+  color: #eefaff;
+  background: linear-gradient(135deg, var(--calliope-primary), var(--calliope-primary-dim));
+  box-shadow: 0 10px 24px rgba(33, 89, 105, 0.18);
+}
+
+.calliope-brand-lockup h1 {
+  margin: 0;
+  font: 800 2.15rem/0.96 Manrope, sans-serif;
+  letter-spacing: -0.05em;
+  color: var(--calliope-primary-dim);
+}
+
+.calliope-brand-lockup p {
+  margin: 0.45rem 0 0;
+  font-size: 0.84rem;
+  color: #5e7593;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.calliope-sidebar-nav,
+.calliope-sidebar-footer {
+  display: flex;
+  flex-direction: column;
+}
+
+.calliope-sidebar-nav {
+  gap: 0.18rem;
+  padding-top: 1rem;
+}
+
+.calliope-sidebar-footer {
+  margin-top: auto;
+  gap: 1rem;
+}
+
+.calliope-sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.95rem 1rem;
+  border-radius: var(--calliope-radius-lg);
+  color: #5f718e;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: color 140ms ease, background 140ms ease, transform 140ms ease;
+}
+
+.calliope-sidebar-link:hover {
+  background: rgba(255, 255, 255, 0.65);
+  color: var(--calliope-primary-dim);
+  transform: translateX(1px);
+}
+
+.calliope-sidebar-link-active {
+  color: var(--calliope-primary-dim);
+  background: rgba(255, 255, 255, 0.5);
+  box-shadow: inset -4px 0 0 var(--calliope-primary);
+}
+
+.calliope-sidebar-link-icon {
+  display: inline-flex;
+  color: inherit;
+}
+
+.calliope-sidebar-utility {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.calliope-workspace {
+  flex: 1;
+  margin-left: var(--calliope-sidebar-width);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.calliope-topbar {
+  height: 5rem;
+  padding: 0 2.4rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(249, 249, 248, 0.82);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(171, 180, 179, 0.18);
+}
+
+.calliope-topbar-tabs,
+.calliope-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.calliope-topbar-tab {
+  padding: 1.5rem 0.05rem 1.35rem;
+  color: var(--calliope-text-muted);
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: color 140ms ease;
+}
+
+.calliope-topbar-tab:hover {
+  color: var(--calliope-primary-dim);
+}
+
+.calliope-topbar-tab-active {
+  color: var(--calliope-primary-dim);
+  box-shadow: inset 0 -2px 0 var(--calliope-primary);
+}
+
+.calliope-workspace-scroll {
+  flex: 1;
+  padding: 2.3rem 2.4rem 7rem;
+}
+
+.calliope-page-shell {
+  max-width: 78rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.9rem;
+}
+
+.calliope-page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.calliope-page-header h2 {
+  margin: 0;
+  font: 800 4rem/0.96 Manrope, sans-serif;
+  letter-spacing: -0.06em;
+}
+
+.calliope-page-subtitle,
+.calliope-eyebrow,
+.calliope-form-label,
+.calliope-metric-label,
+.calliope-section-heading h3,
+.calliope-status-pill {
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.calliope-eyebrow,
+.calliope-page-subtitle {
+  margin: 0;
+  color: var(--calliope-text-muted);
+}
+
+.calliope-eyebrow {
+  font-size: 0.74rem;
+  font-weight: 800;
+  color: var(--calliope-primary);
+  margin-bottom: 0.55rem;
+}
+
+.calliope-page-subtitle {
+  margin-top: 0.6rem;
+  font-size: 0.86rem;
+}
+
+.calliope-page-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.calliope-surface-panel {
+  background: rgba(255, 255, 255, 0.78);
+  border-radius: var(--calliope-radius-xl);
+  box-shadow: var(--calliope-shadow-soft);
+  border: 1px solid rgba(171, 180, 179, 0.12);
+}
+
+.calliope-surface-panel-muted {
+  background: rgba(241, 244, 243, 0.8);
+}
+
+.calliope-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.calliope-section-heading h3 {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--calliope-text-muted);
+}
+
+.calliope-section-heading-icon {
+  display: inline-flex;
+  color: var(--calliope-primary);
+}
+
+.calliope-metric-card {
+  background: rgba(255, 255, 255, 0.92);
+  padding: 1.7rem 1.8rem;
+  border-radius: var(--calliope-radius-xl);
+  box-shadow: var(--calliope-shadow-soft);
+}
+
+.calliope-metric-label {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--calliope-text-muted);
+}
+
+.calliope-tone-primary {
+  color: var(--calliope-primary);
+}
+
+.calliope-tone-danger {
+  color: var(--calliope-error);
+}
+
+.calliope-metric-row {
+  margin-top: 1.1rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+}
+
+.calliope-metric-row strong {
+  font: 800 3.25rem/1 Manrope, sans-serif;
+}
+
+.calliope-metric-row span {
+  color: var(--calliope-text-muted);
+  font-size: 1rem;
+}
+
+.calliope-status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.32rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.69rem;
+  font-weight: 800;
+  color: var(--calliope-text-muted);
+  background: rgba(220, 228, 227, 0.95);
+}
+
+.calliope-status-primary {
+  color: var(--calliope-primary-dim);
+  background: rgba(182, 235, 254, 0.92);
+}
+
+.calliope-status-secondary {
+  color: #4f5d72;
+  background: rgba(213, 227, 252, 0.95);
+}
+
+.calliope-status-danger {
+  color: var(--calliope-error);
+  background: rgba(254, 137, 131, 0.24);
+}
+
+.calliope-empty-state {
+  padding: 1.4rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.calliope-empty-state strong {
+  display: block;
+  font-size: 1rem;
+}
+
+.calliope-empty-state p {
+  margin: 0.35rem 0 0;
+  color: var(--calliope-text-muted);
+}
+
+.calliope-empty-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 999px;
+  background: rgba(182, 235, 254, 0.72);
+  color: var(--calliope-primary-dim);
+}
+
+.calliope-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.calliope-form-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #607492;
+}
+
+.calliope-form-support {
+  font-size: 0.77rem;
+  color: var(--calliope-text-muted);
+}
+
+.calliope-bottom-action-bar {
+  position: fixed;
+  left: calc(50% + var(--calliope-sidebar-width) / 2);
+  bottom: 1.8rem;
+  z-index: 25;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: min(50rem, calc(100vw - var(--calliope-sidebar-width) - 2rem));
+  padding: 1rem 1.25rem;
+  border-radius: 1.35rem;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--calliope-shadow);
+  border: 1px solid rgba(171, 180, 179, 0.16);
+}
+
+.calliope-bottom-leading {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-right: 1rem;
+  border-right: 1px solid rgba(171, 180, 179, 0.22);
+}
+
+.calliope-bottom-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+@media (max-width: 1100px) {
+  .calliope-page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .calliope-page-header h2 {
+    font-size: 3rem;
+  }
+
+  .calliope-bottom-action-bar {
+    width: calc(100vw - var(--calliope-sidebar-width) - 2rem);
+  }
+}
+
+@media (max-width: 900px) {
+  .calliope-app-frame {
+    flex-direction: column;
+  }
+
+  .calliope-sidebar {
+    position: static;
+    width: 100%;
+    border-right: 0;
+    border-bottom: 1px solid rgba(171, 180, 179, 0.2);
+  }
+
+  .calliope-workspace {
+    margin-left: 0;
+  }
+
+  .calliope-topbar {
+    padding: 0 1rem;
+    min-height: 5rem;
+    height: auto;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .calliope-topbar-tabs {
+    order: 2;
+    width: 100%;
+    overflow: auto;
+  }
+
+  .calliope-workspace-scroll {
+    padding: 1.3rem 1rem 7rem;
+  }
+
+  .calliope-bottom-action-bar {
+    left: 50%;
+    width: calc(100vw - 2rem);
+  }
+}

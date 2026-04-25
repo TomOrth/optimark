@@ -46,12 +46,12 @@ optimark/
 
 - Bun-managed frontend workspace
 - `apps/apollo`: routed React SPA for instructors, TAs, and students
-- `packages/calliope`: shared frontend theme and shell copy package
+- `packages/calliope`: shared frontend design-system package for tokens, shell primitives, and reusable surface patterns
 - Planned next frontend packages:
   `packages/iris` for notifications and messaging,
   `packages/hephaestus` for shared tooling/config,
   and `apps/museion` for a pattern-library workspace
-- Includes the initial routed SPA, shared shell, and mockup-inspired scaffold screens
+- Includes the initial routed SPA, mockup-aligned shell primitives, and reusable scaffold surfaces for future feature work
 
 ### `backend/`
 
