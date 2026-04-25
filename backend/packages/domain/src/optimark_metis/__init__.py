@@ -1,6 +1,21 @@
 """Metis domain package for Optimark."""
 
 from optimark_metis.academic import Course, CourseRole, Enrollment, User
+from optimark_metis.assessment import (
+    Assignment,
+    AssignmentPublishState,
+    AssignmentType,
+    AssignmentVersion,
+    EvaluationKind,
+    EvaluationRecord,
+    EvaluationStatus,
+    GradeRecord,
+    GradeState,
+    Submission,
+    SubmissionState,
+)
+from optimark_metis.assessment_repository import AssessmentRepository
+from optimark_metis.assessment_service import AssessmentService
 from optimark_metis.auth import (
     AuthIdentity,
     AuthProvider,
@@ -19,12 +34,15 @@ from optimark_metis.authorization import (
 )
 from optimark_metis.errors import (
     AcademicDomainError,
+    AssessmentDomainError,
     AuthenticationRequiredError,
     AuthorizationError,
     AuthDomainError,
+    DuplicateAssignmentVersionError,
     DuplicateEmailError,
     DuplicateEnrollmentError,
     EntityNotFoundError,
+    InvalidAssessmentDataError,
     InvalidCredentialsError,
     InvalidAcademicDataError,
     PasswordPolicyError,
@@ -38,6 +56,13 @@ __all__ = [
     "AcademicDomainError",
     "AcademicRepository",
     "AcademicService",
+    "AssessmentDomainError",
+    "AssessmentRepository",
+    "AssessmentService",
+    "Assignment",
+    "AssignmentPublishState",
+    "AssignmentType",
+    "AssignmentVersion",
     "AuthDomainError",
     "AuthIdentity",
     "AuthProvider",
@@ -51,10 +76,17 @@ __all__ = [
     "Course",
     "CourseCapability",
     "CourseRole",
+    "DuplicateAssignmentVersionError",
     "DuplicateEmailError",
     "DuplicateEnrollmentError",
     "Enrollment",
     "EntityNotFoundError",
+    "EvaluationKind",
+    "EvaluationRecord",
+    "EvaluationStatus",
+    "GradeRecord",
+    "GradeState",
+    "InvalidAssessmentDataError",
     "InvalidCredentialsError",
     "InvalidAcademicDataError",
     "IssuedSession",
@@ -62,6 +94,8 @@ __all__ = [
     "PasswordPolicyError",
     "ServiceDescriptor",
     "SessionExpiredError",
+    "Submission",
+    "SubmissionState",
     "User",
     "build_service_descriptor",
     "capabilities_for_role",

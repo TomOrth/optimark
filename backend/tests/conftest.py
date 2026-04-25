@@ -16,8 +16,10 @@ from sqlalchemy.orm import Session
 from optimark_athena.app import app
 from optimark_athena.config import AuthSettings
 from optimark_athena.dependencies import get_auth_settings, get_db_session
+from optimark_metis.assessment_service import AssessmentService
 from optimark_metis.auth_service import AuthService
 from optimark_metis.service import AcademicService
+from optimark_mnemosyne.assessment_repository import SqlAlchemyAssessmentRepository
 from optimark_mnemosyne.config import create_session_factory
 from optimark_mnemosyne.auth_repository import SqlAlchemyAuthRepository
 from optimark_mnemosyne.repository import SqlAlchemyAcademicRepository
@@ -114,6 +116,23 @@ def auth_service(db_session: Session) -> AuthService:
         password_hasher=PasswordHash.recommended(),
         session_ttl=timedelta(days=14),
         token_generator=lambda: f"test-session-token-{next(token_counter)}",
+    )
+
+
+@pytest.fixture
+def assessment_service(db_session: Session) -> AssessmentService:
+    """Build an assessment service backed by the test session.
+
+    Args:
+        db_session: Active SQLAlchemy ORM session.
+
+    Returns:
+        AssessmentService: Assessment service bound to test repositories.
+    """
+    academic_service = AcademicService(SqlAlchemyAcademicRepository(db_session))
+    return AssessmentService(
+        SqlAlchemyAssessmentRepository(db_session),
+        academic_service,
     )
 
 

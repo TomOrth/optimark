@@ -1,5 +1,6 @@
 """Custom exceptions for domain and service operations."""
 
+
 class AcademicDomainError(Exception):
     """Base error for academic domain operations."""
 
@@ -18,6 +19,18 @@ class DuplicateEmailError(AcademicDomainError):
 
 class DuplicateEnrollmentError(AcademicDomainError):
     """Raised when a user is enrolled in the same course more than once."""
+
+
+class AssessmentDomainError(Exception):
+    """Base error for assessment domain operations."""
+
+
+class InvalidAssessmentDataError(AssessmentDomainError):
+    """Raised when required assessment fields are missing or malformed."""
+
+
+class DuplicateAssignmentVersionError(AssessmentDomainError):
+    """Raised when an assignment version number is reused within an assignment."""
 
 
 class AuthDomainError(Exception):
