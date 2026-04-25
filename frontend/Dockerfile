@@ -10,6 +10,7 @@ RUN ["bun", "install", "--frozen-lockfile"]
 
 WORKDIR /app/frontend/packages/calliope
 RUN ["bun", "x", "tsc", "-p", "tsconfig.json"]
+RUN ["cp", "src/system.css", "dist/system.css"]
 
 WORKDIR /app/frontend/apps/apollo
 RUN ["bun", "x", "tsc", "--noEmit"]
