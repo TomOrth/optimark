@@ -1,17 +1,20 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 import ReactDOM from "react-dom/client";
 import {
   QueryClient,
   QueryClientProvider,
+  useMutation,
+  useQuery,
 } from "@tanstack/react-query";
 import {
+  Link,
+  Outlet,
   RouterProvider,
   createRootRouteWithContext,
   createRoute,
   createRouter,
   redirect,
-  Outlet,
-  Link,
+  useNavigate,
   useRouterState,
 } from "@tanstack/react-router";
 import {
@@ -30,6 +33,8 @@ import {
   History,
   LayoutDashboard,
   ListChecks,
+  LoaderCircle,
+  LogOut,
   Search,
   Settings,
   Sparkles,
@@ -64,7 +69,43 @@ type AppContext = {
   queryClient: QueryClient;
 };
 
+type AuthSearch = {
+  redirect?: string;
+};
+
+type SessionUser = {
+  id: string;
+  email: string;
+  display_name: string;
+};
+
+type SessionResponse = {
+  user: SessionUser;
+  provider: string;
+  expires_at: string;
+};
+
+type AuthPayload = {
+  email: string;
+  password: string;
+};
+
+type SignupPayload = AuthPayload & {
+  display_name: string;
+};
+
+class ApiError extends Error {
+  status: number;
+
+  constructor(status: number, message: string) {
+    super(message);
+    this.name = "ApiError";
+    this.status = status;
+  }
+}
+
 const queryClient = new QueryClient();
+const sessionQueryKey = ["auth", "session"] as const;
 
 const navItems = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -217,6 +258,105 @@ const gradeDistribution = [
   { label: "A", height: "14%", accent: false },
 ] as const;
 
+async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
+  const response = await fetch(path, {
+    ...init,
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      ...(init?.headers ?? {}),
+    },
+  });
+
+  if (!response.ok) {
+    let detail = "Request failed.";
+
+    try {
+      const body = (await response.json()) as { detail?: string };
+      detail = body.detail ?? detail;
+    } catch {
+      detail = response.statusText || detail;
+    }
+
+    throw new ApiError(response.status, detail);
+  }
+
+  return (await response.json()) as T;
+}
+
+async function fetchSession(): Promise<SessionResponse | null> {
+  try {
+    return await requestJson<SessionResponse>("/api/v1/auth/session", {
+      method: "GET",
+    });
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 401) {
+      return null;
+    }
+
+    throw error;
+  }
+}
+
+async function loginRequest(payload: AuthPayload): Promise<SessionResponse> {
+  return requestJson<SessionResponse>("/api/v1/auth/login", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+async function signupRequest(payload: SignupPayload): Promise<SessionResponse> {
+  return requestJson<SessionResponse>("/api/v1/auth/signup", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+async function logoutRequest(): Promise<void> {
+  const response = await fetch("/api/v1/auth/logout", {
+    method: "POST",
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw new ApiError(response.status, "Unable to end the current session.");
+  }
+}
+
+function sessionQueryOptions() {
+  return {
+    queryKey: sessionQueryKey,
+    queryFn: fetchSession,
+    staleTime: 60_000,
+    retry: false,
+  };
+}
+
+async function ensureSession(queryClient: QueryClient): Promise<SessionResponse | null> {
+  return queryClient.ensureQueryData(sessionQueryOptions());
+}
+
+async function requireAuthenticated(queryClient: QueryClient, redirectPath: string) {
+  const session = await ensureSession(queryClient);
+
+  if (!session) {
+    throw redirect({
+      to: "/login",
+      search: { redirect: redirectPath },
+    });
+  }
+
+  return session;
+}
+
+async function redirectAuthenticated(queryClient: QueryClient) {
+  const session = await ensureSession(queryClient);
+
+  if (session) {
+    throw redirect({ to: "/dashboard" });
+  }
+}
+
 const rootRoute = createRootRouteWithContext<AppContext>()({
   component: RootLayout,
 });
@@ -224,55 +364,103 @@ const rootRoute = createRootRouteWithContext<AppContext>()({
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/",
-  beforeLoad: () => {
-    throw redirect({ to: "/dashboard" });
+  beforeLoad: async ({ context }) => {
+    const session = await ensureSession(context.queryClient);
+    throw redirect({ to: session ? "/dashboard" : "/login" });
   },
+});
+
+const loginRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/login",
+  validateSearch: (search: Record<string, unknown>): AuthSearch => ({
+    redirect: typeof search.redirect === "string" ? search.redirect : undefined,
+  }),
+  beforeLoad: async ({ context }) => {
+    await redirectAuthenticated(context.queryClient);
+  },
+  component: LoginPage,
+});
+
+const signupRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/signup",
+  validateSearch: (search: Record<string, unknown>): AuthSearch => ({
+    redirect: typeof search.redirect === "string" ? search.redirect : undefined,
+  }),
+  beforeLoad: async ({ context }) => {
+    await redirectAuthenticated(context.queryClient);
+  },
+  component: SignupPage,
 });
 
 const dashboardRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/dashboard",
+  beforeLoad: async ({ context, location }) => {
+    await requireAuthenticated(context.queryClient, location.pathname);
+  },
   component: DashboardPage,
 });
 
 const assignmentsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/assignments",
+  beforeLoad: async ({ context, location }) => {
+    await requireAuthenticated(context.queryClient, location.pathname);
+  },
   component: AssignmentsPage,
 });
 
 const assignmentEditorRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/assignments/new",
+  beforeLoad: async ({ context, location }) => {
+    await requireAuthenticated(context.queryClient, location.pathname);
+  },
   component: AssignmentBuilderPage,
 });
 
 const submissionsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/submissions",
+  beforeLoad: async ({ context, location }) => {
+    await requireAuthenticated(context.queryClient, location.pathname);
+  },
   component: SubmissionsPage,
 });
 
 const gradebookRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/gradebook",
+  beforeLoad: async ({ context, location }) => {
+    await requireAuthenticated(context.queryClient, location.pathname);
+  },
   component: GradebookPage,
 });
 
 const studentsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/students",
+  beforeLoad: async ({ context, location }) => {
+    await requireAuthenticated(context.queryClient, location.pathname);
+  },
   component: StudentsPage,
 });
 
 const settingsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/settings",
+  beforeLoad: async ({ context, location }) => {
+    await requireAuthenticated(context.queryClient, location.pathname);
+  },
   component: SettingsPage,
 });
 
 const routeTree = rootRoute.addChildren([
   indexRoute,
+  loginRoute,
+  signupRoute,
   dashboardRoute,
   assignmentsRoute,
   assignmentEditorRoute,
@@ -287,6 +475,7 @@ const router = createRouter({
   context: {
     queryClient,
   },
+  defaultPreload: "intent",
 });
 
 declare module "@tanstack/react-router" {
@@ -296,17 +485,63 @@ declare module "@tanstack/react-router" {
 }
 
 function RootLayout() {
+  const pathname = useRouterState({
+    select: (state) => state.location.pathname,
+  });
+  const isAuthRoute = pathname === "/login" || pathname === "/signup";
+
+  if (isAuthRoute) {
+    return <AuthViewport />;
+  }
+
   return (
-    <AppFrame
-      sidebar={<AppSidebar />}
-      topbar={<AppTopbar />}
-    >
+    <AppFrame sidebar={<AppSidebar />} topbar={<AppTopbar />}>
       <Outlet />
     </AppFrame>
   );
 }
 
+function AuthViewport() {
+  return (
+    <div className="app-auth-shell">
+      <div className="app-auth-background" />
+      <div className="app-auth-grid">
+        <section className="app-auth-story">
+          <BrandLockup
+            name={brand.name}
+            context={`${brand.courseLabel} • ${brand.courseTerm}`}
+            mark={<Code2 size={18} />}
+          />
+          <div className="app-auth-copy">
+            <span className="app-smallcaps">Hosted Access</span>
+            <h2>The academic workspace with operational calm.</h2>
+            <p>
+              Sign in to restore your course session, review assessment activity,
+              and continue in the same curated shell used across the app.
+            </p>
+          </div>
+          <div className="app-auth-highlights">
+            <SurfacePanel muted className="app-auth-note">
+              <strong>Session restoration</strong>
+              <p>Cookie-backed app access restores your workspace on reload.</p>
+            </SurfacePanel>
+            <SurfacePanel muted className="app-auth-note">
+              <strong>Protected surfaces</strong>
+              <p>Instructor and student routes stay gated until a valid session exists.</p>
+            </SurfacePanel>
+          </div>
+        </section>
+        <div className="app-auth-panel">
+          <Outlet />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function AppSidebar() {
+  const { data: session } = useQuery(sessionQueryOptions());
+
   return (
     <SidebarShell
       brand={
@@ -338,15 +573,64 @@ function AppSidebar() {
         </div>
       ))}
       profile={
-        <div className="app-profile-chip">
-          <div className="app-profile-avatar">AT</div>
-          <div>
-            <strong>{brand.instructorName}</strong>
-            <p>{brand.instructorRole}</p>
-          </div>
-        </div>
+        <SidebarProfile
+          displayName={session?.user.display_name ?? brand.instructorName}
+          email={session?.user.email ?? "staff@optimark.dev"}
+        />
       }
     />
+  );
+}
+
+function SidebarProfile({
+  displayName,
+  email,
+}: {
+  displayName: string;
+  email: string;
+}) {
+  const navigate = useNavigate();
+  const logout = useMutation({
+    mutationFn: logoutRequest,
+    onSuccess: async () => {
+      queryClient.setQueryData(sessionQueryKey, null);
+      await queryClient.invalidateQueries({ queryKey: sessionQueryKey });
+      await navigate({ to: "/login" });
+    },
+  });
+  const initials = useMemo(
+    () =>
+      displayName
+        .split(" ")
+        .map((part) => part[0])
+        .join("")
+        .slice(0, 2)
+        .toUpperCase(),
+    [displayName],
+  );
+
+  return (
+    <div className="app-profile-stack">
+      <div className="app-profile-chip">
+        <div className="app-profile-avatar">{initials}</div>
+        <div>
+          <strong>{displayName}</strong>
+          <p>{email}</p>
+        </div>
+      </div>
+      <button
+        className="app-secondary-action app-sidebar-logout"
+        type="button"
+        onClick={() => logout.mutate()}
+        disabled={logout.isPending}
+      >
+        {logout.isPending ? <LoaderCircle size={16} className="app-spin" /> : <LogOut size={16} />}
+        Log Out
+      </button>
+      {logout.isError ? (
+        <p className="app-inline-error">We could not end the current session. Try again.</p>
+      ) : null}
+    </div>
   );
 }
 
@@ -354,7 +638,18 @@ function AppTopbar() {
   const pathname = useRouterState({
     select: (state) => state.location.pathname,
   });
+  const { data: session } = useQuery(sessionQueryOptions());
   const activeTopTab = pathname === "/gradebook" ? "analytics" : "course-settings";
+  const initials = useMemo(
+    () =>
+      (session?.user.display_name ?? brand.instructorName)
+        .split(" ")
+        .map((part) => part[0])
+        .join("")
+        .slice(0, 2)
+        .toUpperCase(),
+    [session?.user.display_name],
+  );
 
   return (
     <Topbar
@@ -377,10 +672,196 @@ function AppTopbar() {
           <button className="app-icon-button" type="button" aria-label="History">
             <History size={18} />
           </button>
-          <div className="app-topbar-avatar">AT</div>
+          <div className="app-topbar-session">
+            <span>{session?.user.display_name ?? brand.instructorName}</span>
+            <div className="app-topbar-avatar">{initials}</div>
+          </div>
         </div>
       }
     />
+  );
+}
+
+function LoginPage() {
+  const navigate = useNavigate({ from: "/login" });
+  const search = loginRoute.useSearch();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const login = useMutation({
+    mutationFn: loginRequest,
+    onSuccess: async (session) => {
+      queryClient.setQueryData(sessionQueryKey, session);
+      await navigate({ to: search.redirect || "/dashboard" });
+    },
+  });
+
+  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    login.mutate({ email, password });
+  }
+
+  return (
+    <AuthCard
+      eyebrow="Sign In"
+      title="Resume your hosted workspace."
+      subtitle="Use the account created through the backend auth foundation to restore your session."
+      footer={
+        <p className="app-auth-footer">
+          Need an account?{" "}
+          <Link to="/signup" search={{ redirect: search.redirect }}>
+            Create one
+          </Link>
+        </p>
+      }
+    >
+      <form className="app-auth-form" onSubmit={onSubmit}>
+        <FormFieldScaffold label="Email Address">
+          <input
+            className="app-auth-input"
+            type="email"
+            autoComplete="email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            placeholder="instructor@university.edu"
+            required
+          />
+        </FormFieldScaffold>
+        <FormFieldScaffold label="Password">
+          <input
+            className="app-auth-input"
+            type="password"
+            autoComplete="current-password"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            placeholder="At least 12 characters"
+            required
+          />
+        </FormFieldScaffold>
+        {login.isError ? (
+          <AuthErrorBanner error={login.error} />
+        ) : null}
+        <button className="app-primary-action app-auth-submit" type="submit" disabled={login.isPending}>
+          {login.isPending ? <LoaderCircle size={16} className="app-spin" /> : null}
+          Sign In
+        </button>
+      </form>
+    </AuthCard>
+  );
+}
+
+function SignupPage() {
+  const navigate = useNavigate({ from: "/signup" });
+  const search = signupRoute.useSearch();
+  const [displayName, setDisplayName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const signup = useMutation({
+    mutationFn: signupRequest,
+    onSuccess: async (session) => {
+      queryClient.setQueryData(sessionQueryKey, session);
+      await navigate({ to: search.redirect || "/dashboard" });
+    },
+  });
+
+  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    signup.mutate({ display_name: displayName, email, password });
+  }
+
+  return (
+    <AuthCard
+      eyebrow="Create Account"
+      title="Open a new course session."
+      subtitle="This initial hosted flow stays intentionally simple while preserving the backend seam for future SSO."
+      footer={
+        <p className="app-auth-footer">
+          Already have access?{" "}
+          <Link to="/login" search={{ redirect: search.redirect }}>
+            Sign in
+          </Link>
+        </p>
+      }
+    >
+      <form className="app-auth-form" onSubmit={onSubmit}>
+        <FormFieldScaffold label="Display Name">
+          <input
+            className="app-auth-input"
+            type="text"
+            autoComplete="name"
+            value={displayName}
+            onChange={(event) => setDisplayName(event.target.value)}
+            placeholder="Dr. Aris Thorne"
+            required
+          />
+        </FormFieldScaffold>
+        <FormFieldScaffold label="Email Address">
+          <input
+            className="app-auth-input"
+            type="email"
+            autoComplete="email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            placeholder="instructor@university.edu"
+            required
+          />
+        </FormFieldScaffold>
+        <FormFieldScaffold label="Password" support="Minimum 12 characters.">
+          <input
+            className="app-auth-input"
+            type="password"
+            autoComplete="new-password"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            placeholder="Choose a strong password"
+            required
+          />
+        </FormFieldScaffold>
+        {signup.isError ? (
+          <AuthErrorBanner error={signup.error} />
+        ) : null}
+        <button className="app-primary-action app-auth-submit" type="submit" disabled={signup.isPending}>
+          {signup.isPending ? <LoaderCircle size={16} className="app-spin" /> : null}
+          Create Account
+        </button>
+      </form>
+    </AuthCard>
+  );
+}
+
+function AuthCard({
+  eyebrow,
+  title,
+  subtitle,
+  children,
+  footer,
+}: {
+  eyebrow: string;
+  title: string;
+  subtitle: string;
+  children: React.ReactNode;
+  footer?: React.ReactNode;
+}) {
+  return (
+    <SurfacePanel className="app-auth-card">
+      <div className="app-auth-card-header">
+        <span className="app-smallcaps">{eyebrow}</span>
+        <h1>{title}</h1>
+        <p>{subtitle}</p>
+      </div>
+      {children}
+      {footer}
+    </SurfacePanel>
+  );
+}
+
+function AuthErrorBanner({ error }: { error: unknown }) {
+  const detail = error instanceof ApiError ? error.message : "Something went wrong. Please try again.";
+
+  return (
+    <div className="app-auth-error" role="alert">
+      <CircleAlert size={16} />
+      <span>{detail}</span>
+    </div>
   );
 }
 
@@ -451,10 +932,7 @@ function DashboardPage() {
         </SurfacePanel>
 
         <SurfacePanel className="app-feed-panel">
-          <SectionHeading
-            icon={<Sparkles size={16} />}
-            title="Operational Feed"
-          />
+          <SectionHeading icon={<Sparkles size={16} />} title="Operational Feed" />
           <div className="app-feed-list">
             {activityFeed.map((item) => (
               <article key={item.title} className="app-feed-item">
@@ -517,10 +995,7 @@ function AssignmentsPage() {
 function AssignmentBuilderPage() {
   return (
     <PageShell>
-      <PageHeader
-        eyebrow="Assignment Editor"
-        title="Homework 4: Linked Lists"
-      />
+      <PageHeader eyebrow="Assignment Editor" title="Homework 4: Linked Lists" />
 
       <div className="app-editor-grid">
         <div className="app-editor-main">
@@ -554,10 +1029,7 @@ Implement a singly linked list with the following methods:
 Ensure all edge cases are handled (empty list, single node list).`}</pre>
           </SurfacePanel>
 
-          <SectionHeading
-            icon={<FolderOpen size={16} />}
-            title="Starter Files"
-          />
+          <SectionHeading icon={<FolderOpen size={16} />} title="Starter Files" />
           <div className="app-file-stack">
             {starterFiles.map((file) => (
               <SurfacePanel key={file.name} muted className="app-file-row">
