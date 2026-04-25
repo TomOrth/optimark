@@ -10,7 +10,7 @@ ENV UV_PYTHON=/usr/bin/python
 
 WORKDIR /app/backend
 
-COPY --from=ghcr.io/astral-sh/uv:0.10.12 /uv /uvx /usr/local/bin/
+COPY --from=ghcr.io/astral-sh/uv:0.11.7 /uv /uvx /usr/local/bin/
 
 COPY --chown=65532:65532 backend/ ./
 
