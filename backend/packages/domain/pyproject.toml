@@ -3,7 +3,9 @@ name = "metis"
 version = "0.1.0"
 description = "Shared domain package for Optimark"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+  "pwdlib[argon2]>=0.3,<1.0",
+]
 
 [build-system]
 requires = ["hatchling"]

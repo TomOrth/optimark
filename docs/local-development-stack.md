@@ -88,6 +88,10 @@ The root `.env.example` includes application-facing defaults for future backend 
 - `BACKEND_S3_BUCKET`
 - `BACKEND_S3_ACCESS_KEY_ID`
 - `BACKEND_S3_SECRET_ACCESS_KEY`
+- `BACKEND_AUTH_SESSION_COOKIE_NAME`
+- `BACKEND_AUTH_SESSION_TTL_DAYS`
+- `BACKEND_AUTH_SESSION_COOKIE_SECURE`
+- `BACKEND_AUTH_SESSION_COOKIE_SAME_SITE`
 
 ## Notes
 - This stack is for local development only.

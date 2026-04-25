@@ -218,7 +218,12 @@ class AcademicService:
 
         Returns:
             bool: True when a matching enrollment exists.
+
+        Raises:
+            EntityNotFoundError: If the course or user does not exist.
         """
+        self.get_course(course_id)
+        self.get_user(user_id)
         return self._repository.is_user_enrolled(
             course_id=course_id,
             user_id=user_id,

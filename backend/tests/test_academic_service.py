@@ -168,8 +168,7 @@ def test_academic_service_rejects_duplicate_canonical_email(
             email="instructor@example.edu",
             display_name="Database Duplicate",
         )
-        db_session.commit()
-    except IntegrityError:
+    except DuplicateEmailError:
         db_session.rollback()
     else:
-        raise AssertionError("expected the database unique constraint to reject duplicates")
+        raise AssertionError("expected duplicate email mapping to reject duplicates")

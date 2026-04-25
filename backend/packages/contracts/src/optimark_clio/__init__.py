@@ -10,9 +10,17 @@ from optimark_clio.academic import (
     UserDetail,
     UserSummary,
 )
+from optimark_clio.auth import (
+    AuthErrorResponse,
+    LoginRequest,
+    SessionResponse,
+    SessionUser,
+    SignupRequest,
+)
 from optimark_clio.health import HealthResponse, WorkerBootstrapMessage
 
 __all__ = [
+    "AuthErrorResponse",
     "CourseDetail",
     "CourseSummary",
     "CreateCourseInput",
@@ -20,6 +28,10 @@ __all__ = [
     "EnrollmentRecord",
     "EnrollUserInput",
     "HealthResponse",
+    "LoginRequest",
+    "SessionResponse",
+    "SessionUser",
+    "SignupRequest",
     "UserDetail",
     "UserSummary",
     "WorkerBootstrapMessage",
