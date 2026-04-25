@@ -22,7 +22,7 @@ WORKDIR /app
 ENV HOST=0.0.0.0
 ENV PORT=4173
 
-USER root
+USER 0:0
 RUN ["/usr/bin/apt-get", "update"]
 RUN ["/usr/bin/apt-get", "install", "--yes", "--only-upgrade", "libssl3t64", "openssl", "openssl-provider-legacy"]
 RUN ["/usr/bin/apt-get", "clean"]
