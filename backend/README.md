@@ -41,6 +41,7 @@ Useful commands from the repository root:
 The backend uses SQLAlchemy for ORM mappings and Alembic for schema migrations. `make backend-db-upgrade` applies the current schema to `BACKEND_DATABASE_URL`, which defaults to the local Postgres service defined in `.env.example`.
 
 ## Auth routes and settings
+
 The API now exposes these hosted-auth routes:
 - `POST /api/v1/auth/signup`
 - `POST /api/v1/auth/login`

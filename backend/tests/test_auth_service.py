@@ -3,6 +3,7 @@
 from datetime import UTC, datetime, timedelta
 import hashlib
 
+import pytest
 from pwdlib import PasswordHash
 
 from optimark_metis.academic import CourseRole
@@ -52,16 +53,12 @@ def test_auth_service_rejects_duplicate_canonical_signup_email(
         password="super-secure-pass",
     )
 
-    try:
+    with pytest.raises(DuplicateEmailError):
         auth_service.signup(
             email=" instructor@example.edu ",
             display_name="Duplicate Instructor",
             password="another-secure-pass",
         )
-    except DuplicateEmailError:
-        pass
-    else:
-        raise AssertionError("expected duplicate canonical email to be rejected")
 
 
 def test_auth_repository_maps_duplicate_password_identity_to_duplicate_email(

@@ -73,6 +73,9 @@ def get_db_session(
         try:
             yield session
             session.commit()
+        except SessionExpiredError:
+            session.commit()
+            raise
         except Exception:
             session.rollback()
             raise

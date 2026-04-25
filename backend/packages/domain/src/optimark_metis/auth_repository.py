@@ -55,7 +55,11 @@ class AuthRepository(Protocol):
         session_id: UUID,
         last_seen_at: datetime,
     ) -> AuthSession:
-        """Update a session last-seen timestamp."""
+        """Update a session last-seen timestamp.
+
+        Raises:
+            LookupError: If the targeted session does not exist.
+        """
 
     def revoke_session(
         self,
@@ -63,7 +67,11 @@ class AuthRepository(Protocol):
         session_id: UUID,
         revoked_at: datetime,
     ) -> AuthSession:
-        """Revoke a persisted session."""
+        """Revoke a persisted session.
+
+        Raises:
+            LookupError: If the targeted session does not exist.
+        """
 
     def get_identity(
         self,

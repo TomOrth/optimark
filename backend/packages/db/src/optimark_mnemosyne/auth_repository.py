@@ -1,13 +1,12 @@
 """SQLAlchemy-backed repository implementations for auth data."""
 
-from datetime import UTC, datetime
+from datetime import datetime
 from uuid import UUID
 
-from sqlalchemy import select
+from sqlalchemy import or_, select, update
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from optimark_metis.academic import User
 from optimark_metis.auth import (
     AuthIdentity,
     AuthProvider,
@@ -16,6 +15,7 @@ from optimark_metis.auth import (
     PasswordAuthentication,
 )
 from optimark_metis.errors import DuplicateEmailError
+from optimark_mnemosyne._converters import coerce_utc, user_from_model
 from optimark_mnemosyne.models import (
     AuthIdentityModel,
     AuthSessionModel,
@@ -107,7 +107,7 @@ class SqlAlchemyAuthRepository:
 
         user_model, password_hash = row
         return PasswordAuthentication(
-            user=_user_from_model(user_model),
+            user=user_from_model(user_model),
             password_hash=password_hash,
         )
 
@@ -165,7 +165,7 @@ class SqlAlchemyAuthRepository:
 
         user_model, session_model = row
         return AuthenticatedSession(
-            user=_user_from_model(user_model),
+            user=user_from_model(user_model),
             session=_auth_session_from_model(session_model),
         )
 
@@ -184,12 +184,21 @@ class SqlAlchemyAuthRepository:
         Returns:
             AuthSession: Updated session entity.
         """
+        self._session.execute(
+            update(AuthSessionModel)
+            .where(AuthSessionModel.id == session_id)
+            .where(
+                or_(
+                    AuthSessionModel.last_seen_at.is_(None),
+                    AuthSessionModel.last_seen_at < last_seen_at,
+                ),
+            )
+            .values(last_seen_at=last_seen_at),
+        )
         model = self._session.get(AuthSessionModel, session_id)
         if model is None:
             raise LookupError(f"session {session_id} was not found")
-
-        model.last_seen_at = last_seen_at
-        self._session.flush()
+        self._session.refresh(model)
         return _auth_session_from_model(model)
 
     def revoke_session(
@@ -254,7 +263,7 @@ def _auth_identity_from_model(model: AuthIdentityModel) -> AuthIdentity:
         user_id=model.user_id,
         provider=model.provider,
         provider_subject=model.provider_subject,
-        created_at=_coerce_utc(model.created_at),
+        created_at=coerce_utc(model.created_at),
     )
 
 
@@ -270,45 +279,13 @@ def _auth_session_from_model(model: AuthSessionModel) -> AuthSession:
     return AuthSession(
         id=model.id,
         user_id=model.user_id,
-        created_at=_coerce_utc(model.created_at),
-        last_seen_at=_coerce_utc(model.last_seen_at),
-        expires_at=_coerce_utc(model.expires_at),
+        created_at=coerce_utc(model.created_at),
+        last_seen_at=coerce_utc(model.last_seen_at),
+        expires_at=coerce_utc(model.expires_at),
         revoked_at=(
-            None if model.revoked_at is None else _coerce_utc(model.revoked_at)
+            None if model.revoked_at is None else coerce_utc(model.revoked_at)
         ),
     )
-
-
-def _user_from_model(model: UserModel) -> User:
-    """Convert a user ORM model into a domain user.
-
-    Args:
-        model: ORM user model instance.
-
-    Returns:
-        User: Domain user entity.
-    """
-    return User(
-        id=model.id,
-        email=model.email,
-        display_name=model.display_name,
-        created_at=_coerce_utc(model.created_at),
-        updated_at=_coerce_utc(model.updated_at),
-    )
-
-
-def _coerce_utc(value: datetime) -> datetime:
-    """Normalize timestamps to timezone-aware UTC values.
-
-    Args:
-        value: Timestamp returned by the ORM or database driver.
-
-    Returns:
-        datetime: Timezone-aware UTC timestamp.
-    """
-    if value.tzinfo is None:
-        return value.replace(tzinfo=UTC)
-    return value.astimezone(UTC)
 
 
 def _is_duplicate_identity_integrity_error(error: IntegrityError) -> bool:

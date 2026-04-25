@@ -144,9 +144,16 @@ def api_client(db_session: Session) -> Iterator[TestClient]:
     Yields:
         TestClient: FastAPI test client bound to the shared test session.
     """
+    original_db_override = app.dependency_overrides.get(get_db_session)
+    original_auth_override = app.dependency_overrides.get(get_auth_settings)
 
     def override_get_db_session() -> Iterator[Session]:
-        yield db_session
+        try:
+            yield db_session
+            db_session.commit()
+        except Exception:
+            db_session.rollback()
+            raise
 
     app.dependency_overrides[get_db_session] = override_get_db_session
     app.dependency_overrides[get_auth_settings] = lambda: AuthSettings(
@@ -159,4 +166,12 @@ def api_client(db_session: Session) -> Iterator[TestClient]:
         with TestClient(app) as client:
             yield client
     finally:
-        app.dependency_overrides.clear()
+        if original_db_override is None:
+            app.dependency_overrides.pop(get_db_session, None)
+        else:
+            app.dependency_overrides[get_db_session] = original_db_override
+
+        if original_auth_override is None:
+            app.dependency_overrides.pop(get_auth_settings, None)
+        else:
+            app.dependency_overrides[get_auth_settings] = original_auth_override

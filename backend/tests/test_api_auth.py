@@ -127,6 +127,20 @@ def test_course_capability_dependency_enforces_auth_and_role(
         forbidden = client.get(f"/courses/{course.id}/grade")
         assert forbidden.status_code == 403
 
+        instructor_session = auth_service.signup(
+            email="instructor@example.edu",
+            display_name="Instructor",
+            password="super-secure-pass",
+        )
+        academic_service.enroll_user(
+            course_id=course.id,
+            user_id=instructor_session.authentication.user.id,
+            role=CourseRole.INSTRUCTOR,
+        )
+        client.cookies.set("optimark_session", instructor_session.token)
+        authorized = client.get(f"/courses/{course.id}/grade")
+        assert authorized.status_code == 200
+
     probe_app.dependency_overrides.clear()
 
 

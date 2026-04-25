@@ -1,5 +1,7 @@
 """Tests for Athena auth configuration defaults."""
 
+import pytest
+
 from optimark_athena.config import load_auth_settings
 
 
@@ -32,3 +34,18 @@ def test_load_auth_settings_honors_explicit_insecure_local_override(
     settings = load_auth_settings()
 
     assert settings.cookie_secure is False
+
+
+def test_load_auth_settings_rejects_non_integer_ttl(monkeypatch) -> None:
+    """Verify non-integer TTL values raise a clear validation error.
+
+    Args:
+        monkeypatch: Pytest fixture used to control environment variables.
+    """
+    monkeypatch.setenv("BACKEND_AUTH_SESSION_TTL_DAYS", "abc")
+
+    with pytest.raises(
+        ValueError,
+        match="BACKEND_AUTH_SESSION_TTL_DAYS must be an integer, got 'abc'",
+    ):
+        load_auth_settings()

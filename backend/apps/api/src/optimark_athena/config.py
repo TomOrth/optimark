@@ -77,7 +77,10 @@ def _get_positive_int_env(name: str, default: int) -> int:
     if raw_value is None:
         return default
 
-    value = int(raw_value)
+    try:
+        value = int(raw_value)
+    except ValueError as exc:
+        raise ValueError(f"{name} must be an integer, got '{raw_value}'") from exc
     if value <= 0:
         raise ValueError(f"{name} must be positive")
     return value

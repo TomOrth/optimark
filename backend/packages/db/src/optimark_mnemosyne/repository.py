@@ -1,6 +1,4 @@
 """SQLAlchemy-backed repository implementations for academic data."""
-
-from datetime import UTC, datetime
 from collections.abc import Sequence
 from uuid import UUID
 
@@ -10,6 +8,7 @@ from sqlalchemy.orm import Session
 
 from optimark_metis.academic import Course, CourseRole, Enrollment, User
 from optimark_metis.errors import DuplicateEmailError
+from optimark_mnemosyne._converters import coerce_utc, user_from_model
 from optimark_mnemosyne.models import CourseModel, EnrollmentModel, UserModel
 
 
@@ -45,7 +44,7 @@ class SqlAlchemyAcademicRepository:
             if _is_duplicate_email_integrity_error(exc):
                 raise DuplicateEmailError(f"user email {email} already exists") from exc
             raise
-        return _user_from_model(model)
+        return user_from_model(model)
 
     def get_user_by_email(self, email: str) -> User | None:
         """Fetch a user by canonical email address.
@@ -60,7 +59,7 @@ class SqlAlchemyAcademicRepository:
         model = self._session.scalar(statement)
         if model is None:
             return None
-        return _user_from_model(model)
+        return user_from_model(model)
 
     def get_user(self, user_id: UUID) -> User | None:
         """Fetch a user by identifier.
@@ -74,7 +73,7 @@ class SqlAlchemyAcademicRepository:
         model = self._session.get(UserModel, user_id)
         if model is None:
             return None
-        return _user_from_model(model)
+        return user_from_model(model)
 
     def list_users(self) -> Sequence[User]:
         """List all persisted users in creation order.
@@ -83,7 +82,7 @@ class SqlAlchemyAcademicRepository:
             Sequence[User]: Ordered collection of users.
         """
         statement = select(UserModel).order_by(UserModel.created_at, UserModel.id)
-        return [_user_from_model(model) for model in self._session.scalars(statement)]
+        return [user_from_model(model) for model in self._session.scalars(statement)]
 
     def add_course(self, *, course_code: str, title: str, term: str) -> Course:
         """Insert a new course record.
@@ -217,24 +216,6 @@ class SqlAlchemyAcademicRepository:
         return self._session.scalar(statement) is not None
 
 
-def _user_from_model(model: UserModel) -> User:
-    """Convert a user ORM model into a domain user.
-
-    Args:
-        model: ORM user model instance.
-
-    Returns:
-        User: Domain user entity.
-    """
-    return User(
-        id=model.id,
-        email=model.email,
-        display_name=model.display_name,
-        created_at=_coerce_utc(model.created_at),
-        updated_at=_coerce_utc(model.updated_at),
-    )
-
-
 def _course_from_model(model: CourseModel) -> Course:
     """Convert a course ORM model into a domain course.
 
@@ -249,8 +230,8 @@ def _course_from_model(model: CourseModel) -> Course:
         course_code=model.course_code,
         title=model.title,
         term=model.term,
-        created_at=_coerce_utc(model.created_at),
-        updated_at=_coerce_utc(model.updated_at),
+        created_at=coerce_utc(model.created_at),
+        updated_at=coerce_utc(model.updated_at),
     )
 
 
@@ -268,23 +249,9 @@ def _enrollment_from_model(model: EnrollmentModel) -> Enrollment:
         course_id=model.course_id,
         user_id=model.user_id,
         role=model.role,
-        created_at=_coerce_utc(model.created_at),
-        updated_at=_coerce_utc(model.updated_at),
+        created_at=coerce_utc(model.created_at),
+        updated_at=coerce_utc(model.updated_at),
     )
-
-
-def _coerce_utc(value: datetime) -> datetime:
-    """Normalize timestamps to timezone-aware UTC values.
-
-    Args:
-        value: Timestamp returned by the ORM or database driver.
-
-    Returns:
-        datetime: Timezone-aware UTC timestamp.
-    """
-    if value.tzinfo is None:
-        return value.replace(tzinfo=UTC)
-    return value.astimezone(UTC)
 
 
 def _is_duplicate_email_integrity_error(error: IntegrityError) -> bool:

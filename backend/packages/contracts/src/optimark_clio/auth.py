@@ -3,7 +3,7 @@
 from datetime import datetime
 from uuid import UUID
 
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 from optimark_metis.academic import User
 from optimark_metis.auth import AuthProvider, AuthenticatedSession
@@ -12,7 +12,7 @@ from optimark_metis.auth import AuthProvider, AuthenticatedSession
 class SignupRequest(BaseModel):
     """Input payload for user signup."""
 
-    email: str
+    email: EmailStr
     display_name: str
     password: str
 
@@ -20,7 +20,7 @@ class SignupRequest(BaseModel):
 class LoginRequest(BaseModel):
     """Input payload for user login."""
 
-    email: str
+    email: EmailStr
     password: str
 
 
