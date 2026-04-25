@@ -70,6 +70,7 @@ a {
   width: var(--calliope-sidebar-width);
   position: fixed;
   inset: 0 auto 0 0;
+  z-index: 30;
   display: flex;
   flex-direction: column;
   gap: 1.6rem;
@@ -418,11 +419,12 @@ a {
   position: fixed;
   left: calc(50% + var(--calliope-sidebar-width) / 2);
   bottom: 1.8rem;
+  z-index: 25;
   transform: translateX(-50%);
   display: flex;
   align-items: center;
   gap: 1rem;
-  min-width: min(50rem, calc(100vw - var(--calliope-sidebar-width) - 4rem));
+  width: min(50rem, calc(100vw - var(--calliope-sidebar-width) - 2rem));
   padding: 1rem 1.25rem;
   border-radius: 1.35rem;
   background: rgba(255, 255, 255, 0.85);
@@ -457,9 +459,7 @@ a {
   }
 
   .calliope-bottom-action-bar {
-    min-width: auto;
-    width: calc(100vw - 2rem);
-    left: 50%;
+    width: calc(100vw - var(--calliope-sidebar-width) - 2rem);
   }
 }
 
@@ -495,5 +495,10 @@ a {
 
   .calliope-workspace-scroll {
     padding: 1.3rem 1rem 7rem;
+  }
+
+  .calliope-bottom-action-bar {
+    left: 50%;
+    width: calc(100vw - 2rem);
   }
 }

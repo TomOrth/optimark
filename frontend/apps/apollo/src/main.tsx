@@ -12,6 +12,7 @@ import {
   redirect,
   Outlet,
   Link,
+  useRouterState,
 } from "@tanstack/react-router";
 import {
   Bell,
@@ -350,8 +351,10 @@ function AppSidebar() {
 }
 
 function AppTopbar() {
-  const path = router.state.location.pathname;
-  const activeTopTab = path === "/gradebook" ? "analytics" : "course-settings";
+  const pathname = useRouterState({
+    select: (state) => state.location.pathname,
+  });
+  const activeTopTab = pathname === "/gradebook" ? "analytics" : "course-settings";
 
   return (
     <Topbar
