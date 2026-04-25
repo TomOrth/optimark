@@ -31,6 +31,11 @@ def test_migrations_create_academic_tables_and_constraints(migrated_engine) -> N
         "users",
         "courses",
         "enrollments",
+        "assignments",
+        "assignment_versions",
+        "submissions",
+        "evaluation_records",
+        "grade_records",
         "auth_identities",
         "password_credentials",
         "auth_sessions",
@@ -53,6 +58,49 @@ def test_migrations_create_academic_tables_and_constraints(migrated_engine) -> N
         (index["name"], tuple(index["column_names"]))
         for index in indexes
     } >= {("ix_enrollments_user_id", ("user_id",))}
+
+    assignment_indexes = inspector.get_indexes("assignments")
+    assert {
+        (index["name"], tuple(index["column_names"]))
+        for index in assignment_indexes
+    } >= {("ix_assignments_course_id", ("course_id",))}
+
+    assignment_version_unique_constraints = inspector.get_unique_constraints(
+        "assignment_versions",
+    )
+    assert {
+        tuple(constraint["column_names"])
+        for constraint in assignment_version_unique_constraints
+    } >= {("assignment_id", "version_number")}
+
+    submission_indexes = inspector.get_indexes("submissions")
+    assert {
+        (index["name"], tuple(index["column_names"]))
+        for index in submission_indexes
+    } >= {
+        ("ix_submissions_assignment_id", ("assignment_id",)),
+        ("ix_submissions_assignment_version_id", ("assignment_version_id",)),
+        ("ix_submissions_student_user_id", ("student_user_id",)),
+    }
+
+    evaluation_indexes = inspector.get_indexes("evaluation_records")
+    assert {
+        (index["name"], tuple(index["column_names"]))
+        for index in evaluation_indexes
+    } >= {
+        ("ix_evaluation_records_assignment_version_id", ("assignment_version_id",)),
+        ("ix_evaluation_records_submission_id", ("submission_id",)),
+    }
+
+    grade_indexes = inspector.get_indexes("grade_records")
+    assert {
+        (index["name"], tuple(index["column_names"]))
+        for index in grade_indexes
+    } >= {
+        ("ix_grade_records_submission_id", ("submission_id",)),
+        ("ix_grade_records_student_user_id", ("student_user_id",)),
+        ("ix_grade_records_grader_user_id", ("grader_user_id",)),
+    }
 
     identity_unique_constraints = inspector.get_unique_constraints("auth_identities")
     assert {
