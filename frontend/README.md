@@ -18,13 +18,13 @@ This workspace contains the Bun frontend monorepo for Optimark.
 
 ## Workspace Layout
 - `apps/apollo`: main React SPA
-- `packages/calliope`: shared frontend theme and UI copy package
+- `packages/calliope`: shared frontend design-system package for tokens, shell primitives, and reusable surface patterns
 
 ## Package Roadmap
 - `apps/apollo`: implemented
   Primary web application for instructors, TAs, and students.
 - `packages/calliope`: implemented
-  Shared brand tokens, shell copy, and the first seam for reusable UI primitives.
+  Shared brand tokens, shell primitives, layout scaffolds, and reusable surface patterns derived from the design mockups in `docs/mockups/`.
 - `packages/iris`: planned
   Notifications, toasts, inbox-style messaging, and other user-facing system signals.
 - `packages/hephaestus`: planned
@@ -32,4 +32,4 @@ This workspace contains the Bun frontend monorepo for Optimark.
 - `apps/museion`: planned
   Internal pattern library or Storybook-style workspace for documenting components, flows, and visual decisions.
 
-The current implementation provides the initial app shell and mockup-inspired route scaffolding for future instructor and student flows. The dashboard and assignment editor screens are intentionally scaffold-grade, while the rest of the route tree is ready for issue-focused product work.
+The current implementation provides a mockup-aligned design system in `calliope` plus a routed Apollo showcase that exercises dashboard, editor, gradebook, and empty-state patterns for future instructor and student flows.

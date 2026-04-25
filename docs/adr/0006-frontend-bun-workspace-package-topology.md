@@ -32,6 +32,14 @@ The current and planned package topology is:
 #### `packages/calliope`
 `calliope` is needed to hold presentation-layer primitives that should remain reusable across the frontend. This starts with brand and shell constants, but should grow into shared UI primitives, layout conventions, and design-language helpers. Pulling these out early prevents the main app from becoming the only place where visual consistency is defined.
 
+As of 2026-04-25, `calliope` is implemented as the shared frontend design-system package and includes:
+- brand and course-context configuration
+- design tokens for typography, color, spacing, radius, and shadow
+- shell primitives such as the sidebar, topbar, page header, and action bar
+- reusable surface patterns such as metric cards, status pills, form scaffolds, and empty states
+
+The initial primitive set is intentionally derived from the mockups under `docs/mockups/` so future frontend issues can extend a consistent visual system rather than reinterpreting the interface route by route.
+
 #### `packages/iris`
 `iris` is needed because notifications, toasts, inbox items, activity signaling, and cross-surface user messaging are product concerns that cut across many pages. Keeping them in a dedicated package avoids duplicating event-display patterns across feature areas and creates a clear home for delivery semantics that are broader than any single route.
 
@@ -54,6 +62,7 @@ The current and planned package topology is:
 
 ### Follow-on implications
 - New shared UI or shell primitives should default to `calliope` unless they are clearly app-local.
+- Apollo should use `calliope` as the default source for design tokens, shell composition, and reusable layout/surface patterns instead of recreating those concerns in app-local CSS.
 - Notification and inbox workflows should prefer `iris` once implemented instead of being recreated inside `apollo`.
 - Frontend build/config helpers should prefer `hephaestus` once implemented instead of accumulating in app-level scripts.
 - Component documentation and UI validation work should prefer `museion` once implemented instead of adding internal-only surfaces to the production app.
