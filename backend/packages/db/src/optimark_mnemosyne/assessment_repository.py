@@ -83,6 +83,27 @@ class SqlAlchemyAssessmentRepository:
             _assignment_from_model(model) for model in self._session.scalars(statement)
         ]
 
+    def update_assignment(
+        self,
+        *,
+        assignment_id: UUID,
+        title: str,
+        description: str,
+        assignment_type: AssignmentType,
+        publish_state: AssignmentPublishState,
+    ) -> Assignment:
+        """Persist updates to an existing assignment record."""
+        model = self._session.get(AssignmentModel, assignment_id)
+        if model is None:
+            raise LookupError(f"assignment {assignment_id} was not found")
+
+        model.title = title
+        model.description = description
+        model.assignment_type = assignment_type
+        model.publish_state = publish_state
+        self._session.flush()
+        return _assignment_from_model(model)
+
     def add_assignment_version(
         self,
         *,

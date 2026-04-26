@@ -12,6 +12,7 @@ from sqlalchemy.orm import Session, sessionmaker
 from optimark_athena.config import AuthSettings, load_auth_settings
 from optimark_metis import (
     AcademicService,
+    AssessmentService,
     AuthService,
     AuthenticationRequiredError,
     AuthorizationService,
@@ -22,6 +23,7 @@ from optimark_metis import (
 from optimark_metis.academic import User
 from optimark_metis.auth import AuthenticatedSession
 from optimark_mnemosyne import (
+    SqlAlchemyAssessmentRepository,
     SqlAlchemyAcademicRepository,
     SqlAlchemyAuthRepository,
     create_session_factory,
@@ -115,6 +117,25 @@ def get_auth_service(
         auth_repository=SqlAlchemyAuthRepository(db_session),
         password_hasher=password_hasher,
         session_ttl=auth_settings.session_ttl,
+    )
+
+
+def get_assessment_service(
+    db_session: Annotated[Session, Depends(get_db_session)],
+    academic_service: Annotated[AcademicService, Depends(get_academic_service)],
+) -> AssessmentService:
+    """Build the assessment service for the current request.
+
+    Args:
+        db_session: Request-scoped SQLAlchemy session.
+        academic_service: Academic service used for course and user lookups.
+
+    Returns:
+        AssessmentService: Assessment service backed by SQLAlchemy repositories.
+    """
+    return AssessmentService(
+        repository=SqlAlchemyAssessmentRepository(db_session),
+        academic_service=academic_service,
     )
 
 

@@ -33,6 +33,24 @@ class CreateAssignmentInput(BaseModel):
     publish_state: AssignmentPublishState = AssignmentPublishState.DRAFT
 
 
+class CreateCourseAssignmentInput(BaseModel):
+    """Input payload for creating a managed course assignment."""
+
+    title: str
+    description: str
+    assignment_type: AssignmentType
+    publish_state: AssignmentPublishState = AssignmentPublishState.DRAFT
+
+
+class UpdateAssignmentInput(BaseModel):
+    """Input payload for updating editable assignment fields."""
+
+    title: str | None = None
+    description: str | None = None
+    assignment_type: AssignmentType | None = None
+    publish_state: AssignmentPublishState | None = None
+
+
 class AssignmentSummary(BaseModel):
     """Summary representation of an assignment."""
 
