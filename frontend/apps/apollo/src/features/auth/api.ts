@@ -29,6 +29,11 @@ export async function logoutRequest(): Promise<void> {
       throw new ApiError(error.status, "Unable to end the current session.");
     }
 
-    throw error;
+  if (response.ok || response.status === 401) {
+    return;
+  }
+
+  if (!response.ok) {
+    throw new ApiError(response.status, "Unable to end the current session.");
   }
 }

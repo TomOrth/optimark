@@ -14,6 +14,12 @@ type RedirectLocation = {
   hash?: string;
 };
 
+type RedirectLocation = {
+  pathname: string;
+  searchStr?: string;
+  hash?: string;
+};
+
 export const sessionQueryKey = ["auth", "session"] as const;
 
 export async function fetchSession(): Promise<SessionResponse | null> {
