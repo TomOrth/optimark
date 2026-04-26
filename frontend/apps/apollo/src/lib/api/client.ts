@@ -8,7 +8,7 @@ export class ApiError extends Error {
   }
 }
 
-export async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
+async function request(path: string, init?: RequestInit): Promise<Response> {
   const response = await fetch(path, {
     ...init,
     credentials: "include",
@@ -31,5 +31,14 @@ export async function requestJson<T>(path: string, init?: RequestInit): Promise<
     throw new ApiError(response.status, detail);
   }
 
+  return response;
+}
+
+export async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
+  const response = await request(path, init);
   return (await response.json()) as T;
+}
+
+export async function requestVoid(path: string, init?: RequestInit): Promise<void> {
+  await request(path, init);
 }
