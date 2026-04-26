@@ -19,6 +19,12 @@ export type SessionResponse = {
   expires_at: string;
 };
 
+type RedirectLocation = {
+  pathname: string;
+  searchStr?: string;
+  hash?: string;
+};
+
 export const sessionQueryKey = ["auth", "session"] as const;
 
 export async function fetchSession(): Promise<SessionResponse | null> {
@@ -91,6 +97,10 @@ export function deriveInitials(displayName: string): string {
     .join("")
     .slice(0, 2)
     .toUpperCase();
+}
+
+export function buildRedirectPath(location: RedirectLocation): string {
+  return `${location.pathname}${location.searchStr ?? ""}${location.hash ?? ""}`;
 }
 
 export async function ensureSession(queryClient: QueryClient): Promise<SessionResponse | null> {
