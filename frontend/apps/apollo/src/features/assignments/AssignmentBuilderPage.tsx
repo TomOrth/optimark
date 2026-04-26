@@ -1,6 +1,11 @@
-import { FileCode2, FolderOpen, Sparkles, Upload } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { CircleAlert, FileCode2, FolderOpen, LoaderCircle, Sparkles } from "lucide-react";
 import {
   BottomActionBar,
+  EmptyState,
   FormFieldScaffold,
   PageHeader,
   PageShell,
@@ -9,93 +14,353 @@ import {
   SurfacePanel,
 } from "@optimark/calliope";
 
-import { starterFiles } from "./mock-data";
+import {
+  assignmentDetailQueryKey,
+  createAssignment,
+  fetchAssignmentDetail,
+  fetchManagedCourses,
+  managedAssignmentsQueryKey,
+  managedCoursesQueryKey,
+  sanitizeCourseId,
+  updateAssignment,
+  type AssignmentPublishState,
+  type AssignmentType,
+} from "./api";
 
-export function AssignmentBuilderPage() {
+type AssignmentBuilderPageProps = {
+  mode: "create" | "edit";
+  assignmentId?: string;
+  courseId?: string;
+};
+
+type AssignmentFormState = {
+  title: string;
+  description: string;
+  assignmentType: AssignmentType;
+  publishState: AssignmentPublishState;
+};
+
+const INITIAL_FORM_STATE: AssignmentFormState = {
+  title: "",
+  description: "",
+  assignmentType: "coding",
+  publishState: "draft",
+};
+
+export function AssignmentBuilderPage({
+  mode,
+  assignmentId,
+  courseId,
+}: AssignmentBuilderPageProps) {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const [formState, setFormState] = useState<AssignmentFormState>(INITIAL_FORM_STATE);
+  const normalizedCourseId = sanitizeCourseId(courseId);
+
+  const coursesQuery = useQuery({
+    queryKey: managedCoursesQueryKey,
+    queryFn: fetchManagedCourses,
+  });
+
+  const selectedCourseId = useMemo(
+    () => normalizedCourseId ?? coursesQuery.data?.[0]?.id,
+    [coursesQuery.data, normalizedCourseId],
+  );
+
+  const selectedCourse =
+    coursesQuery.data?.find((course) => course.id === selectedCourseId) ?? null;
+
+  const assignmentDetailQuery = useQuery({
+    queryKey:
+      mode === "edit" && selectedCourseId && assignmentId
+        ? assignmentDetailQueryKey(selectedCourseId, assignmentId)
+        : ["instructor", "assignments", "editor", "unselected"],
+    queryFn: () => fetchAssignmentDetail(selectedCourseId!, assignmentId!),
+    enabled: mode === "edit" && Boolean(selectedCourseId) && Boolean(assignmentId),
+  });
+
+  useEffect(() => {
+    if (mode === "edit" && assignmentDetailQuery.data) {
+      setFormState({
+        title: assignmentDetailQuery.data.title,
+        description: assignmentDetailQuery.data.description,
+        assignmentType: assignmentDetailQuery.data.assignmentType,
+        publishState: assignmentDetailQuery.data.publishState,
+      });
+      return;
+    }
+
+    if (mode === "create") {
+      setFormState(INITIAL_FORM_STATE);
+    }
+  }, [assignmentDetailQuery.data, mode]);
+
+  useEffect(() => {
+    if (selectedCourseId && selectedCourseId !== normalizedCourseId) {
+      void navigate({
+        to: ".",
+        search: { course: selectedCourseId },
+        replace: true,
+      });
+    }
+  }, [navigate, normalizedCourseId, selectedCourseId]);
+
+  useEffect(() => {
+    if (selectedCourseId && selectedCourseId !== normalizedCourseId) {
+      void navigate({
+        to: ".",
+        search: { course: selectedCourseId },
+        replace: true,
+      });
+    }
+  }, [navigate, normalizedCourseId, selectedCourseId]);
+
+  const assignmentMutation = useMutation({
+    mutationFn: async (nextState: AssignmentFormState) => {
+      if (!selectedCourseId) {
+        throw new Error("Select a managed course before saving an assignment.");
+      }
+
+      if (mode === "edit" && assignmentId) {
+        return updateAssignment(selectedCourseId, assignmentId, nextState);
+      }
+
+      return createAssignment(selectedCourseId, nextState);
+    },
+    onSuccess: async (assignment) => {
+      if (!selectedCourseId) {
+        return;
+      }
+
+      await queryClient.invalidateQueries({
+        queryKey: managedAssignmentsQueryKey(selectedCourseId),
+      });
+      queryClient.setQueryData(
+        assignmentDetailQueryKey(selectedCourseId, assignment.id),
+        assignment,
+      );
+      await navigate({
+        to: "/assignments/$assignmentId",
+        params: { assignmentId: assignment.id },
+        search: { course: selectedCourseId },
+        replace: mode === "edit",
+      });
+    },
+  });
+
+  const isLoading =
+    coursesQuery.isLoading || (mode === "edit" && assignmentDetailQuery.isLoading);
+  const loadError =
+    coursesQuery.error instanceof Error
+      ? coursesQuery.error
+      : assignmentDetailQuery.error instanceof Error
+        ? assignmentDetailQuery.error
+        : null;
+
+  const editorTitle =
+    mode === "edit" ? formState.title || "Edit Assignment" : "Create Assignment";
+
+  const submitWithState = (publishState: AssignmentPublishState) => {
+    assignmentMutation.mutate({
+      ...formState,
+      publishState,
+    });
+  };
+
+  const handleCourseChange = (nextCourseId: string) => {
+    if (mode === "edit" && assignmentId) {
+      void navigate({
+        to: "/assignments/$assignmentId",
+        params: { assignmentId },
+        search: { course: nextCourseId },
+      });
+      return;
+    }
+
+    void navigate({
+      to: "/assignments/new",
+      search: { course: nextCourseId },
+    });
+  };
+
+  if (isLoading) {
+    return (
+      <PageShell>
+        <PageHeader eyebrow="Assignment Editor" title="Loading assignment workspace" />
+        <SurfacePanel className="app-panel-state">
+          <LoaderCircle size={18} className="app-spin" />
+          <span>Preparing the assignment editor...</span>
+        </SurfacePanel>
+      </PageShell>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <PageShell>
+        <PageHeader eyebrow="Assignment Editor" title="We hit a loading problem" />
+        <SurfacePanel className="app-panel-state app-panel-state-error">
+          <CircleAlert size={18} />
+          <span>{loadError.message}</span>
+        </SurfacePanel>
+      </PageShell>
+    );
+  }
+
+  if (!selectedCourseId || !selectedCourse) {
+    return (
+      <PageShell>
+        <PageHeader
+          eyebrow="Assignment Editor"
+          title="No managed course selected"
+          subtitle="Choose one of your managed courses before creating assignments."
+        />
+        <EmptyState
+          icon={<FolderOpen size={18} />}
+          title="Managed courses required"
+          description="Return to the assignments overview to pick a course context for this editor."
+          action={
+            <Link to="/assignments" search={{ course: undefined }} className="app-primary-action">
+              Back to Assignments
+            </Link>
+          }
+        />
+      </PageShell>
+    );
+  }
+
   return (
     <PageShell>
-      <PageHeader eyebrow="Assignment Editor" title="Homework 4: Linked Lists" />
+      <PageHeader
+        eyebrow={mode === "edit" ? "Edit Assignment" : "Create Assignment"}
+        title={editorTitle}
+        subtitle={`${selectedCourse.courseCode} • ${selectedCourse.title}`}
+      />
 
       <div className="app-editor-grid">
         <div className="app-editor-main">
           <SectionHeading
             icon={<FileCode2 size={16} />}
-            title="Description"
+            title="Assignment Brief"
             actions={
               <div className="app-inline-group">
-                <button className="app-inline-action app-inline-action-active" type="button">
-                  Write
-                </button>
-                <button className="app-inline-action" type="button">
-                  Preview
-                </button>
+                <Link
+                  to="/assignments"
+                  search={{ course: selectedCourseId }}
+                  className="app-inline-control"
+                >
+                  Back to List
+                </Link>
               </div>
             }
           />
 
-          <SurfacePanel muted className="app-editor-block">
-            <pre>{`## Instructions
-Implement a singly linked list with the following methods:
-- append(value)
-- prepend(value)
-- delete(value)
-- find(value)
+          <SurfacePanel muted className="app-editor-block app-form-stack">
+            <FormFieldScaffold label="Title">
+              <input
+                className="app-form-input"
+                value={formState.title}
+                onChange={(event) =>
+                  setFormState((current) => ({
+                    ...current,
+                    title: event.target.value,
+                  }))
+                }
+                placeholder="Homework 4: Linked Lists"
+              />
+            </FormFieldScaffold>
 
-### Constraints
-- Time Complexity: O(n) for searching
-- Space Complexity: O(1) for deletions
-
-Ensure all edge cases are handled (empty list, single node list).`}</pre>
+            <FormFieldScaffold label="Description" support="Markdown-friendly prompt text">
+              <textarea
+                className="app-form-textarea"
+                value={formState.description}
+                onChange={(event) =>
+                  setFormState((current) => ({
+                    ...current,
+                    description: event.target.value,
+                  }))
+                }
+                placeholder="Describe the assignment requirements, starter assumptions, and expected output."
+              />
+            </FormFieldScaffold>
           </SurfacePanel>
 
-          <SectionHeading icon={<FolderOpen size={16} />} title="Starter Files" />
-          <div className="app-file-stack">
-            {starterFiles.map((file) => (
-              <SurfacePanel key={file.name} muted className="app-file-row">
-                <div className="app-file-main">
-                  <div className="app-file-icon">{file.icon}</div>
-                  <div>
-                    <strong>{file.name}</strong>
-                    <p>{file.meta}</p>
-                  </div>
-                </div>
-              </SurfacePanel>
-            ))}
-            <div className="app-upload-zone">
-              <Upload size={18} />
-              Upload Additional Files
-            </div>
-          </div>
+          <SurfacePanel muted className="app-editor-callout">
+            <strong>Course-linked editor</strong>
+            <p>
+              This editor now saves directly against the selected managed course.
+              File attachments, version snapshots, and richer publishing controls can
+              layer in later without changing the route or course-selection model.
+            </p>
+          </SurfacePanel>
         </div>
 
         <SurfacePanel muted className="app-editor-inspector">
           <SectionHeading title="Metadata" />
           <div className="app-inspector-grid">
-            <FormFieldScaffold label="Due Date">
-              <div className="app-field-value">Oct 15, 2026</div>
+            <FormFieldScaffold label="Course">
+              <select
+                className="app-form-input"
+                value={selectedCourseId}
+                onChange={(event) => handleCourseChange(event.target.value)}
+                disabled={mode === "edit"}
+              >
+                {coursesQuery.data?.map((course) => (
+                  <option key={course.id} value={course.id}>
+                    {course.courseCode} • {course.title}
+                  </option>
+                ))}
+              </select>
             </FormFieldScaffold>
-            <FormFieldScaffold label="Points">
-              <div className="app-field-value">100</div>
+
+            <FormFieldScaffold label="Assignment Type">
+              <select
+                className="app-form-input"
+                value={formState.assignmentType}
+                onChange={(event) =>
+                  setFormState((current) => ({
+                    ...current,
+                    assignmentType: event.target.value as AssignmentType,
+                  }))
+                }
+              >
+                <option value="coding">Coding</option>
+                <option value="document">Document</option>
+                <option value="quiz">Quiz</option>
+              </select>
             </FormFieldScaffold>
-            <FormFieldScaffold label="Language">
-              <div className="app-field-value">Python 3.10</div>
-            </FormFieldScaffold>
-            <FormFieldScaffold label="Submission Limit" support="3 attempts">
-              <div className="app-slider-track">
-                <span />
-              </div>
+
+            <FormFieldScaffold label="Publish State">
+              <select
+                className="app-form-input"
+                value={formState.publishState}
+                onChange={(event) =>
+                  setFormState((current) => ({
+                    ...current,
+                    publishState: event.target.value as AssignmentPublishState,
+                  }))
+                }
+              >
+                <option value="draft">Draft</option>
+                <option value="published">Published</option>
+                <option value="archived">Archived</option>
+              </select>
             </FormFieldScaffold>
           </div>
+
           <div className="app-inspector-meta">
             <div className="app-meta-row">
               <span>Visibility</span>
-              <StatusPill>Hidden</StatusPill>
+              <StatusPill tone={formState.publishState === "published" ? "primary" : "default"}>
+                {formState.publishState}
+              </StatusPill>
             </div>
             <div className="app-meta-row">
               <span>Category</span>
-              <StatusPill tone="primary">Coding</StatusPill>
+              <StatusPill tone="primary">{formState.assignmentType}</StatusPill>
             </div>
           </div>
+
           <button className="app-verify-card" type="button">
             <Sparkles size={22} />
             Verify Environment
@@ -107,13 +372,40 @@ Ensure all edge cases are handled (empty list, single node list).`}</pre>
         leading={
           <div className="app-status-cluster">
             <span className="app-smallcaps">Current Status</span>
-            <strong>Draft Saving...</strong>
+            <strong>
+              {assignmentMutation.isPending
+                ? "Saving..."
+                : mode === "edit"
+                  ? "Editing existing assignment"
+                  : "Create a new assignment"}
+            </strong>
           </div>
         }
         actions={
           <>
-            <button className="app-inline-action" type="button">Save Draft</button>
-            <button className="app-primary-action" type="button">Publish</button>
+            {assignmentMutation.isError ? (
+              <span className="app-inline-error">
+                {assignmentMutation.error instanceof Error
+                  ? assignmentMutation.error.message
+                  : "Could not save the assignment."}
+              </span>
+            ) : null}
+            <button
+              className="app-inline-action"
+              type="button"
+              onClick={() => submitWithState("draft")}
+              disabled={assignmentMutation.isPending}
+            >
+              Save Draft
+            </button>
+            <button
+              className="app-primary-action"
+              type="button"
+              onClick={() => submitWithState("published")}
+              disabled={assignmentMutation.isPending}
+            >
+              {assignmentMutation.isPending ? "Saving..." : "Publish"}
+            </button>
           </>
         }
       />
