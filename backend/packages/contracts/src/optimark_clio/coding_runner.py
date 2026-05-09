@@ -3,7 +3,6 @@
 import json
 from datetime import datetime
 from enum import StrEnum
-from typing import Any
 from uuid import UUID
 
 from pydantic import BaseModel, Field, field_validator, model_validator
