@@ -1,36 +1,22 @@
-import { ApiError, requestJson } from "../../lib/api/client";
-import type { SessionResponse } from "./session";
+import { ApiError } from "../../lib/api/client";
+import {
+  apiClient,
+  type LoginRequest,
+  type SessionResponse,
+  type SignupRequest,
+} from "../../lib/api/generated";
 
-export type AuthPayload = {
-  email: string;
-  password: string;
-};
-
-export type SignupPayload = AuthPayload & {
-  display_name: string;
-};
+export type AuthPayload = LoginRequest;
+export type SignupPayload = SignupRequest;
 
 export async function loginRequest(payload: AuthPayload): Promise<SessionResponse> {
-  return requestJson<SessionResponse>("/api/v1/auth/login", {
-    method: "POST",
-    body: JSON.stringify(payload),
-  });
+  return apiClient.login(payload);
 }
 
 export async function signupRequest(payload: SignupPayload): Promise<SessionResponse> {
-  return requestJson<SessionResponse>("/api/v1/auth/signup", {
-    method: "POST",
-    body: JSON.stringify(payload),
-  });
+  return apiClient.signup(payload);
 }
 
 export async function logoutRequest(): Promise<void> {
-  const response = await fetch("/api/v1/auth/logout", {
-    method: "POST",
-    credentials: "include",
-  });
-
-  if (!response.ok) {
-    throw new ApiError(response.status, "Unable to end the current session.");
-  }
+  return apiClient.logout();
 }

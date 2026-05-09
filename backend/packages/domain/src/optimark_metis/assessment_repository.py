@@ -42,6 +42,17 @@ class AssessmentRepository(Protocol):
     def list_course_assignments(self, course_id: UUID) -> Sequence[Assignment]:
         """List assignments for a course."""
 
+    def update_assignment(
+        self,
+        *,
+        assignment_id: UUID,
+        title: str,
+        description: str,
+        assignment_type: AssignmentType,
+        publish_state: AssignmentPublishState,
+    ) -> Assignment:
+        """Persist updates to an existing assignment."""
+
     def add_assignment_version(
         self,
         *,
