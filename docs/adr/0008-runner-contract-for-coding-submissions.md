@@ -21,7 +21,7 @@ The contract must be explicit enough for worker integration and API-visible stat
 Optimark will define the coding runner boundary around a typed request/terminal-result contract that is shared across the app and worker layers.
 
 The contract is represented in the shared contracts package at:
-- [coding_runner.py](/Users/thomasorth/optimark/backend/packages/contracts/src/optimark_clio/coding_runner.py)
+- [coding_runner.py](../../backend/packages/contracts/src/optimark_clio/coding_runner.py)
 
 ### Request shape
 Every runner invocation must include:
@@ -33,8 +33,9 @@ Every runner invocation must include:
   - `student_user_id`
   - `requested_at`
   - `attempt_number`
-  - optional `initiated_by_user_id`
+- optional `initiated_by_user_id`
 - `language`
+- `runtime_version`
 - one required `submission_artifact` reference
 - zero or more `assignment_artifacts`
 - zero or more `grader_artifacts`
@@ -43,10 +44,8 @@ Every runner invocation must include:
 - optional `execution_context` metadata
 
 ### Artifact reference semantics
-Artifact references are storage-oriented and intentionally runtime-agnostic. Each artifact reference includes:
-- storage provider name
-- bucket
-- key
+Artifact references are URI-oriented and intentionally runtime-agnostic. Each artifact reference includes:
+- a normalized `reference_uri`
 - display name
 - optional content metadata such as `content_type`, `size_bytes`, and `sha256`
 - an explicit artifact role
@@ -101,14 +100,19 @@ Each failure detail also includes:
 - a `retryable` flag
 - optional structured detail payload
 
+The shared schema also enforces the relationship between terminal outcome and failure payload:
+- `succeeded` results must not include `failure`
+- `failed`, `infrastructure_error`, and `cancelled` results must include `failure`
+
 ### Python-first, future-extensible
-The initial language enum includes only `python`, which matches the MVP. This is an intentional product constraint rather than a hard architectural ceiling. The request and result models are designed so additional language values can be added later without redefining the overall contract shape.
+The initial language enum includes only `python`, which matches the MVP. This is an intentional product constraint rather than a hard architectural ceiling. The request now carries `runtime_version` explicitly so Python-first execution can remain normalized without burying version choice inside ad hoc config blobs, and additional language values can be added later without redefining the overall contract shape.
 
 ## Consequences
 ### Positive
 - Gives issue `#10` a concrete boundary for autograde run orchestration and persistence.
 - Prevents the API and worker layers from baking in a runner-specific payload shape.
 - Separates orchestration lifecycle from terminal execution outcome semantics.
+- Keeps artifact addressing generic enough for object-storage-backed and future non-object-storage execution strategies.
 - Makes artifact references, failure codes, and result payloads explicit enough for later review and grade workflows.
 
 ### Negative

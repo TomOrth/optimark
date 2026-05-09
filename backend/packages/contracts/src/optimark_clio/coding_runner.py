@@ -1,11 +1,12 @@
 """Shared contracts for the coding-submission runner boundary."""
 
+import json
 from datetime import datetime
 from enum import StrEnum
 from typing import Any
 from uuid import UUID
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 
 class CodingRunnerLanguage(StrEnum):
@@ -44,6 +45,7 @@ class CodingRunnerFailureCode(StrEnum):
     EXECUTION_SETUP_FAILED = "execution_setup_failed"
     EXECUTION_TIMEOUT = "execution_timeout"
     EXECUTION_RUNTIME_ERROR = "execution_runtime_error"
+    RUN_CANCELLED = "run_cancelled"
     RUNNER_UNAVAILABLE = "runner_unavailable"
     INTERNAL_ERROR = "internal_error"
 
@@ -61,21 +63,19 @@ class CodingRunnerArtifactRef(BaseModel):
     """Reference to an artifact consumed or produced by the runner."""
 
     role: CodingRunnerArtifactRole
-    storage_provider: str = "s3"
-    bucket: str
-    key: str
+    reference_uri: str
     display_name: str
     content_type: str | None = None
-    size_bytes: int | None = None
+    size_bytes: int | None = Field(default=None, ge=0)
     sha256: str | None = None
 
 
 class CodingRunnerExecutionLimits(BaseModel):
     """Execution ceilings passed to the runner as normalized policy input."""
 
-    time_limit_seconds: int
-    memory_limit_mebibytes: int
-    max_output_bytes: int
+    time_limit_seconds: int = Field(gt=0)
+    memory_limit_mebibytes: int = Field(gt=0)
+    max_output_bytes: int = Field(gt=0)
 
 
 class CodingRunnerExecutionMetadata(BaseModel):
@@ -87,19 +87,28 @@ class CodingRunnerExecutionMetadata(BaseModel):
     assignment_version_id: UUID
     student_user_id: UUID
     requested_at: datetime
-    attempt_number: int = 1
+    attempt_number: int = Field(default=1, ge=1)
     initiated_by_user_id: UUID | None = None
+
+
+class CodingRunnerGradingConfig(BaseModel):
+    """Normalized grading configuration consumed by the runner."""
+
+    entrypoint: str
+    invocation_args: list[str] = Field(default_factory=list)
+    expected_result_format: str = "json"
 
 
 class CodingRunnerRequest(BaseModel):
     """Stable request payload handed from the app/worker layer to a runner."""
 
     language: CodingRunnerLanguage
+    runtime_version: str
     metadata: CodingRunnerExecutionMetadata
     submission_artifact: CodingRunnerArtifactRef
     assignment_artifacts: list[CodingRunnerArtifactRef] = Field(default_factory=list)
     grader_artifacts: list[CodingRunnerArtifactRef] = Field(default_factory=list)
-    grading_config: dict[str, Any] = Field(default_factory=dict)
+    grading_config: CodingRunnerGradingConfig
     limits: CodingRunnerExecutionLimits
     execution_context: dict[str, str] = Field(default_factory=dict)
 
@@ -128,7 +137,17 @@ class CodingRunnerFailureDetail(BaseModel):
     code: CodingRunnerFailureCode
     message: str
     retryable: bool
-    detail_payload: dict[str, Any] = Field(default_factory=dict)
+    detail_payload: dict[str, object] = Field(default_factory=dict)
+
+    @field_validator("detail_payload")
+    @classmethod
+    def validate_detail_payload(
+        cls,
+        value: dict[str, object],
+    ) -> dict[str, object]:
+        """Ensure failure detail payloads remain JSON-serializable."""
+        _ensure_json_serializable(value, field_name="detail_payload")
+        return value
 
 
 class CodingRunnerResult(BaseModel):
@@ -143,3 +162,30 @@ class CodingRunnerResult(BaseModel):
     output_artifacts: list[CodingRunnerArtifactRef] = Field(default_factory=list)
     logs: list[str] = Field(default_factory=list)
     failure: CodingRunnerFailureDetail | None = None
+
+    @model_validator(mode="after")
+    def validate_failure_semantics(self) -> "CodingRunnerResult":
+        """Ensure status/failure combinations are explicit and consistent."""
+        if self.status is CodingRunnerOutcomeStatus.SUCCEEDED and self.failure is not None:
+            raise ValueError("failure must be omitted when status is succeeded")
+        if (
+            self.status
+            in {
+                CodingRunnerOutcomeStatus.FAILED,
+                CodingRunnerOutcomeStatus.INFRASTRUCTURE_ERROR,
+                CodingRunnerOutcomeStatus.CANCELLED,
+            }
+            and self.failure is None
+        ):
+            raise ValueError(
+                "failure is required for failed, infrastructure_error, and cancelled results",
+            )
+        return self
+
+
+def _ensure_json_serializable(value: dict[str, object], *, field_name: str) -> None:
+    """Validate that a mapping payload can be encoded as JSON."""
+    try:
+        json.dumps(value)
+    except (TypeError, ValueError) as exc:
+        raise ValueError(f"{field_name} must be JSON-serializable") from exc

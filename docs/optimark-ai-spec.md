@@ -292,6 +292,7 @@ The future coding runner interface must support:
 - submission artifact references
 - assignment version reference
 - execution metadata
+- runtime version
 - grading configuration reference
 - execution limits
 
