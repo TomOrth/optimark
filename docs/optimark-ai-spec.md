@@ -13,6 +13,9 @@
 - [ADR-0004: Contract-Driven Coding Submission Engine](./adr/0004-contract-driven-coding-engine.md)
 - [ADR-0005: Hosted SaaS First with Self-Hosting Seams](./adr/0005-hosted-saas-first.md)
 - [ADR-0007: Backend uv Workspace Package Topology](./adr/0007-backend-uv-workspace-package-topology.md)
+- [ADR-0008: Runner Contract for Coding Submissions](./adr/0008-runner-contract-for-coding-submissions.md)
+- [ADR-0009: Artifact Packaging and Execution Handoff for Coding Runs](./adr/0009-artifact-packaging-and-execution-handoff.md)
+- [ADR-0010: Docker-First Execution Isolation and Scaling Strategy](./adr/0010-docker-first-execution-isolation-and-scaling.md)
 
 ## 1. Product Summary
 Optimark is an instructor-first assessment platform that begins with coding assignments and autograding, while intentionally preserving a path to broader assessment workflows similar to Gradescope. The first release should serve CS instructors, TAs, and students, but the core domain model must remain generic enough to support non-coding assignments later.
@@ -36,7 +39,7 @@ Use these as hard constraints for design and implementation.
 3. Generic assessment model first, coding specialization second.
 4. Async grading lifecycle is a core platform capability, not a side feature.
 5. Manual review and rubric feedback are first-class, even for autograded work.
-6. The coding execution engine must be designed behind a stable contract and must not be prematurely locked to one sandbox/runtime architecture.
+6. The coding execution engine must be designed behind a stable contract so execution internals can evolve without rewriting the application layer.
 
 ## 3. v1 Goals
 - Support course-based assessment workflows for instructors, TAs, and students.
@@ -50,7 +53,7 @@ Use these as hard constraints for design and implementation.
 - Full LMS feature parity
 - Institution-wide compliance or procurement-focused administration
 - Full multi-language execution support
-- Final decision on sandbox/runtime execution technology
+- Broad multi-runtime portability beyond the chosen MVP execution route
 - Rich inline code annotation tooling
 - Production self-hosted packaging
 
@@ -270,7 +273,7 @@ The first coding-assignment implementation should support:
 - scoring configuration placeholder
 
 ## 14. Coding Engine Boundary
-This is intentionally constrained. The product must define the contract and lifecycle, but not finalize the sandbox/runtime architecture yet.
+This remains intentionally contract-first. The runner and handoff boundaries are stable even though the MVP execution route is now selected.
 
 ### Must define now
 - runner input shape
@@ -279,11 +282,13 @@ This is intentionally constrained. The product must define the contract and life
 - lifecycle integration points
 - persistence model for run status and results
 - artifact grouping and execution handoff semantics
+- execution-host isolation requirements
+- scaling and observability expectations
 
-### Must not define yet
-- Docker vs Firecracker vs VM vs other isolation choice
+### Still intentionally deferred
+- a stronger post-MVP isolation upgrade such as Firecracker or VM-backed execution
 - final transport/packaging strategy for all artifact types
-- final horizontal scaling strategy
+- the exact scheduler or autoscaling control plane
 - broad multi-language implementation details
 
 ## 15. Runner Contract Requirements
@@ -309,7 +314,7 @@ The future coding runner interface must support:
 ### Contract properties
 - Python-first, future language-extensible
 - stable enough for API and worker integration
-- independent of the final sandbox/runtime implementation
+- independent of the specific executor implementation behind the worker boundary
 - terminal runner outcomes separated from orchestration lifecycle states
 
 ## 16. Grade Semantics
@@ -378,7 +383,7 @@ The backend should start as a modular monolith.
 - background job handlers
 
 ## 20. Security and Isolation Baselines
-These are guiding constraints even before the final execution engine is chosen.
+These are guiding constraints for the chosen MVP execution route and any later upgrade path.
 
 ### Product security baseline
 - strict role-based access control
@@ -388,7 +393,9 @@ These are guiding constraints even before the final execution engine is chosen.
 
 ### Execution security baseline
 - untrusted student code is treated as hostile
-- grading execution must occur behind an isolation boundary
+- grading execution runs in hardened ephemeral Docker containers in the MVP
+- the isolation boundary must disable unnecessary network and host access by default
+- per-run resource limits and cleanup guarantees are mandatory
 - execution artifacts and logs must be scoped to authorized access
 
 ## 21. Local Development Requirements
@@ -440,9 +447,8 @@ This is the recommended implementation order.
 
 ## 24. Open Design Threads
 These remain intentionally open and should be explored through dedicated design work:
-- artifact packaging and handoff model
 - grading semantics for reruns and release policy
-- isolation and scaling strategy for execution workers
+- post-MVP upgrade path beyond Docker-first execution
 
 ## 25. Known Expansion Path
 After the first coding vertical slice:
