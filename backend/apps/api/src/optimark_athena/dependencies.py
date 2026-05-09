@@ -1,4 +1,4 @@
-"""FastAPI dependencies for Athena auth, sessions, and authorization."""
+"""FastAPI dependencies for Athena auth, storage, sessions, and authorization."""
 
 from collections.abc import Generator
 from functools import lru_cache
@@ -9,9 +9,16 @@ from fastapi import Depends, HTTPException, Request, status
 from pwdlib import PasswordHash
 from sqlalchemy.orm import Session, sessionmaker
 
-from optimark_athena.config import AuthSettings, load_auth_settings
+from optimark_athena.artifact_store import ArtifactStore, S3ArtifactStore
+from optimark_athena.config import (
+    ArtifactStorageSettings,
+    AuthSettings,
+    load_artifact_storage_settings,
+    load_auth_settings,
+)
 from optimark_metis import (
     AcademicService,
+    AssessmentService,
     AuthService,
     AuthenticationRequiredError,
     AuthorizationService,
@@ -23,6 +30,7 @@ from optimark_metis.academic import User
 from optimark_metis.auth import AuthenticatedSession
 from optimark_mnemosyne import (
     SqlAlchemyAcademicRepository,
+    SqlAlchemyAssessmentRepository,
     SqlAlchemyAuthRepository,
     create_session_factory,
 )
@@ -36,6 +44,12 @@ def get_auth_settings() -> AuthSettings:
         AuthSettings: Resolved auth settings.
     """
     return load_auth_settings()
+
+
+@lru_cache
+def get_artifact_storage_settings() -> ArtifactStorageSettings:
+    """Return cached artifact storage settings for the API process."""
+    return load_artifact_storage_settings()
 
 
 @lru_cache
@@ -95,6 +109,17 @@ def get_academic_service(
     return AcademicService(SqlAlchemyAcademicRepository(db_session))
 
 
+def get_assessment_service(
+    db_session: Annotated[Session, Depends(get_db_session)],
+    academic_service: Annotated[AcademicService, Depends(get_academic_service)],
+) -> AssessmentService:
+    """Build the assessment service for the current request."""
+    return AssessmentService(
+        SqlAlchemyAssessmentRepository(db_session),
+        academic_service,
+    )
+
+
 def get_auth_service(
     db_session: Annotated[Session, Depends(get_db_session)],
     auth_settings: Annotated[AuthSettings, Depends(get_auth_settings)],
@@ -130,6 +155,17 @@ def get_authorization_service(
         AuthorizationService: Course-capability authorization service.
     """
     return AuthorizationService(academic_service)
+
+
+@lru_cache
+def get_artifact_store(
+    artifact_settings: Annotated[
+        ArtifactStorageSettings,
+        Depends(get_artifact_storage_settings),
+    ],
+) -> ArtifactStore:
+    """Build the shared artifact store used for submission uploads."""
+    return S3ArtifactStore(settings=artifact_settings)
 
 
 def require_authenticated_session(

@@ -21,7 +21,11 @@ from optimark_clio.assessment import (
     GradeRecordPayload,
     RecordEvaluationInput,
     RecordGradeInput,
+    StudentAssignmentSummary,
+    StudentSubmissionRecord,
+    StudentSubmissionWorkspace,
     SubmissionRecord,
+    SubmissionLifecycleStatus,
 )
 from optimark_clio.auth import (
     AuthErrorResponse,
@@ -55,7 +59,11 @@ __all__ = [
     "SessionResponse",
     "SessionUser",
     "SignupRequest",
+    "StudentAssignmentSummary",
+    "StudentSubmissionRecord",
+    "StudentSubmissionWorkspace",
     "SubmissionRecord",
+    "SubmissionLifecycleStatus",
     "UserDetail",
     "UserSummary",
     "WorkerBootstrapMessage",

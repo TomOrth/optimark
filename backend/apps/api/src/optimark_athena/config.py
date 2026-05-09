@@ -1,4 +1,4 @@
-"""Configuration helpers for Athena auth and session behavior."""
+"""Configuration helpers for Athena auth, sessions, and artifact storage."""
 
 from dataclasses import dataclass
 from datetime import timedelta
@@ -10,6 +10,9 @@ DEFAULT_AUTH_SESSION_COOKIE_NAME = "optimark_session"
 DEFAULT_AUTH_SESSION_TTL_DAYS = 14
 DEFAULT_AUTH_SESSION_COOKIE_SECURE = True
 DEFAULT_AUTH_SESSION_COOKIE_SAME_SITE = "lax"
+DEFAULT_S3_REGION = "us-east-1"
+DEFAULT_S3_PREFIX = "submissions"
+DEFAULT_S3_AUTO_CREATE_BUCKET = True
 
 _TRUE_VALUES = {"1", "true", "yes", "on"}
 _FALSE_VALUES = {"0", "false", "no", "off"}
@@ -30,6 +33,19 @@ class AuthSettings:
     session_ttl: timedelta
     cookie_secure: bool
     cookie_same_site: Literal["lax", "strict", "none"]
+
+
+@dataclass(frozen=True)
+class ArtifactStorageSettings:
+    """Resolved S3-compatible artifact storage settings."""
+
+    endpoint_url: str | None
+    region: str
+    bucket: str
+    access_key_id: str
+    secret_access_key: str
+    key_prefix: str
+    auto_create_bucket: bool
 
 
 def load_auth_settings() -> AuthSettings:
@@ -56,6 +72,23 @@ def load_auth_settings() -> AuthSettings:
         cookie_same_site=_get_same_site_env(
             "BACKEND_AUTH_SESSION_COOKIE_SAME_SITE",
             DEFAULT_AUTH_SESSION_COOKIE_SAME_SITE,
+        ),
+    )
+
+
+def load_artifact_storage_settings() -> ArtifactStorageSettings:
+    """Resolve artifact-storage settings from environment variables."""
+    return ArtifactStorageSettings(
+        endpoint_url=_get_optional_str_env("BACKEND_S3_ENDPOINT_URL"),
+        region=os.environ.get("BACKEND_S3_REGION", DEFAULT_S3_REGION).strip(),
+        bucket=_get_required_str_env("BACKEND_S3_BUCKET"),
+        access_key_id=_get_required_str_env("BACKEND_S3_ACCESS_KEY_ID"),
+        secret_access_key=_get_required_str_env("BACKEND_S3_SECRET_ACCESS_KEY"),
+        key_prefix=os.environ.get("BACKEND_S3_PREFIX", DEFAULT_S3_PREFIX).strip("/")
+        or DEFAULT_S3_PREFIX,
+        auto_create_bucket=_get_bool_env(
+            "BACKEND_S3_AUTO_CREATE_BUCKET",
+            DEFAULT_S3_AUTO_CREATE_BUCKET,
         ),
     )
 
@@ -135,3 +168,20 @@ def _get_same_site_env(
     if normalized not in {"lax", "strict", "none"}:
         raise ValueError(f"{name} must be one of: lax, strict, none")
     return normalized
+
+
+def _get_required_str_env(name: str) -> str:
+    """Return a required non-empty string environment variable."""
+    raw_value = os.environ.get(name)
+    if raw_value is None or raw_value.strip() == "":
+        raise ValueError(f"{name} must be configured")
+    return raw_value.strip()
+
+
+def _get_optional_str_env(name: str) -> str | None:
+    """Return an optional non-empty string environment variable."""
+    raw_value = os.environ.get(name)
+    if raw_value is None:
+        return None
+    normalized = raw_value.strip()
+    return normalized or None

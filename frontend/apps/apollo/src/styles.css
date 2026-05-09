@@ -739,9 +739,145 @@
   font-size: 1rem;
 }
 
+.app-loading-row,
+.app-submission-history,
+.app-submission-upload-panel,
+.app-submission-history-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.app-loading-row {
+  align-items: center;
+  gap: 0.8rem;
+  color: var(--calliope-text-muted);
+  font-weight: 700;
+}
+
+.app-error-copy,
+.app-empty-copy,
+.app-submission-detail-copy {
+  margin: 0;
+  color: var(--calliope-text-muted);
+}
+
+.app-submission-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.app-submission-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+.app-submission-card-header,
+.app-submission-history-main,
+.app-submission-action-row,
+.app-submission-section-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.app-submission-card-header h3,
+.app-submission-section-header h3 {
+  margin: 0.45rem 0 0;
+}
+
+.app-submission-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.app-submission-meta-grid strong {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.98rem;
+}
+
+.app-status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 6.5rem;
+  padding: 0.6rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.73rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.app-status-none,
+.app-status-draft {
+  background: rgba(220, 228, 227, 0.95);
+  color: #61728f;
+}
+
+.app-status-submitted,
+.app-status-queued {
+  background: rgba(182, 235, 254, 0.68);
+  color: var(--calliope-primary-dim);
+}
+
+.app-status-running {
+  background: rgba(213, 227, 252, 0.88);
+  color: #4f5d72;
+}
+
+.app-status-completed {
+  background: rgba(178, 233, 206, 0.78);
+  color: #2f6a56;
+}
+
+.app-status-failed,
+.app-status-withdrawn {
+  background: rgba(254, 137, 131, 0.2);
+  color: var(--calliope-error);
+}
+
+.app-upload-zone-input {
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.app-upload-zone-input input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.app-submission-upload-panel,
+.app-submission-history {
+  gap: 1rem;
+}
+
+.app-submission-action-row {
+  align-items: center;
+}
+
+.app-submission-history-item {
+  gap: 0.8rem;
+  padding: 1rem 0;
+  border-top: 1px solid rgba(171, 180, 179, 0.16);
+}
+
+.app-submission-history-item:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
 @media (max-width: 1200px) {
   .app-metric-grid,
-  .app-overview-metrics {
+  .app-overview-metrics,
+  .app-submission-card-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -770,7 +906,9 @@
 @media (max-width: 780px) {
   .app-metric-grid,
   .app-overview-metrics,
-  .app-inspector-grid {
+  .app-inspector-grid,
+  .app-submission-card-grid,
+  .app-submission-meta-grid {
     grid-template-columns: 1fr;
   }
 
@@ -789,6 +927,14 @@
 
   .app-topbar-session span {
     display: none;
+  }
+
+  .app-submission-card-header,
+  .app-submission-history-main,
+  .app-submission-action-row,
+  .app-submission-section-header {
+    flex-direction: column;
+    align-items: stretch;
   }
 }
 

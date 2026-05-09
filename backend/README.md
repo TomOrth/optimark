@@ -53,3 +53,19 @@ The root `.env.example` also includes session-cookie configuration for local and
 - `BACKEND_AUTH_SESSION_TTL_DAYS`
 - `BACKEND_AUTH_SESSION_COOKIE_SECURE`
 - `BACKEND_AUTH_SESSION_COOKIE_SAME_SITE`
+
+## Student submissions and artifacts
+
+The API now includes the first student coding-submission workflow:
+- `GET /api/v1/student/assignments`
+- `GET /api/v1/courses/{course_id}/assignments/{assignment_id}/submission-workspace`
+- `POST /api/v1/courses/{course_id}/assignments/{assignment_id}/submissions`
+
+Uploaded artifacts are stored through an S3-compatible client using `boto3`, which keeps the local SeaweedFS setup aligned with a future production S3 deployment. The relevant storage settings are:
+- `BACKEND_S3_ENDPOINT_URL`
+- `BACKEND_S3_REGION`
+- `BACKEND_S3_BUCKET`
+- `BACKEND_S3_ACCESS_KEY_ID`
+- `BACKEND_S3_SECRET_ACCESS_KEY`
+- `BACKEND_S3_PREFIX`
+- `BACKEND_S3_AUTO_CREATE_BUCKET`
