@@ -278,6 +278,7 @@ This is intentionally constrained. The product must define the contract and life
 - error semantics
 - lifecycle integration points
 - persistence model for run status and results
+- artifact grouping and execution handoff semantics
 
 ### Must not define yet
 - Docker vs Firecracker vs VM vs other isolation choice
@@ -295,6 +296,7 @@ The future coding runner interface must support:
 - runtime version
 - grading configuration reference
 - execution limits
+- artifact handoff manifest or prepared bundle source
 
 ### Outputs
 - normalized status
