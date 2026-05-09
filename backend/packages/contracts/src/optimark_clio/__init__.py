@@ -45,6 +45,14 @@ from optimark_clio.coding_runner import (
     CodingRunnerTestcaseResult,
     CodingRunnerTestcaseStatus,
 )
+from optimark_clio.coding_handoff import (
+    CodingBundleEntry,
+    CodingBundleEntryKind,
+    CodingExecutionArtifactSet,
+    CodingExecutionHandoff,
+    CodingHandoffMode,
+    CodingHandoffPackagingVersion,
+)
 from optimark_clio.auth import (
     AuthErrorResponse,
     LoginRequest,
@@ -61,6 +69,12 @@ __all__ = [
     "AuthErrorResponse",
     "CourseDetail",
     "CourseSummary",
+    "CodingBundleEntry",
+    "CodingBundleEntryKind",
+    "CodingExecutionArtifactSet",
+    "CodingExecutionHandoff",
+    "CodingHandoffMode",
+    "CodingHandoffPackagingVersion",
     "CodingRunnerArtifactRef",
     "CodingRunnerArtifactRole",
     "CodingRunnerExecutionLimits",
