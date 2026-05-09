@@ -320,6 +320,7 @@ These rules should guide future implementation and design work.
 3. Released grades are a distinct state from computed grades.
 4. Reruns must not silently destroy review history.
 5. Student-visible data must be separated from staff-only grading state.
+6. Post-release reruns must preserve the currently released grade until staff explicitly reconcile and re-release.
 
 ## 17. API Design Direction
 Use FastAPI OpenAPI as the source of truth and generate a typed frontend client from it.
