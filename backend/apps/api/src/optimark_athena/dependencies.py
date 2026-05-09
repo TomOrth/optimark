@@ -33,7 +33,6 @@ from optimark_metis.auth import AuthenticatedSession
 from optimark_mnemosyne import (
     SqlAlchemyAssessmentRepository,
     SqlAlchemyAcademicRepository,
-    SqlAlchemyAssessmentRepository,
     SqlAlchemyAuthRepository,
     create_session_factory,
 )
@@ -116,17 +115,6 @@ def get_academic_service(
         AcademicService: Academic service backed by SQLAlchemy repositories.
     """
     return AcademicService(SqlAlchemyAcademicRepository(db_session))
-
-
-def get_assessment_service(
-    db_session: Annotated[Session, Depends(get_db_session)],
-    academic_service: Annotated[AcademicService, Depends(get_academic_service)],
-) -> AssessmentService:
-    """Build the assessment service for the current request."""
-    return AssessmentService(
-        SqlAlchemyAssessmentRepository(db_session),
-        academic_service,
-    )
 
 
 def get_auth_service(
