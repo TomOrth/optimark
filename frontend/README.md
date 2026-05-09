@@ -14,9 +14,17 @@ This workspace contains the Bun frontend monorepo for Optimark.
 - `bun run dev`
 - `bun run build`
 - `bun run check`
+- `bun run generate:api`
 - `bun run preview`
 
 The Apollo Vite dev server proxies `/api` requests to `http://127.0.0.1:8000` so the cookie-backed auth flow works locally without adding broad frontend CORS logic.
+
+## Typed API client
+The frontend now generates a typed API client from the backend FastAPI OpenAPI schema.
+
+- Run `bun run generate:api` from `frontend/` to regenerate [generated.ts](/Users/thomasorth/optimark/frontend/apps/apollo/src/lib/api/generated.ts).
+- The generator uses the backend uv workspace and exports the current `app.openapi()` schema, so the backend environment must be available locally.
+- Auth and instructor-assignment data access now flow through the generated client instead of handwritten endpoint strings.
 
 ## Workspace Layout
 - `apps/apollo`: main React SPA

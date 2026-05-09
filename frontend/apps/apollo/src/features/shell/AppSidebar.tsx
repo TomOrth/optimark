@@ -78,15 +78,23 @@ export function AppSidebar() {
           mark={<Code2 size={18} />}
         />
       }
-      navigation={navItems.map(({ to, label, icon: Icon }) => (
-        <Link key={to} to={to}>
-          {({ isActive }) => (
-            <SidebarNavItem active={isActive} icon={<Icon size={20} />} label={label} />
-          )}
-        </Link>
-      ))}
+      navigation={navItems.map(({ to, label, icon: Icon }) =>
+        to === "/assignments" ? (
+          <Link key={to} to={to} search={{ course: undefined }}>
+            {({ isActive }) => (
+              <SidebarNavItem active={isActive} icon={<Icon size={20} />} label={label} />
+            )}
+          </Link>
+        ) : (
+          <Link key={to} to={to}>
+            {({ isActive }) => (
+              <SidebarNavItem active={isActive} icon={<Icon size={20} />} label={label} />
+            )}
+          </Link>
+        ),
+      )}
       primaryAction={
-        <Link to="/assignments/new" className="app-primary-action">
+        <Link to="/assignments/new" search={{ course: undefined }} className="app-primary-action">
           New Assessment
         </Link>
       }

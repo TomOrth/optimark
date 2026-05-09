@@ -2,7 +2,7 @@ import { QueryClient } from "@tanstack/react-query";
 import { createRoute, createRouter, redirect } from "@tanstack/react-router";
 
 import { ensureSession } from "../features/auth/session";
-import { assignmentEditorRoute } from "./assignment-editor";
+import { editAssignmentRoute, newAssignmentRoute } from "./assignment-editor";
 import { assignmentsRoute } from "./assignments";
 import { authLayoutRoute, loginRoute, signupRoute } from "./auth";
 import { dashboardRoute } from "./dashboard";
@@ -31,7 +31,8 @@ const routeTree = rootRoute.addChildren([
   protectedLayoutRoute.addChildren([
     dashboardRoute,
     assignmentsRoute,
-    assignmentEditorRoute,
+    newAssignmentRoute,
+    editAssignmentRoute,
     submissionsRoute,
     submissionWorkspaceRoute,
     gradebookRoute,

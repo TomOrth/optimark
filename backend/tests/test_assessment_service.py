@@ -135,6 +135,65 @@ def test_assessment_service_rejects_duplicate_assignment_version_numbers(
         )
 
 
+def test_assessment_service_updates_assignments(
+    assessment_service: AssessmentService,
+    academic_service,
+) -> None:
+    """Update editable assignment fields for a managed assignment."""
+    course = academic_service.create_course(
+        course_code="CS150",
+        title="Programming Languages",
+        term="Spring 2027",
+    )
+    assignment = assessment_service.create_assignment(
+        course_id=course.id,
+        title="Interpreter Lab",
+        description="Build the first evaluator pass.",
+        assignment_type=AssignmentType.CODING,
+    )
+
+    updated_assignment = assessment_service.update_assignment(
+        assignment_id=assignment.id,
+        title="Interpreter Project",
+        description="Build the evaluator and parser passes.",
+        publish_state=AssignmentPublishState.PUBLISHED,
+    )
+
+    assert updated_assignment.id == assignment.id
+    assert updated_assignment.title == "Interpreter Project"
+    assert updated_assignment.description == "Build the evaluator and parser passes."
+    assert updated_assignment.publish_state is AssignmentPublishState.PUBLISHED
+
+
+def test_assessment_service_allows_idempotent_assignment_updates(
+    assessment_service: AssessmentService,
+    academic_service,
+) -> None:
+    """Return the existing assignment when an update repeats current values."""
+    course = academic_service.create_course(
+        course_code="CS151",
+        title="Compilers",
+        term="Fall 2027",
+    )
+    assignment = assessment_service.create_assignment(
+        course_id=course.id,
+        title="CFG Lab",
+        description="Build a control-flow graph.",
+        assignment_type=AssignmentType.CODING,
+        publish_state=AssignmentPublishState.DRAFT,
+    )
+
+    updated_assignment = assessment_service.update_assignment(
+        assignment_id=assignment.id,
+        title=assignment.title,
+        description=assignment.description,
+        assignment_type=assignment.assignment_type,
+        publish_state=assignment.publish_state,
+    )
+
+    assert updated_assignment == assignment
+
+
 def test_assessment_service_rejects_mismatched_submission_and_scores(
     assessment_service: AssessmentService,
     academic_service,

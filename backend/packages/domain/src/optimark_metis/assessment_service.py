@@ -78,6 +78,54 @@ class AssessmentService:
         self._academic_service.get_course(course_id)
         return list(self._repository.list_course_assignments(course_id))
 
+    def update_assignment(
+        self,
+        *,
+        assignment_id: UUID,
+        title: str | None = None,
+        description: str | None = None,
+        assignment_type: AssignmentType | None = None,
+        publish_state: AssignmentPublishState | None = None,
+    ) -> Assignment:
+        """Update editable fields for an assignment.
+
+        Args:
+            assignment_id: Assignment identifier to update.
+            title: Optional replacement title.
+            description: Optional replacement description.
+            assignment_type: Optional replacement assignment type.
+            publish_state: Optional replacement publish state.
+
+        Returns:
+            Assignment: Updated assignment entity.
+
+        Raises:
+            EntityNotFoundError: If the assignment does not exist.
+            InvalidAssessmentDataError: If any provided string value is blank.
+        """
+        assignment = self.get_assignment(assignment_id)
+
+        normalized_title = (
+            self._normalize_required(value=title, field_name="title")
+            if title is not None
+            else assignment.title
+        )
+        normalized_description = (
+            self._normalize_required(value=description, field_name="description")
+            if description is not None
+            else assignment.description
+        )
+        next_assignment_type = assignment_type or assignment.assignment_type
+        next_publish_state = publish_state or assignment.publish_state
+
+        return self._repository.update_assignment(
+            assignment_id=assignment.id,
+            title=normalized_title,
+            description=normalized_description,
+            assignment_type=next_assignment_type,
+            publish_state=next_publish_state,
+        )
+
     def create_assignment_version(
         self,
         *,
