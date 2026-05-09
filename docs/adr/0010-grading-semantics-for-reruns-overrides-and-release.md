@@ -4,6 +4,7 @@
 - Date: 2026-05-09
 
 ## Context
+
 Optimark's coding-assignment workflow now has a clear submission contract and runner boundary, but the product still needs explicit grading semantics for one of the most failure-prone areas: how autograde results, manual review, reruns, overrides, and grade release interact.
 
 Without a stable semantic model, issue `#10` could persist rerun results in a way that silently changes a grade after manual review, and issue `#11` could implement review and override UX on top of ambiguous authority rules.
@@ -15,6 +16,7 @@ The key unresolved questions are:
 - how overrides relate to future autograde reruns
 
 ## Decision
+
 Optimark will separate three related but distinct concepts:
 - the latest autograde candidate result
 - the current authoritative grade decision
@@ -24,6 +26,7 @@ The shared grading-semantics contracts are represented at:
 - [coding_grading.py](../../backend/packages/contracts/src/optimark_clio/coding_grading.py)
 
 ### Authoritative source of truth
+
 `GradeRecord` remains the authoritative grading object for anything student-visible or operationally final.
 
 The authoritative grade may originate from:
@@ -34,6 +37,7 @@ The authoritative grade may originate from:
 Autograde output alone is not the final truth. It is a candidate input to a grade decision unless staff policy and workflow allow it to stand unchanged.
 
 ### Review and override semantics
+
 The coding review state is explicitly modeled as:
 - `pending_autograde`
 - `ready_for_review`
@@ -47,6 +51,7 @@ Override semantics are stricter than ordinary review adjustment:
 When the review state is `overridden`, the authoritative source must be `manual_override`.
 
 ### Release semantics
+
 Release is separate from review completion.
 
 The release-state model is:
@@ -61,6 +66,7 @@ When a grade is released:
 This means a newly completed rerun does not automatically alter student-visible state just because fresher autograde data exists.
 
 ### Rerun semantics
+
 Reruns must not silently destroy review history or mutate released grades in place.
 
 The design defines three core rerun scenarios:
@@ -87,6 +93,7 @@ The design defines three core rerun scenarios:
      - staff must explicitly reconcile and re-release if they want the rerun to supersede the published decision
 
 ### Operational interpretation
+
 These semantics imply:
 - the system may track fresher autograde candidates than the current authoritative grade
 - reruns can create "pending reconciliation" state without changing what students see
@@ -94,22 +101,27 @@ These semantics imply:
 - a superseded grade should be recorded through a new authoritative decision, not by mutating historical review intent out of existence
 
 ## Consequences
+
 ### Positive
+
 - Gives issue `#10` a safe rerun model that avoids destructive grade mutations.
 - Gives issue `#11` a clear contract for review, override, and release UX.
 - Preserves auditability by separating candidate autograde results from authoritative and student-visible grade state.
 - Keeps post-release reruns non-destructive unless staff explicitly adopt them.
 
 ### Negative
+
 - Introduces extra semantic state compared with a naive "latest run wins" model.
 - Requires reconciliation flows in later product work instead of allowing silent autograde replacement.
 
 ### Follow-on implications
+
 - Issue `#10` should persist the latest autograde candidate separately from the authoritative released grade decision.
 - Issue `#11` should expose reviewer actions that deliberately reconcile reruns rather than auto-applying them.
 - Gradebook and student-facing surfaces should distinguish unreleased candidate changes from released results.
 
 ## Explicit Non-Decisions
+
 This ADR does not decide:
 - institution-specific late-policy workflows
 - whether releases happen per submission, per assignment, or in bulk from the final gradebook UX

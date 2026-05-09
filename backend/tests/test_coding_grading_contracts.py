@@ -68,6 +68,30 @@ def test_released_snapshot_rejects_missing_or_mismatched_visible_grade() -> None
         )
 
 
+def test_unreleased_snapshot_rejects_contradictory_visibility_state() -> None:
+    """Verify unreleased snapshots cannot encode released-style visibility semantics."""
+    authoritative_grade_record_id = uuid4()
+
+    with pytest.raises(ValueError, match="authoritative_grade_record_id is required"):
+        CodingGradeDecisionSnapshot(
+            submission_id=uuid4(),
+            authoritative_source=None,
+            review_state=CodingReviewState.READY_FOR_REVIEW,
+            release_state=CodingGradeReleaseState.UNRELEASED,
+            student_visible_grade_record_id=uuid4(),
+        )
+
+    with pytest.raises(ValueError, match="require release_state to be released"):
+        CodingGradeDecisionSnapshot(
+            submission_id=uuid4(),
+            authoritative_grade_record_id=authoritative_grade_record_id,
+            authoritative_source=CodingGradeAuthority.AUTOGRADE,
+            review_state=CodingReviewState.REVIEWED,
+            release_state=CodingGradeReleaseState.UNRELEASED,
+            student_visible_grade_record_id=authoritative_grade_record_id,
+        )
+
+
 def test_rerun_policy_captures_non_destructive_post_release_behavior() -> None:
     """Verify the policy contract can encode preserved released grades on rerun."""
     policy = CodingRerunPolicy(
@@ -81,3 +105,26 @@ def test_rerun_policy_captures_non_destructive_post_release_behavior() -> None:
 
     assert policy.outcome is CodingRerunOutcome.PRESERVE_RELEASED_GRADE
     assert policy.reviewer_action_required is True
+
+
+def test_rerun_policy_rejects_invalid_scenario_and_flag_combinations() -> None:
+    """Verify rerun-policy validation rejects contradictory combinations."""
+    with pytest.raises(ValueError, match="rerun policy fields are inconsistent"):
+        CodingRerunPolicy(
+            scenario=CodingRerunScenario.POST_RELEASE,
+            outcome=CodingRerunOutcome.REPLACE_CANDIDATE_ONLY,
+            authoritative_grade_changes_automatically=False,
+            student_visible_grade_changes_automatically=False,
+            reviewer_action_required=True,
+            summary="Incorrectly allow a post-release rerun to overwrite the candidate only.",
+        )
+
+    with pytest.raises(ValueError, match="rerun policy fields are inconsistent"):
+        CodingRerunPolicy(
+            scenario=CodingRerunScenario.PRE_RELEASE_REVIEWED,
+            outcome=CodingRerunOutcome.REQUIRE_REVIEW_RECONCILIATION,
+            authoritative_grade_changes_automatically=False,
+            student_visible_grade_changes_automatically=True,
+            reviewer_action_required=True,
+            summary="Incorrectly allow student-visible changes during reconciliation.",
+        )

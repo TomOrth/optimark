@@ -75,6 +75,10 @@ class CodingGradeDecisionSnapshot(BaseModel):
             raise ValueError(
                 "manual_override authority is required when review_state is overridden",
             )
+        if self.student_visible_grade_record_id is not None and self.authoritative_grade_record_id is None:
+            raise ValueError(
+                "authoritative_grade_record_id is required when student_visible_grade_record_id is present",
+            )
         if self.release_state is CodingGradeReleaseState.RELEASED:
             if self.authoritative_grade_record_id is None:
                 raise ValueError(
@@ -88,6 +92,14 @@ class CodingGradeDecisionSnapshot(BaseModel):
                 raise ValueError(
                     "student_visible_grade_record_id must match authoritative_grade_record_id when released",
                 )
+        if (
+            self.release_state is CodingGradeReleaseState.UNRELEASED
+            and self.student_visible_grade_record_id is not None
+            and self.student_visible_grade_record_id == self.authoritative_grade_record_id
+        ):
+            raise ValueError(
+                "matching student_visible_grade_record_id and authoritative_grade_record_id require release_state to be released",
+            )
         return self
 
 
@@ -100,3 +112,43 @@ class CodingRerunPolicy(BaseModel):
     student_visible_grade_changes_automatically: bool
     reviewer_action_required: bool
     summary: str = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def validate_consistency(self) -> "CodingRerunPolicy":
+        """Ensure rerun-policy flags stay aligned with the documented scenario semantics."""
+        expected = {
+            CodingRerunScenario.PRE_RELEASE_UNREVIEWED: (
+                CodingRerunOutcome.REPLACE_CANDIDATE_ONLY,
+                False,
+                False,
+                False,
+            ),
+            CodingRerunScenario.PRE_RELEASE_REVIEWED: (
+                CodingRerunOutcome.REQUIRE_REVIEW_RECONCILIATION,
+                False,
+                False,
+                True,
+            ),
+            CodingRerunScenario.POST_RELEASE: (
+                CodingRerunOutcome.PRESERVE_RELEASED_GRADE,
+                False,
+                False,
+                True,
+            ),
+        }
+        (
+            expected_outcome,
+            expected_authoritative_auto,
+            expected_student_auto,
+            expected_reviewer_required,
+        ) = expected[self.scenario]
+        if (
+            self.outcome is not expected_outcome
+            or self.authoritative_grade_changes_automatically is not expected_authoritative_auto
+            or self.student_visible_grade_changes_automatically is not expected_student_auto
+            or self.reviewer_action_required is not expected_reviewer_required
+        ):
+            raise ValueError(
+                "rerun policy fields are inconsistent for the selected scenario",
+            )
+        return self

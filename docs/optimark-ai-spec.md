@@ -442,7 +442,7 @@ This is the recommended implementation order.
 ## 24. Open Design Threads
 These remain intentionally open and should be explored through dedicated design work:
 - artifact packaging and handoff model
-- grading semantics for reruns and release policy
+- operational workflows for reconciliation and re-release after reruns
 - isolation and scaling strategy for execution workers
 
 ## 25. Known Expansion Path
