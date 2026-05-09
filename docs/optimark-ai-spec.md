@@ -320,6 +320,7 @@ These rules should guide future implementation and design work.
 3. Released grades are a distinct state from computed grades.
 4. Reruns must not silently destroy review history.
 5. Student-visible data must be separated from staff-only grading state.
+6. Post-release reruns must preserve the currently released grade until staff explicitly reconcile and re-release.
 
 ## 17. API Design Direction
 Use FastAPI OpenAPI as the source of truth and generate a typed frontend client from it.
@@ -441,7 +442,7 @@ This is the recommended implementation order.
 ## 24. Open Design Threads
 These remain intentionally open and should be explored through dedicated design work:
 - artifact packaging and handoff model
-- grading semantics for reruns and release policy
+- operational workflows for reconciliation and re-release after reruns
 - isolation and scaling strategy for execution workers
 
 ## 25. Known Expansion Path

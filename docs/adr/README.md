@@ -17,6 +17,7 @@ This directory contains the formal Architecture Decision Records (ADRs) for Opti
 - [ADR-0007: Backend uv Workspace Package Topology](./0007-backend-uv-workspace-package-topology.md)
 - [ADR-0008: Runner Contract for Coding Submissions](./0008-runner-contract-for-coding-submissions.md)
 - [ADR-0009: Artifact Packaging and Execution Handoff for Coding Runs](./0009-artifact-packaging-and-execution-handoff.md)
+- [ADR-0010: Grading Semantics for Reruns, Overrides, and Grade Release](./0010-grading-semantics-for-reruns-overrides-and-release.md)
 
 ## Usage
 - Create a new ADR when making a meaningful architectural or product-platform decision.
