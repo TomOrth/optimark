@@ -1,22 +1,11 @@
 import type { QueryClient } from "@tanstack/react-query";
 import { redirect } from "@tanstack/react-router";
 
-import { ApiError, requestJson } from "../../lib/api/client";
+import { ApiError } from "../../lib/api/client";
+import { apiClient, type SessionResponse } from "../../lib/api/generated";
 
 export type AuthSearch = {
   redirect?: string;
-};
-
-export type SessionUser = {
-  id: string;
-  email: string;
-  display_name: string;
-};
-
-export type SessionResponse = {
-  user: SessionUser;
-  provider: string;
-  expires_at: string;
 };
 
 type RedirectLocation = {
@@ -29,9 +18,7 @@ export const sessionQueryKey = ["auth", "session"] as const;
 
 export async function fetchSession(): Promise<SessionResponse | null> {
   try {
-    return await requestJson<SessionResponse>("/api/v1/auth/session", {
-      method: "GET",
-    });
+    return await apiClient.getSession();
   } catch (error) {
     if (error instanceof ApiError && error.status === 401) {
       return null;

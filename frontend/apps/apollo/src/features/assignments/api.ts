@@ -1,4 +1,13 @@
-import { requestJson } from "../../lib/api/client";
+import {
+  apiClient,
+  type AssignmentDetail,
+  type AssignmentPublishState,
+  type AssignmentSummary,
+  type AssignmentType,
+  type CourseSummary,
+  type CreateCourseAssignmentInput,
+  type UpdateAssignmentInput,
+} from "../../lib/api/generated";
 
 export type ManagedCourse = {
   id: string;
@@ -6,10 +15,6 @@ export type ManagedCourse = {
   title: string;
   term: string;
 };
-
-export type AssignmentType = "coding" | "document" | "quiz";
-
-export type AssignmentPublishState = "draft" | "published" | "archived";
 
 export type ManagedAssignment = {
   id: string;
@@ -22,35 +27,13 @@ export type ManagedAssignment = {
   updatedAt: string;
 };
 
+export type { AssignmentPublishState, AssignmentType };
+
 export type AssignmentWritePayload = {
   title: string;
   description: string;
   assignmentType: AssignmentType;
   publishState: AssignmentPublishState;
-};
-
-type RawManagedCourse = {
-  id: string;
-  course_code?: string;
-  courseCode?: string;
-  title: string;
-  term: string;
-};
-
-type RawManagedAssignment = {
-  id: string;
-  course_id?: string;
-  courseId?: string;
-  title: string;
-  description: string;
-  assignment_type?: AssignmentType;
-  assignmentType?: AssignmentType;
-  publish_state?: AssignmentPublishState;
-  publishState?: AssignmentPublishState;
-  created_at?: string;
-  createdAt?: string;
-  updated_at?: string;
-  updatedAt?: string;
 };
 
 export const managedCoursesQueryKey = ["instructor", "courses"] as const;
@@ -63,25 +46,47 @@ export function assignmentDetailQueryKey(courseId: string, assignmentId: string)
   return ["instructor", "courses", courseId, "assignments", assignmentId] as const;
 }
 
-function normalizeCourse(course: RawManagedCourse): ManagedCourse {
+function normalizeCourse(course: CourseSummary): ManagedCourse {
   return {
     id: course.id,
-    courseCode: course.courseCode ?? course.course_code ?? "Course",
+    courseCode: course.course_code,
     title: course.title,
     term: course.term,
   };
 }
 
-function normalizeAssignment(assignment: RawManagedAssignment): ManagedAssignment {
+function normalizeAssignment(
+  assignment: AssignmentSummary | AssignmentDetail,
+): ManagedAssignment {
   return {
     id: assignment.id,
-    courseId: assignment.courseId ?? assignment.course_id ?? "",
+    courseId: assignment.course_id,
     title: assignment.title,
-    description: assignment.description,
-    assignmentType: assignment.assignmentType ?? assignment.assignment_type ?? "coding",
-    publishState: assignment.publishState ?? assignment.publish_state ?? "draft",
-    createdAt: assignment.createdAt ?? assignment.created_at ?? "",
-    updatedAt: assignment.updatedAt ?? assignment.updated_at ?? "",
+    description: "description" in assignment ? assignment.description : "",
+    assignmentType: assignment.assignment_type,
+    publishState: assignment.publish_state,
+    createdAt: "created_at" in assignment ? assignment.created_at : "",
+    updatedAt: "updated_at" in assignment ? assignment.updated_at : "",
+  };
+}
+
+function toCreateAssignmentInput(
+  payload: AssignmentWritePayload,
+): CreateCourseAssignmentInput {
+  return {
+    title: payload.title,
+    description: payload.description,
+    assignment_type: payload.assignmentType,
+    publish_state: payload.publishState,
+  };
+}
+
+function toUpdateAssignmentInput(payload: AssignmentWritePayload): UpdateAssignmentInput {
+  return {
+    title: payload.title,
+    description: payload.description,
+    assignment_type: payload.assignmentType,
+    publish_state: payload.publishState,
   };
 }
 
@@ -102,21 +107,12 @@ export function sanitizeCourseId(value: unknown): string | undefined {
 }
 
 export async function fetchManagedCourses(): Promise<ManagedCourse[]> {
-  const courses = await requestJson<RawManagedCourse[]>("/api/v1/courses/managed", {
-    method: "GET",
-  });
-
+  const courses = await apiClient.listManagedCourses();
   return courses.map(normalizeCourse);
 }
 
 export async function fetchCourseAssignments(courseId: string): Promise<ManagedAssignment[]> {
-  const assignments = await requestJson<RawManagedAssignment[]>(
-    `/api/v1/courses/${courseId}/assignments`,
-    {
-      method: "GET",
-    },
-  );
-
+  const assignments = await apiClient.listCourseAssignments({ course_id: courseId });
   return assignments.map(normalizeAssignment);
 }
 
@@ -124,13 +120,10 @@ export async function fetchAssignmentDetail(
   courseId: string,
   assignmentId: string,
 ): Promise<ManagedAssignment> {
-  const assignment = await requestJson<RawManagedAssignment>(
-    `/api/v1/courses/${courseId}/assignments/${assignmentId}`,
-    {
-      method: "GET",
-    },
-  );
-
+  const assignment = await apiClient.getCourseAssignment({
+    course_id: courseId,
+    assignment_id: assignmentId,
+  });
   return normalizeAssignment(assignment);
 }
 
@@ -138,19 +131,10 @@ export async function createAssignment(
   courseId: string,
   payload: AssignmentWritePayload,
 ): Promise<ManagedAssignment> {
-  const assignment = await requestJson<RawManagedAssignment>(
-    `/api/v1/courses/${courseId}/assignments`,
-    {
-      method: "POST",
-      body: JSON.stringify({
-        title: payload.title,
-        description: payload.description,
-        assignment_type: payload.assignmentType,
-        publish_state: payload.publishState,
-      }),
-    },
+  const assignment = await apiClient.createCourseAssignment(
+    { course_id: courseId },
+    toCreateAssignmentInput(payload),
   );
-
   return normalizeAssignment(assignment);
 }
 
@@ -159,18 +143,9 @@ export async function updateAssignment(
   assignmentId: string,
   payload: AssignmentWritePayload,
 ): Promise<ManagedAssignment> {
-  const assignment = await requestJson<RawManagedAssignment>(
-    `/api/v1/courses/${courseId}/assignments/${assignmentId}`,
-    {
-      method: "PATCH",
-      body: JSON.stringify({
-        title: payload.title,
-        description: payload.description,
-        assignment_type: payload.assignmentType,
-        publish_state: payload.publishState,
-      }),
-    },
+  const assignment = await apiClient.updateCourseAssignment(
+    { course_id: courseId, assignment_id: assignmentId },
+    toUpdateAssignmentInput(payload),
   );
-
   return normalizeAssignment(assignment);
 }
