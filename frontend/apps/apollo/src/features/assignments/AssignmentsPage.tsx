@@ -216,9 +216,11 @@ export function AssignmentsPage() {
                     <td>{formatAssignmentDate(assignment.updatedAt)}</td>
                     <td className="align-right">
                       <Link
-                        to="/assignments/$assignmentId"
-                        params={{ assignmentId: assignment.id }}
-                        search={{ course: selectedCourse.id }}
+                        to="/courses/$courseId/assignments/$assignmentId"
+                        params={{
+                          assignmentId: assignment.id,
+                          courseId: selectedCourse.id,
+                        }}
                         className="app-inline-control"
                       >
                         Edit

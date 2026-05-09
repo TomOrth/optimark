@@ -222,5 +222,55 @@ def test_course_assignment_management_routes_enforce_permissions_and_scope(
     )
     assert invalid_update.status_code == 400
     assert invalid_update.json() == {
-        "detail": "at least one assignment field must change",
+        "detail": "at least one assignment field must be provided",
     }
+
+
+def test_course_assignment_management_routes_allow_idempotent_updates(
+    api_client: TestClient,
+    db_session,
+    auth_service,
+    academic_service,
+    assessment_service,
+) -> None:
+    """Verify managed assignment updates remain idempotent for editor actions."""
+    instructor_session = auth_service.signup(
+        email="idempotent-instructor@example.edu",
+        display_name="Idempotent Instructor",
+        password="super-secure-pass",
+    )
+    course = academic_service.create_course(
+        course_code="CS 8801",
+        title="Static Analysis",
+        term="Fall 2029",
+    )
+    academic_service.enroll_user(
+        course_id=course.id,
+        user_id=instructor_session.authentication.user.id,
+        role=CourseRole.INSTRUCTOR,
+    )
+    assignment = assessment_service.create_assignment(
+        course_id=course.id,
+        title="Alias Analysis Lab",
+        description="Implement Andersen-style points-to analysis.",
+        assignment_type=AssignmentType.CODING,
+        publish_state=AssignmentPublishState.DRAFT,
+    )
+    db_session.commit()
+
+    api_client.cookies.set("optimark_session", instructor_session.token)
+    update_response = api_client.patch(
+        f"/api/v1/courses/{course.id}/assignments/{assignment.id}",
+        json={
+            "title": assignment.title,
+            "description": assignment.description,
+            "assignment_type": assignment.assignment_type.value,
+            "publish_state": assignment.publish_state.value,
+        },
+    )
+
+    assert update_response.status_code == 200
+    assert update_response.json()["id"] == str(assignment.id)
+    assert update_response.json()["publish_state"] == (
+        AssignmentPublishState.DRAFT.value
+    )

@@ -165,6 +165,35 @@ def test_assessment_service_updates_assignments(
     assert updated_assignment.publish_state is AssignmentPublishState.PUBLISHED
 
 
+def test_assessment_service_allows_idempotent_assignment_updates(
+    assessment_service: AssessmentService,
+    academic_service,
+) -> None:
+    """Return the existing assignment when an update repeats current values."""
+    course = academic_service.create_course(
+        course_code="CS151",
+        title="Compilers",
+        term="Fall 2027",
+    )
+    assignment = assessment_service.create_assignment(
+        course_id=course.id,
+        title="CFG Lab",
+        description="Build a control-flow graph.",
+        assignment_type=AssignmentType.CODING,
+        publish_state=AssignmentPublishState.DRAFT,
+    )
+
+    updated_assignment = assessment_service.update_assignment(
+        assignment_id=assignment.id,
+        title=assignment.title,
+        description=assignment.description,
+        assignment_type=assignment.assignment_type,
+        publish_state=assignment.publish_state,
+    )
+
+    assert updated_assignment == assignment
+
+
 def test_assessment_service_rejects_mismatched_submission_and_scores(
     assessment_service: AssessmentService,
     academic_service,

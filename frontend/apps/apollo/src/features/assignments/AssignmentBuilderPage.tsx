@@ -63,8 +63,11 @@ export function AssignmentBuilderPage({
   });
 
   const selectedCourseId = useMemo(
-    () => normalizedCourseId ?? coursesQuery.data?.[0]?.id,
-    [coursesQuery.data, normalizedCourseId],
+    () =>
+      mode === "edit"
+        ? normalizedCourseId
+        : normalizedCourseId ?? coursesQuery.data?.[0]?.id,
+    [coursesQuery.data, mode, normalizedCourseId],
   );
 
   const selectedCourse =
@@ -96,24 +99,18 @@ export function AssignmentBuilderPage({
   }, [assignmentDetailQuery.data, mode]);
 
   useEffect(() => {
-    if (selectedCourseId && selectedCourseId !== normalizedCourseId) {
+    if (
+      mode === "create" &&
+      selectedCourseId &&
+      selectedCourseId !== normalizedCourseId
+    ) {
       void navigate({
         to: ".",
         search: { course: selectedCourseId },
         replace: true,
       });
     }
-  }, [navigate, normalizedCourseId, selectedCourseId]);
-
-  useEffect(() => {
-    if (selectedCourseId && selectedCourseId !== normalizedCourseId) {
-      void navigate({
-        to: ".",
-        search: { course: selectedCourseId },
-        replace: true,
-      });
-    }
-  }, [navigate, normalizedCourseId, selectedCourseId]);
+  }, [mode, navigate, normalizedCourseId, selectedCourseId]);
 
   const assignmentMutation = useMutation({
     mutationFn: async (nextState: AssignmentFormState) => {
@@ -140,9 +137,8 @@ export function AssignmentBuilderPage({
         assignment,
       );
       await navigate({
-        to: "/assignments/$assignmentId",
-        params: { assignmentId: assignment.id },
-        search: { course: selectedCourseId },
+        to: "/courses/$courseId/assignments/$assignmentId",
+        params: { assignmentId: assignment.id, courseId: selectedCourseId },
         replace: mode === "edit",
       });
     },
@@ -170,9 +166,8 @@ export function AssignmentBuilderPage({
   const handleCourseChange = (nextCourseId: string) => {
     if (mode === "edit" && assignmentId) {
       void navigate({
-        to: "/assignments/$assignmentId",
-        params: { assignmentId },
-        search: { course: nextCourseId },
+        to: "/courses/$courseId/assignments/$assignmentId",
+        params: { assignmentId, courseId: nextCourseId },
       });
       return;
     }
