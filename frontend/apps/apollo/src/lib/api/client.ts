@@ -33,12 +33,11 @@ export async function requestJson<T>(path: string, init?: RequestInit): Promise<
     },
   });
 
-  return response;
+  return (await response.json()) as T;
 }
 
-export async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await request(path, init);
-  return (await response.json()) as T;
+export async function requestVoid(path: string, init?: RequestInit): Promise<void> {
+  await request(path, init);
 }
 
 async function readErrorDetail(response: Response): Promise<string> {
