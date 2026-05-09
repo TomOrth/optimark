@@ -3,11 +3,13 @@
 import json
 from datetime import datetime
 from decimal import Decimal
+from enum import StrEnum
 from typing import Any
 from uuid import UUID
 
 from pydantic import BaseModel, Field, field_validator
 
+from optimark_clio.academic import CourseSummary
 from optimark_metis.assessment import (
     Assignment,
     AssignmentPublishState,
@@ -21,6 +23,18 @@ from optimark_metis.assessment import (
     Submission,
     SubmissionState,
 )
+
+
+class SubmissionLifecycleStatus(StrEnum):
+    """Student-facing lifecycle states for a submission."""
+
+    DRAFT = "draft"
+    SUBMITTED = "submitted"
+    QUEUED = "queued"
+    RUNNING = "running"
+    COMPLETED = "completed"
+    FAILED = "failed"
+    WITHDRAWN = "withdrawn"
 
 
 class CreateAssignmentInput(BaseModel):
@@ -191,6 +205,57 @@ class SubmissionRecord(BaseModel):
         )
 
 
+class StudentSubmissionRecord(SubmissionRecord):
+    """Student-facing submission record with derived lifecycle status."""
+
+    lifecycle_status: SubmissionLifecycleStatus
+    artifact_name: str | None = None
+
+    @classmethod
+    def from_domain(
+        cls,
+        submission: Submission,
+        *,
+        evaluations: list[EvaluationRecord] | None = None,
+        artifact_name: str | None = None,
+    ) -> "StudentSubmissionRecord":
+        """Build a student submission contract from domain records."""
+        return cls(
+            id=submission.id,
+            assignment_id=submission.assignment_id,
+            assignment_version_id=submission.assignment_version_id,
+            student_user_id=submission.student_user_id,
+            state=submission.state,
+            artifact_key=submission.artifact_key,
+            artifact_name=artifact_name,
+            lifecycle_status=_derive_submission_lifecycle_status(
+                submission=submission,
+                evaluations=evaluations or [],
+            ),
+            submitted_at=submission.submitted_at,
+            created_at=submission.created_at,
+            updated_at=submission.updated_at,
+        )
+
+
+class StudentAssignmentSummary(BaseModel):
+    """Student-facing coding assignment summary."""
+
+    course: CourseSummary
+    assignment: AssignmentDetail
+    active_assignment_version_id: UUID | None
+    latest_submission: StudentSubmissionRecord | None = None
+
+
+class StudentSubmissionWorkspace(BaseModel):
+    """Student-facing submission workspace payload."""
+
+    course: CourseSummary
+    assignment: AssignmentDetail
+    active_assignment_version_id: UUID | None
+    submissions: list[StudentSubmissionRecord]
+
+
 class RecordEvaluationInput(BaseModel):
     """Input payload for recording an evaluation result."""
 
@@ -317,3 +382,31 @@ def _ensure_json_serializable(value: dict[str, Any], *, field_name: str) -> None
         json.dumps(value)
     except (TypeError, ValueError) as exc:
         raise ValueError(f"{field_name} must be JSON-serializable") from exc
+
+
+def _derive_submission_lifecycle_status(
+    *,
+    submission: Submission,
+    evaluations: list[EvaluationRecord],
+) -> SubmissionLifecycleStatus:
+    """Map domain submission/evaluation state to a student-facing status."""
+    if submission.state is SubmissionState.DRAFT:
+        return SubmissionLifecycleStatus.DRAFT
+    if submission.state is SubmissionState.WITHDRAWN:
+        return SubmissionLifecycleStatus.WITHDRAWN
+
+    latest_evaluation = evaluations[-1] if evaluations else None
+    if latest_evaluation is None:
+        return SubmissionLifecycleStatus.SUBMITTED
+
+    match latest_evaluation.status:
+        case EvaluationStatus.QUEUED:
+            return SubmissionLifecycleStatus.QUEUED
+        case EvaluationStatus.RUNNING:
+            return SubmissionLifecycleStatus.RUNNING
+        case EvaluationStatus.SUCCEEDED:
+            return SubmissionLifecycleStatus.COMPLETED
+        case EvaluationStatus.FAILED | EvaluationStatus.CANCELLED:
+            return SubmissionLifecycleStatus.FAILED
+
+    return SubmissionLifecycleStatus.SUBMITTED

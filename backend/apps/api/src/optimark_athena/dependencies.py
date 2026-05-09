@@ -1,4 +1,4 @@
-"""FastAPI dependencies for Athena auth, sessions, and authorization."""
+"""FastAPI dependencies for Athena auth, storage, sessions, and authorization."""
 
 from collections.abc import Generator
 from functools import lru_cache
@@ -9,7 +9,15 @@ from fastapi import Depends, HTTPException, Request, status
 from pwdlib import PasswordHash
 from sqlalchemy.orm import Session, sessionmaker
 
-from optimark_athena.config import AuthSettings, load_auth_settings
+from optimark_athena.artifact_store import ArtifactStore, S3ArtifactStore
+from optimark_athena.config import (
+    ArtifactStorageSettings,
+    AuthSettings,
+    SubmissionSettings,
+    load_artifact_storage_settings,
+    load_auth_settings,
+    load_submission_settings,
+)
 from optimark_metis import (
     AcademicService,
     AssessmentService,
@@ -38,6 +46,18 @@ def get_auth_settings() -> AuthSettings:
         AuthSettings: Resolved auth settings.
     """
     return load_auth_settings()
+
+
+@lru_cache
+def get_artifact_storage_settings() -> ArtifactStorageSettings:
+    """Return cached artifact storage settings for the API process."""
+    return load_artifact_storage_settings()
+
+
+@lru_cache
+def get_submission_settings() -> SubmissionSettings:
+    """Return cached submission API settings for the API process."""
+    return load_submission_settings()
 
 
 @lru_cache
@@ -151,6 +171,17 @@ def get_authorization_service(
         AuthorizationService: Course-capability authorization service.
     """
     return AuthorizationService(academic_service)
+
+
+@lru_cache
+def get_artifact_store(
+    artifact_settings: Annotated[
+        ArtifactStorageSettings,
+        Depends(get_artifact_storage_settings),
+    ],
+) -> ArtifactStore:
+    """Build the shared artifact store used for submission uploads."""
+    return S3ArtifactStore(settings=artifact_settings)
 
 
 def require_authenticated_session(

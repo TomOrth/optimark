@@ -4,6 +4,8 @@ from collections.abc import Iterator
 from datetime import timedelta
 from itertools import count
 from pathlib import Path
+from typing import BinaryIO
+from typing import Any
 
 import pytest
 from alembic import command
@@ -15,7 +17,11 @@ from sqlalchemy.orm import Session
 
 from optimark_athena.app import app
 from optimark_athena.config import AuthSettings
-from optimark_athena.dependencies import get_auth_settings, get_db_session
+from optimark_athena.dependencies import (
+    get_artifact_store,
+    get_auth_settings,
+    get_db_session,
+)
 from optimark_metis.assessment_service import AssessmentService
 from optimark_metis.auth_service import AuthService
 from optimark_metis.service import AcademicService
@@ -26,6 +32,32 @@ from optimark_mnemosyne.repository import SqlAlchemyAcademicRepository
 
 
 BACKEND_DIR = Path(__file__).resolve().parents[1]
+
+
+class FakeArtifactStore:
+    """In-memory artifact store used by API tests."""
+
+    def __init__(self) -> None:
+        self.objects: dict[str, dict[str, Any]] = {}
+
+    def put_artifact(
+        self,
+        *,
+        key: str,
+        fileobj: BinaryIO,
+        content_type: str,
+        metadata: dict[str, str] | None = None,
+    ) -> str:
+        fileobj.seek(0)
+        self.objects[key] = {
+            "body": fileobj.read(),
+            "content_type": content_type,
+            "metadata": dict(metadata or {}),
+        }
+        return key
+
+    def delete_artifact(self, *, key: str) -> None:
+        self.objects.pop(key, None)
 
 
 def make_alembic_config(database_url: str) -> Config:
@@ -154,7 +186,16 @@ def migrated_engine(migrated_database: str):
 
 
 @pytest.fixture
-def api_client(db_session: Session) -> Iterator[TestClient]:
+def fake_artifact_store() -> FakeArtifactStore:
+    """Return an in-memory artifact store for submission API tests."""
+    return FakeArtifactStore()
+
+
+@pytest.fixture
+def api_client(
+    db_session: Session,
+    fake_artifact_store: FakeArtifactStore,
+) -> Iterator[TestClient]:
     """Yield a test client with database and auth settings overrides.
 
     Args:
@@ -165,6 +206,7 @@ def api_client(db_session: Session) -> Iterator[TestClient]:
     """
     original_db_override = app.dependency_overrides.get(get_db_session)
     original_auth_override = app.dependency_overrides.get(get_auth_settings)
+    original_artifact_override = app.dependency_overrides.get(get_artifact_store)
 
     def override_get_db_session() -> Iterator[Session]:
         try:
@@ -181,6 +223,7 @@ def api_client(db_session: Session) -> Iterator[TestClient]:
         cookie_secure=False,
         cookie_same_site="lax",
     )
+    app.dependency_overrides[get_artifact_store] = lambda: fake_artifact_store
     try:
         with TestClient(app) as client:
             yield client
@@ -194,3 +237,8 @@ def api_client(db_session: Session) -> Iterator[TestClient]:
             app.dependency_overrides.pop(get_auth_settings, None)
         else:
             app.dependency_overrides[get_auth_settings] = original_auth_override
+
+        if original_artifact_override is None:
+            app.dependency_overrides.pop(get_artifact_store, None)
+        else:
+            app.dependency_overrides[get_artifact_store] = original_artifact_override

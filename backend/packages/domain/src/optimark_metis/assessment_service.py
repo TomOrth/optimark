@@ -3,6 +3,7 @@
 import json
 from datetime import datetime, timezone
 from decimal import Decimal
+from typing import Mapping
 from uuid import UUID
 
 from optimark_metis.assessment import (
@@ -268,6 +269,36 @@ class AssessmentService:
         """List evaluation records for a submission."""
         self.get_submission(submission_id)
         return list(self._repository.list_submission_evaluations(submission_id))
+
+    def list_evaluations_for_submissions(
+        self,
+        submission_ids: list[UUID],
+    ) -> Mapping[UUID, list[EvaluationRecord]]:
+        """List evaluation records for many submissions in one repository call."""
+        return {
+            submission_id: list(evaluations)
+            for submission_id, evaluations in self._repository.list_evaluations_for_submissions(
+                submission_ids,
+            ).items()
+        }
+
+    def update_submission_artifact_key(
+        self,
+        *,
+        submission_id: UUID,
+        artifact_key: str,
+    ) -> Submission:
+        """Persist the final artifact key for a submission."""
+        submission = self._repository.update_submission_artifact_key(
+            submission_id=submission_id,
+            artifact_key=self._normalize_required(
+                value=artifact_key,
+                field_name="artifact_key",
+            ),
+        )
+        if submission is None:
+            raise EntityNotFoundError(f"submission {submission_id} was not found")
+        return submission
 
     def record_grade(
         self,

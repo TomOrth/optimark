@@ -10,6 +10,7 @@ import { gradebookRoute } from "./gradebook";
 import { protectedLayoutRoute } from "./protected";
 import { rootRoute, type AppContext } from "./root";
 import { settingsRoute } from "./settings";
+import { submissionWorkspaceRoute } from "./submission-workspace";
 import { studentsRoute } from "./students";
 import { submissionsRoute } from "./submissions";
 
@@ -33,6 +34,7 @@ const routeTree = rootRoute.addChildren([
     newAssignmentRoute,
     editAssignmentRoute,
     submissionsRoute,
+    submissionWorkspaceRoute,
     gradebookRoute,
     studentsRoute,
     settingsRoute,

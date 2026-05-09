@@ -3,6 +3,7 @@
 from collections.abc import Sequence
 from datetime import datetime
 from decimal import Decimal
+from typing import Mapping
 from typing import Protocol
 from uuid import UUID
 
@@ -125,6 +126,20 @@ class AssessmentRepository(Protocol):
         submission_id: UUID,
     ) -> Sequence[EvaluationRecord]:
         """List evaluation records for a submission."""
+
+    def list_evaluations_for_submissions(
+        self,
+        submission_ids: Sequence[UUID],
+    ) -> Mapping[UUID, Sequence[EvaluationRecord]]:
+        """List evaluation records for many submissions, keyed by submission id."""
+
+    def update_submission_artifact_key(
+        self,
+        *,
+        submission_id: UUID,
+        artifact_key: str,
+    ) -> Submission | None:
+        """Update and return the artifact key for a submission."""
 
     def add_grade_record(
         self,
