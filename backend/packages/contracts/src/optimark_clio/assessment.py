@@ -225,7 +225,7 @@ class StudentAssignmentSummary(BaseModel):
 
     course: CourseSummary
     assignment: AssignmentDetail
-    active_assignment_version_id: UUID
+    active_assignment_version_id: UUID | None
     latest_submission: StudentSubmissionRecord | None = None
 
 
@@ -234,7 +234,7 @@ class StudentSubmissionWorkspace(BaseModel):
 
     course: CourseSummary
     assignment: AssignmentDetail
-    active_assignment_version_id: UUID
+    active_assignment_version_id: UUID | None
     submissions: list[StudentSubmissionRecord]
 
 

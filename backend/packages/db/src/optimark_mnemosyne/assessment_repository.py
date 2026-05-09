@@ -3,6 +3,7 @@
 from collections.abc import Sequence
 from datetime import datetime
 from decimal import Decimal
+from typing import Mapping
 from uuid import UUID
 
 from sqlalchemy import Select, select
@@ -242,6 +243,44 @@ class SqlAlchemyAssessmentRepository:
             _evaluation_record_from_model(model)
             for model in self._session.scalars(statement)
         ]
+
+    def list_evaluations_for_submissions(
+        self,
+        submission_ids: Sequence[UUID],
+    ) -> Mapping[UUID, Sequence[EvaluationRecord]]:
+        """List evaluation records for many submissions in a single query."""
+        if not submission_ids:
+            return {}
+
+        statement = (
+            select(EvaluationRecordModel)
+            .where(EvaluationRecordModel.submission_id.in_(submission_ids))
+            .order_by(
+                EvaluationRecordModel.submission_id,
+                EvaluationRecordModel.created_at,
+                EvaluationRecordModel.id,
+            )
+        )
+        grouped: dict[UUID, list[EvaluationRecord]] = {submission_id: [] for submission_id in submission_ids}
+        for model in self._session.scalars(statement):
+            grouped.setdefault(model.submission_id, []).append(
+                _evaluation_record_from_model(model),
+            )
+        return grouped
+
+    def update_submission_artifact_key(
+        self,
+        *,
+        submission_id: UUID,
+        artifact_key: str,
+    ) -> Submission | None:
+        """Update the stored artifact key for a submission."""
+        model = self._session.get(SubmissionModel, submission_id)
+        if model is None:
+            return None
+        model.artifact_key = artifact_key
+        self._session.flush()
+        return _submission_from_model(model)
 
     def add_grade_record(
         self,

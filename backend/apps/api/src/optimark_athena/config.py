@@ -13,6 +13,7 @@ DEFAULT_AUTH_SESSION_COOKIE_SAME_SITE = "lax"
 DEFAULT_S3_REGION = "us-east-1"
 DEFAULT_S3_PREFIX = "submissions"
 DEFAULT_S3_AUTO_CREATE_BUCKET = True
+DEFAULT_SUBMISSION_MAX_UPLOAD_BYTES = 25 * 1024 * 1024
 
 _TRUE_VALUES = {"1", "true", "yes", "on"}
 _FALSE_VALUES = {"0", "false", "no", "off"}
@@ -46,6 +47,13 @@ class ArtifactStorageSettings:
     secret_access_key: str
     key_prefix: str
     auto_create_bucket: bool
+
+
+@dataclass(frozen=True)
+class SubmissionSettings:
+    """Resolved submission API limits."""
+
+    max_upload_bytes: int
 
 
 def load_auth_settings() -> AuthSettings:
@@ -89,6 +97,16 @@ def load_artifact_storage_settings() -> ArtifactStorageSettings:
         auto_create_bucket=_get_bool_env(
             "BACKEND_S3_AUTO_CREATE_BUCKET",
             DEFAULT_S3_AUTO_CREATE_BUCKET,
+        ),
+    )
+
+
+def load_submission_settings() -> SubmissionSettings:
+    """Resolve submission API settings from environment variables."""
+    return SubmissionSettings(
+        max_upload_bytes=_get_positive_int_env(
+            "BACKEND_SUBMISSION_MAX_UPLOAD_BYTES",
+            DEFAULT_SUBMISSION_MAX_UPLOAD_BYTES,
         ),
     )
 

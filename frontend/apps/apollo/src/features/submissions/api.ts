@@ -44,14 +44,14 @@ export type StudentSubmissionRecord = {
 export type StudentAssignmentSummary = {
   course: CourseSummary;
   assignment: AssignmentDetail;
-  active_assignment_version_id: string;
+  active_assignment_version_id: string | null;
   latest_submission: StudentSubmissionRecord | null;
 };
 
 export type StudentSubmissionWorkspace = {
   course: CourseSummary;
   assignment: AssignmentDetail;
-  active_assignment_version_id: string;
+  active_assignment_version_id: string | null;
   submissions: StudentSubmissionRecord[];
 };
 

@@ -4,6 +4,7 @@ from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import PurePosixPath
 from threading import Lock
+from typing import BinaryIO
 from typing import Any, Protocol
 
 from optimark_athena.config import ArtifactStorageSettings
@@ -16,11 +17,14 @@ class ArtifactStore(Protocol):
         self,
         *,
         key: str,
-        body: bytes,
+        fileobj: BinaryIO,
         content_type: str,
         metadata: Mapping[str, str] | None = None,
     ) -> str:
-        """Persist an artifact body and return the storage key."""
+        """Persist an artifact stream and return the storage key."""
+
+    def delete_artifact(self, *, key: str) -> None:
+        """Delete a previously persisted artifact."""
 
 
 @dataclass
@@ -46,21 +50,32 @@ class S3ArtifactStore:
         self,
         *,
         key: str,
-        body: bytes,
+        fileobj: BinaryIO,
         content_type: str,
         metadata: Mapping[str, str] | None = None,
     ) -> str:
-        """Persist an artifact body to the configured S3 bucket."""
+        """Persist an artifact stream to the configured S3 bucket."""
         self._ensure_bucket()
         storage_key = self._full_key(key)
-        self._client.put_object(
+        fileobj.seek(0)
+        self._client.upload_fileobj(
+            Fileobj=fileobj,
             Bucket=self.settings.bucket,
             Key=storage_key,
-            Body=body,
-            ContentType=content_type,
-            Metadata=dict(metadata or {}),
+            ExtraArgs={
+                "ContentType": content_type,
+                "Metadata": dict(metadata or {}),
+            },
         )
         return storage_key
+
+    def delete_artifact(self, *, key: str) -> None:
+        """Delete an artifact from the configured S3 bucket."""
+        self._ensure_bucket()
+        self._client.delete_object(
+            Bucket=self.settings.bucket,
+            Key=self._full_key(key),
+        )
 
     def _ensure_bucket(self) -> None:
         if self._bucket_ready:
@@ -92,4 +107,9 @@ class S3ArtifactStore:
     def _full_key(self, key: str) -> str:
         normalized_key = PurePosixPath(key.lstrip("/")).as_posix()
         prefix = self.settings.key_prefix.strip("/")
-        return f"{prefix}/{normalized_key}" if prefix else normalized_key
+        if not prefix:
+            return normalized_key
+        prefixed_key = f"{prefix}/"
+        if normalized_key == prefix or normalized_key.startswith(prefixed_key):
+            return normalized_key
+        return f"{prefix}/{normalized_key}"

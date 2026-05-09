@@ -13,8 +13,10 @@ from optimark_athena.artifact_store import ArtifactStore, S3ArtifactStore
 from optimark_athena.config import (
     ArtifactStorageSettings,
     AuthSettings,
+    SubmissionSettings,
     load_artifact_storage_settings,
     load_auth_settings,
+    load_submission_settings,
 )
 from optimark_metis import (
     AcademicService,
@@ -50,6 +52,12 @@ def get_auth_settings() -> AuthSettings:
 def get_artifact_storage_settings() -> ArtifactStorageSettings:
     """Return cached artifact storage settings for the API process."""
     return load_artifact_storage_settings()
+
+
+@lru_cache
+def get_submission_settings() -> SubmissionSettings:
+    """Return cached submission API settings for the API process."""
+    return load_submission_settings()
 
 
 @lru_cache

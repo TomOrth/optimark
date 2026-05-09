@@ -53,7 +53,8 @@ def test_student_can_list_workspace_and_create_draft_submission(
     assert len(assignments_payload) == 1
     assert assignments_payload[0]["assignment"]["title"] == "Project 1"
     assert assignments_payload[0]["latest_submission"] is None
-    assert assignments_payload[0]["active_assignment_version_id"]
+    assert assignments_payload[0]["active_assignment_version_id"] is None
+    assert assessment_service.list_assignment_versions(assignment.id) == []
 
     workspace_response = api_client.get(
         f"/api/v1/courses/{course.id}/assignments/{assignment.id}/submission-workspace",
@@ -61,6 +62,7 @@ def test_student_can_list_workspace_and_create_draft_submission(
     assert workspace_response.status_code == 200
     workspace_payload = workspace_response.json()
     assert workspace_payload["assignment"]["title"] == "Project 1"
+    assert workspace_payload["active_assignment_version_id"] is None
     assert workspace_payload["submissions"] == []
 
     create_response = api_client.post(
@@ -76,10 +78,14 @@ def test_student_can_list_workspace_and_create_draft_submission(
     assert submission_payload["artifact_name"] == "starter.zip"
     assert submission_payload["submitted_at"] is None
     assert submission_payload["artifact_key"] in fake_artifact_store.objects
+    assert submission_payload["artifact_key"].endswith("__starter.zip")
     assert (
         fake_artifact_store.objects[submission_payload["artifact_key"]]["body"]
         == b"zip-binary"
     )
+    versions = assessment_service.list_assignment_versions(assignment.id)
+    assert len(versions) == 1
+    assert versions[0].created_by_user_id is None
 
     refreshed_workspace = api_client.get(
         f"/api/v1/courses/{course.id}/assignments/{assignment.id}/submission-workspace",
@@ -222,3 +228,47 @@ def test_non_students_cannot_submit_work(
     )
 
     assert response.status_code == 403
+
+
+def test_submission_rejects_oversized_uploads(
+    api_client: TestClient,
+    academic_service,
+    assessment_service,
+    auth_service,
+) -> None:
+    """Verify oversized submission requests are rejected before upload work starts."""
+    student_session = auth_service.signup(
+        email="student4@example.edu",
+        display_name="Student Four",
+        password="super-secure-pass",
+    )
+    course = academic_service.create_course(
+        course_code="CS 4999",
+        title="Capstone",
+        term="Spring 2030",
+    )
+    academic_service.enroll_user(
+        course_id=course.id,
+        user_id=student_session.authentication.user.id,
+        role=CourseRole.STUDENT,
+    )
+    assignment = assessment_service.create_assignment(
+        course_id=course.id,
+        title="Final Project",
+        description="Upload your bundle.",
+        assignment_type=AssignmentType.CODING,
+        publish_state=AssignmentPublishState.PUBLISHED,
+    )
+
+    api_client.cookies.set("optimark_session", student_session.token)
+    response = api_client.post(
+        f"/api/v1/courses/{course.id}/assignments/{assignment.id}/submissions",
+        params={"filename": "oversized.zip", "state": "submitted"},
+        content=b"x",
+        headers={
+            "content-type": "application/zip",
+            "content-length": str((25 * 1024 * 1024) + 1),
+        },
+    )
+
+    assert response.status_code == 413

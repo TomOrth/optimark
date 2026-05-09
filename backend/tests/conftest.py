@@ -4,6 +4,7 @@ from collections.abc import Iterator
 from datetime import timedelta
 from itertools import count
 from pathlib import Path
+from typing import BinaryIO
 from typing import Any
 
 import pytest
@@ -43,16 +44,20 @@ class FakeArtifactStore:
         self,
         *,
         key: str,
-        body: bytes,
+        fileobj: BinaryIO,
         content_type: str,
         metadata: dict[str, str] | None = None,
     ) -> str:
+        fileobj.seek(0)
         self.objects[key] = {
-            "body": body,
+            "body": fileobj.read(),
             "content_type": content_type,
             "metadata": dict(metadata or {}),
         }
         return key
+
+    def delete_artifact(self, *, key: str) -> None:
+        self.objects.pop(key, None)
 
 
 def make_alembic_config(database_url: str) -> Config:
