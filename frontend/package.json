@@ -12,6 +12,7 @@
     "dev": "cd apps/apollo && bun run dev",
     "build": "cd apps/apollo && bun run build",
     "check": "cd apps/apollo && bun run check",
+    "generate:api": "node ./scripts/generate-api-client.mjs",
     "preview": "cd apps/apollo && bun run preview"
   }
 }

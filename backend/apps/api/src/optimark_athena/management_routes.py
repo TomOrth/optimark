@@ -220,6 +220,12 @@ def update_course_assignment(
         assessment_service=assessment_service,
     )
 
+    if not payload.model_fields_set:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="at least one assignment field must be provided",
+        )
+
     try:
         updated_assignment = assessment_service.update_assignment(
             assignment_id=assignment_id,

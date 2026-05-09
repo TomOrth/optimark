@@ -101,7 +101,7 @@ class AssessmentService:
 
         Raises:
             EntityNotFoundError: If the assignment does not exist.
-            InvalidAssessmentDataError: If no updates are provided or any string is blank.
+            InvalidAssessmentDataError: If any provided string value is blank.
         """
         assignment = self.get_assignment(assignment_id)
 
@@ -117,14 +117,6 @@ class AssessmentService:
         )
         next_assignment_type = assignment_type or assignment.assignment_type
         next_publish_state = publish_state or assignment.publish_state
-
-        if (
-            normalized_title == assignment.title
-            and normalized_description == assignment.description
-            and next_assignment_type is assignment.assignment_type
-            and next_publish_state is assignment.publish_state
-        ):
-            raise InvalidAssessmentDataError("at least one assignment field must change")
 
         return self._repository.update_assignment(
             assignment_id=assignment.id,

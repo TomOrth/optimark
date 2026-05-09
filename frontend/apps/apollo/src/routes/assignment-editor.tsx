@@ -19,22 +19,18 @@ export const newAssignmentRoute = createRoute({
 });
 
 function EditAssignmentRouteComponent() {
-  const { assignmentId } = editAssignmentRoute.useParams();
-  const search = editAssignmentRoute.useSearch();
+  const { assignmentId, courseId } = editAssignmentRoute.useParams();
   return (
     <AssignmentBuilderPage
       mode="edit"
       assignmentId={assignmentId}
-      courseId={search.course}
+      courseId={courseId}
     />
   );
 }
 
 export const editAssignmentRoute = createRoute({
   getParentRoute: () => protectedLayoutRoute,
-  path: "/assignments/$assignmentId",
-  validateSearch: (search) => ({
-    course: sanitizeCourseId(search.course),
-  }),
+  path: "/courses/$courseId/assignments/$assignmentId",
   component: EditAssignmentRouteComponent,
 });
