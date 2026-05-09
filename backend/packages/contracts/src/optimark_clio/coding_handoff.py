@@ -88,6 +88,10 @@ class CodingExecutionHandoff(BaseModel):
                 raise ValueError(
                     "prepared_bundle_artifact is required when mode is prepared_bundle",
                 )
+            if self.manifest_artifact is not None:
+                raise ValueError(
+                    "manifest_artifact must be omitted when mode is prepared_bundle",
+                )
             if not self.bundle_entries:
                 raise ValueError(
                     "bundle_entries are required when mode is prepared_bundle",

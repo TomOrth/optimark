@@ -118,3 +118,26 @@ def test_handoff_mode_specific_validation_rejects_ambiguous_combinations() -> No
             mode=CodingHandoffMode.PREPARED_BUNDLE,
             **common_kwargs,
         )
+
+    with pytest.raises(ValueError, match="manifest_artifact must be omitted"):
+        CodingExecutionHandoff(
+            mode=CodingHandoffMode.PREPARED_BUNDLE,
+            prepared_bundle_artifact=_artifact(
+                CodingRunnerArtifactRole.RESULT_BUNDLE,
+                "s3://optimark-dev/runs/123/workspace.tar.gz",
+                "workspace.tar.gz",
+            ),
+            manifest_artifact=_artifact(
+                CodingRunnerArtifactRole.RESULT_BUNDLE,
+                "s3://optimark-dev/runs/123/handoff-manifest.json",
+                "handoff-manifest.json",
+            ),
+            bundle_entries=[
+                CodingBundleEntry(
+                    source_artifact=submission_artifact,
+                    entry_kind=CodingBundleEntryKind.SUBMISSION_ROOT,
+                    relative_path="workspace/submission/",
+                ),
+            ],
+            **common_kwargs,
+        )
