@@ -15,6 +15,7 @@ This directory contains the formal Architecture Decision Records (ADRs) for Opti
 - [ADR-0005: Hosted SaaS First with Self-Hosting Seams](./0005-hosted-saas-first.md)
 - [ADR-0006: Frontend Bun Workspace Package Topology](./0006-frontend-bun-workspace-package-topology.md)
 - [ADR-0007: Backend uv Workspace Package Topology](./0007-backend-uv-workspace-package-topology.md)
+- [ADR-0008: Runner Contract for Coding Submissions](./0008-runner-contract-for-coding-submissions.md)
 
 ## Usage
 - Create a new ADR when making a meaningful architectural or product-platform decision.

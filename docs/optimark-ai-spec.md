@@ -292,7 +292,9 @@ The future coding runner interface must support:
 - submission artifact references
 - assignment version reference
 - execution metadata
+- runtime version
 - grading configuration reference
+- execution limits
 
 ### Outputs
 - normalized status
@@ -300,11 +302,13 @@ The future coding runner interface must support:
 - testcase summary
 - logs or artifact references
 - machine-readable failure information
+- retryability semantics for failures
 
 ### Contract properties
 - Python-first, future language-extensible
 - stable enough for API and worker integration
 - independent of the final sandbox/runtime implementation
+- terminal runner outcomes separated from orchestration lifecycle states
 
 ## 16. Grade Semantics
 These rules should guide future implementation and design work.
@@ -434,7 +438,6 @@ This is the recommended implementation order.
 
 ## 24. Open Design Threads
 These remain intentionally open and should be explored through dedicated design work:
-- runner contract finalization details
 - artifact packaging and handoff model
 - grading semantics for reruns and release policy
 - isolation and scaling strategy for execution workers
