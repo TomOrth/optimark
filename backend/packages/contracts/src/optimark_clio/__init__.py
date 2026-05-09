@@ -14,8 +14,8 @@ from optimark_clio.assessment import (
     AssignmentDetail,
     AssignmentSummary,
     AssignmentVersionRecord,
-    CreateCourseAssignmentInput,
     CreateAssignmentInput,
+    CreateCourseAssignmentInput,
     CreateAssignmentVersionInput,
     CreateSubmissionInput,
     EvaluationRecordPayload,
@@ -27,6 +27,7 @@ from optimark_clio.assessment import (
     StudentSubmissionWorkspace,
     SubmissionRecord,
     SubmissionLifecycleStatus,
+    UpdateAssignmentInput,
 )
 from optimark_clio.auth import (
     AuthErrorResponse,
@@ -66,6 +67,7 @@ __all__ = [
     "StudentSubmissionWorkspace",
     "SubmissionRecord",
     "SubmissionLifecycleStatus",
+    "UpdateAssignmentInput",
     "UserDetail",
     "UserSummary",
     "WorkerBootstrapMessage",
